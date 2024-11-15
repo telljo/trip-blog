@@ -75,6 +75,7 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
+    authentication-zero (3.0.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
     bcrypt_pbkdf (1.1.1)
@@ -111,6 +112,9 @@ GEM
     erubi (1.13.0)
     et-orbi (1.2.11)
       tzinfo
+    ffi (1.17.0-aarch64-linux-gnu)
+    ffi (1.17.0-arm64-darwin)
+    ffi (1.17.0-x86_64-linux-gnu)
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
@@ -118,6 +122,9 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.6)
       concurrent-ruby (~> 1.0)
+    image_processing (1.13.0)
+      mini_magick (>= 4.9.5, < 5)
+      ruby-vips (>= 2.0.17, < 3)
     io-console (0.7.2)
     irb (1.14.1)
       rdoc (>= 4.0.0)
@@ -148,6 +155,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    mini_magick (4.13.2)
     mini_mime (1.1.5)
     minitest (5.25.1)
     msgpack (1.7.5)
@@ -262,6 +270,9 @@ GEM
       rubocop-performance
       rubocop-rails
     ruby-progressbar (1.13.0)
+    ruby-vips (2.2.2)
+      ffi (~> 1.12)
+      logger
     rubyzip (2.3.2)
     securerandom (0.3.2)
     selenium-webdriver (4.26.0)
@@ -330,12 +341,14 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  authentication-zero (~> 3)
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
   capybara
   cssbundling-rails
   debug
+  image_processing (~> 1.2)
   jsbundling-rails
   kamal
   propshaft

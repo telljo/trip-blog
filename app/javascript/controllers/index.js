@@ -6,3 +6,6 @@ import { application } from "./application"
 
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
+
+import ToggleDarkModeController from "./toggle_dark_mode_controller"
+application.register("toggle-dark-mode", ToggleDarkModeController)
