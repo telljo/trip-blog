@@ -1,6 +1,6 @@
-<div class="dropdown d-flex flex-row-reverse" data-controller="toggle-dark-mode">
+<div class="dropdown d-flex flex-row-reverse" data-controller="toggle-theme">
   <button class="btn btn-secondary dropdown-toggle" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme (dark)">
-    <i data-toggle-dark-mode-target="activeThemeIcon" class="bi"></i>
+    <i data-toggle-theme-target="activeThemeIcon" class="bi"></i>
   </button>
 
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
@@ -9,8 +9,8 @@
         type="button"
         class="dropdown-item d-flex align-items-center gap-2"
         aria-pressed="false"
-        data-toggle-dark-mode-target="lightThemeButton"
-        data-action="click->toggle-dark-mode#changeTheme"
+        data-toggle-theme-target="lightThemeButton"
+        data-action="click->toggle-theme#changeTheme"
         data-theme-value="light"
       >
         <i class="bi bi-sun-fill"></i>
@@ -22,8 +22,8 @@
         type="button"
         class="dropdown-item d-flex align-items-center gap-2"
         aria-pressed="false"
-        data-toggle-dark-mode-target="darkThemeButton"
-        data-action="click->toggle-dark-mode#changeTheme"
+        data-toggle-theme-target="darkThemeButton"
+        data-action="click->toggle-theme#changeTheme"
         data-theme-value="dark"
       >
         <i class="bi bi-moon-stars-fill"></i>
@@ -35,8 +35,8 @@
         type="button"
         class="dropdown-item d-flex align-items-center gap-2"
         aria-pressed="false"
-        data-toggle-dark-mode-target="autoThemeButton"
-        data-action="click->toggle-dark-mode#changeTheme"
+        data-toggle-theme-target="autoThemeButton"
+        data-action="click->toggle-theme#changeTheme"
         data-theme-value="auto"
       >
         <i class="bi bi-circle-half"></i>

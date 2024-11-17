@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="toggle-dark-mode"
+// Connects to data-controller="toggle-theme"
 export default class extends Controller {
   static targets = ["activeThemeIcon", "lightThemeButton", "darkThemeButton", "autoThemeButton"];
 
