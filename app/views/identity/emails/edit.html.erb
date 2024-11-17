@@ -5,7 +5,7 @@
 <% else %>
   <h1>Verify your email</h1>
   <p>We sent a verification email to the address below. Check that email and follow those instructions to confirm it's your email address.</p>
-  <p><%= button_to "Re-send verification email", identity_email_verification_path %></p>
+  <p><%= button_to "Re-send verification email", identity_email_verification_path, class:"btn btn-light" %></p>
 <% end %>
 
 <%= form_with(url: identity_email_path, method: :patch) do |form| %>
@@ -22,17 +22,17 @@
   <% end %>
 
   <div>
-    <%= form.label :email, "New email", style: "display: block" %>
-    <%= form.email_field :email, required: true, autofocus: true %>
+    <%= form.label :email, "New email", class:"form-label", style: "display: block" %>
+    <%= form.email_field :email, class:"form-control", required: true, autofocus: true %>
   </div>
 
   <div>
-    <%= form.label :password_challenge, style: "display: block" %>
-    <%= form.password_field :password_challenge, required: true, autocomplete: "current-password" %>
+    <%= form.label :password_challenge, class:"form-label", style: "display: block" %>
+    <%= form.password_field :password_challenge, class:"form-control", required: true, autocomplete: "current-password" %>
   </div>
 
   <div>
-    <%= form.submit "Save changes" %>
+    <%= form.submit "Save changes", class:"btn btn-primary" %>
   </div>
 <% end %>
 

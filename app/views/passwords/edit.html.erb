@@ -16,23 +16,23 @@
   <% end %>
 
   <div>
-    <%= form.label :password_challenge, style: "display: block" %>
-    <%= form.password_field :password_challenge, required: true, autofocus: true, autocomplete: "current-password" %>
+    <%= form.label :password_challenge, class:"form-label", style: "display: block" %>
+    <%= form.password_field :password_challenge, class:"form-control", required: true, autofocus: true, autocomplete: "current-password" %>
   </div>
 
   <div>
-    <%= form.label :password, "New password", style: "display: block" %>
-    <%= form.password_field :password, required: true, autocomplete: "new-password" %>
+    <%= form.label :password, "New password", class:"form-label", style: "display: block" %>
+    <%= form.password_field :password, class:"form-control", required: true, autocomplete: "new-password" %>
     <div>12 characters minimum.</div>
   </div>
 
   <div>
-    <%= form.label :password_confirmation, "Confirm new password", style: "display: block" %>
-    <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+    <%= form.label :password_confirmation, "Confirm new password", class:"form-label", style: "display: block" %>
+    <%= form.password_field :password_confirmation, class:"form-control", required: true, autocomplete: "new-password" %>
   </div>
 
   <div>
-    <%= form.submit "Save changes" %>
+    <%= form.submit "Save changes", class: "btn btn-primary" %>
   </div>
 <% end %>
 

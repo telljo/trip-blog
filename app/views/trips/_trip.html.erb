@@ -1,2 +1,47 @@
-<div id="<%= dom_id trip %>">
+<div class="d-flex flex-column w-100" id="<%= dom_id trip %>">
+  <%= link_to trip_path(trip), data: { turbo_frame: "_top" } do %>
+    <h2 class="text__link"><%= trip.name %></h2>
+  <% end %>
+  <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">
+    <p class="d-flex m-0 align-items-center gap-1">
+      <%=
+        link_to trip.user.username,
+        url_for(
+          controller: '/users',
+          action: 'show',
+          username: trip.user.username
+        ),
+        class: "text__link",
+        data: { turbo_frame: "_top" }
+      %>
+      started this trip on <%= trip.updated_at&.strftime("%B %d, %Y") %>
+    </p>
+
+    <% if Current.user == trip.user %>
+      <div class="dropdown">
+        <button class="btn" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
+          <i class="bi bi-three-dots"></i>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+          <li>
+            <%= link_to "Edit trip",
+                edit_trip_path(trip),
+                data: { turbo_frame: dom_id(trip) },
+                class: "dropdown-item" %>
+          </li>
+          <li>
+            <%= button_to "Delete trip",
+                trip, method: :delete,
+                data: { turbo: "false" },
+                form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                class: "dropdown-item dropdown-item--danger" %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+  <div class="d-flex flex-column border rounded-bottom-2 px-2 h-4" style="min-height: 5em;">
+    <%= trip.body %>
+  </div>
 </div>

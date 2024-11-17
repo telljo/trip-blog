@@ -21,21 +21,32 @@ class TripsController < ApplicationController
 
   # POST /trips
   def create
-    @trip = Trip.new(trip_params)
+    @trip = Trip.new(trip_params.merge(user: Current.user))
 
-    if @trip.save
-      redirect_to @trip, notice: "Trip was successfully created."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @trip.save
+        format.html do
+          flash[:notice] = "Trip was successfully created."
+          redirect_to trips_url
+        end
+        format.turbo_stream { flash.now[:notice] = "Trip was successfully created." }
+      else
+        format.html { render trips_url, status: :unprocessable_entity }
+        format.turbo_stream { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
   # PATCH/PUT /trips/1
   def update
-    if @trip.update(trip_params)
-      redirect_to @trip, notice: "Trip was successfully updated.", status: :see_other
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @trip.update(trip_params)
+        format.html { redirect_to trips_url }
+        format.turbo_stream { flash.now[:notice] = "Trip was successfully created." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -53,6 +64,6 @@ class TripsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def trip_params
-      params.fetch(:trip, {})
+      params.require(:trip).permit(:name, :body)
     end
 end

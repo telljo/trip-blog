@@ -1,16 +1,40 @@
-<p style="color: green"><%= notice %></p>
+<div class="d-flex flex-column gap-3">
+  <p style="color: green"><%= notice %></p>
 
-<% content_for :title, "Trips" %>
+  <% content_for :title, "Trips" %>
 
-<h1>Trips</h1>
+  <h1>Trips</h1>
+  <p>Explore peoples trips through simple posts with an image.</p>
 
-<div id="trips">
-  <% @trips.each do |trip| %>
-    <%= render trip %>
-    <p>
-      <%= link_to "Show this trip", trip %>
-    </p>
+  <% if @trips.any? %>
+    <% if Current.user %>
+      <%= link_to "Create new trip",
+                  new_trip_path,
+                  class: "btn btn-primary",
+                  data: { turbo_frame: dom_id(Trip.new) } %>
+
+    <% else %>
+      <%= link_to "Create new trip",
+                  sign_up_path,
+                  class: "btn btn-primary",
+                  data: { turbo_frame: "_top" } %>
+    <% end %>
+  <% end %>
+  <%= turbo_frame_tag Trip.new do %>
+    <% if @trips.none? %>
+        <%= render "trips/empty_state" %>
+      <% end %>
+  <% end %>
+
+  <%= turbo_stream_from @trips if @trips.any? %>
+
+  <%= turbo_frame_tag "trips" do %>
+    <div id="trips">
+      <% @trips.order(created_at: :desc).each do |trip| %>
+        <%= turbo_frame_tag dom_id(trip), class: "trip" do %>
+          <%= render trip %>
+        <% end %>
+      <% end %>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New trip", new_trip_path %>

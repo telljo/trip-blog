@@ -6,8 +6,13 @@ export default class extends Controller {
 
   connect() {
     const storedTheme = this.getStoredTheme();
-    this.setTheme(storedTheme);
-    this.showActiveTheme(storedTheme);
+    if (storedTheme) {
+      this.setTheme(storedTheme);
+      this.showActiveTheme(storedTheme);
+    } else {
+      this.setTheme('auto');
+      this.showActiveTheme('auto');
+    }
 
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       const storedTheme = this.getStoredTheme()

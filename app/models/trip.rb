@@ -3,4 +3,6 @@ class Trip < ApplicationRecord
   validates :name, presence: true
   validates :body, presence: true
   has_rich_text :body
+
+  broadcasts_refreshes
 end

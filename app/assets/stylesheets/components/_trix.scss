@@ -1,0 +1,28 @@
+.trix-button-group {
+  color: black;
+  background: white;
+}
+
+.trix-button-group--file-tools {
+  display: none !important;
+}
+
+.trix-button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+trix-toolbar {
+  padding: 0.5em 0.6em;
+  position: relative;
+  height: 3em;
+  width: 100%;
+  background-color: #2d333b;
+  border-style: solid;
+  border-radius: 6px;
+  border-width: 1px;
+  border-color: #444c56;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
