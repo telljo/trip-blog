@@ -8,20 +8,18 @@
       <h1>Trips</h1>
       <p>Explore peoples trips through simple posts with an image.</p>
     </div>
-    <div class="col d-flex align-items-end justify-content-end">
-      <% if @trips.any? %>
-        <% if Current.user %>
-          <%= link_to "Create new trip",
-                      new_trip_path,
-                      class: "btn btn-primary",
-                      data: { turbo_frame: dom_id(Trip.new) } %>
+    <div class="col d-flex align-items-center justify-content-end">
+      <% if Current.user %>
+        <%= link_to "Create new trip",
+                    new_trip_path,
+                    class: "btn btn-success",
+                    data: { turbo_frame: dom_id(Trip.new) } %>
 
-        <% else %>
-          <%= link_to "Sign up to create a trip",
-                      sign_up_path,
-                      class: "btn btn-primary",
-                      data: { turbo_frame: "_top" } %>
-        <% end %>
+      <% else %>
+        <%= link_to "Sign up to create a trip",
+                    sign_up_path,
+                    class: "btn btn-success",
+                    data: { turbo_frame: "_top" } %>
       <% end %>
     </div>
   </div>
