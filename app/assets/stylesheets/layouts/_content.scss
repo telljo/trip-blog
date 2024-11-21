@@ -1,34 +1,69 @@
-// $primary: #9ceaef;
-// $primary-content: #137279;
-// $primary-light: #c8f3f6;
-// $primary-dark: #70e1e8;
+$primary: #3454D1;
+$primary-content: #F9F9F9;
+$primary-medium: #F5F7FA;
+$primary-light: #5e77da;
+$primary-dark: #2742ab;
 
-// [data-bs-theme="light"] {
-//   --bs-body-color: var($blue-500);
-//   --bs-body-color-rgb: #{to-rgb($blue-500)};
-//   --bs-body-bg: #70e1e8;
-//   --bs-body-bg-rgb: #{to-rgb(#70e1e8)};
-//   --bs-tertiary-bg: #{$primary-content};
+.btn-success {
+  background-color: $primary;
+  border-color: $primary;
+  &:hover {
+    background-color: $primary-light;
+    border-color: $primary-light;
+  }
+}
 
-//   .dropdown-menu {
-//     --bs-dropdown-bg: #{mix($blue-500, $blue-600)};
-//     --bs-dropdown-link-active-bg: #{$blue-700};
-//     --bs-dropdown-link-color: var($white);
-//   }
+[data-bs-theme="dark"] {
+  .navbar {
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15),inset 0 -1px 0 rgba(255,255,255,0.15);
+    background: $primary;
+  }
 
-//   .dropdown-item {
-//     --bs-dropdown-item-active-color: var($white);
-//     --bs-dropdown-item-active-bg: #{$blue-700};
-//   }
+  trix-toolbar {
+    background-color: #2d333b;
+  }
+}
 
-//   .btn-secondary {
-//     --bs-btn-bg: #{mix($gray-600, $blue-400, .5)};
-//     --bs-btn-border-color: #{rgba($white, .25)};
-//     // --bs-btn-hover-bg: #{darken(mix($gray-600, $blue-400, .5), 5%)};
-//     // --bs-btn-hover-border-color: #{rgba($white, .25)};
-//     --bs-btn-active-bg: #{darken(mix($gray-600, $blue-400, .5), 10%)};
-//     --bs-btn-active-border-color: #{rgba($white, .5)};
-//     --bs-btn-focus-border-color: #{rgba($white, .5)};
-//     --bs-btn-focus-box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .2);
-//   }
-// }
+[data-bs-theme="light"] {
+  --bs-body-bg: #{$primary-content};
+  --bs-body-bg-rgb: #{to-rgb($primary-content)};
+
+  .bg-light-subtle{
+    background-color: $primary-medium !important;
+  }
+
+  .navbar {
+    background: $primary;
+  }
+  .dropdown-menu {
+    --bs-dropdown-bg: #{$primary-content};
+    --bs-dropdown-link-active-bg: #{$primary-light};
+    --bs-dropdown-link-color: var($primary-light);
+  }
+
+  .dropdown-item {
+    --bs-dropdown-item-active-color: var($primary-light);
+    --bs-dropdown-item-active-bg: #{$primary-medium};
+
+    &:hover:not(.active) {
+      background-color: #E3EAF4;
+    }
+  }
+
+  .dropdown-btn {
+    color: white;
+    --bs-btn-bg: #{$primary-content};
+    --bs-btn-border-color: #{rgba($primary-light, .25)};
+    --bs-btn-hover-bg: #{darken(mix($primary-content, $primary-light, .5), 5%)};
+    --bs-btn-hover-border-color: #{rgba($primary-light, .25)};
+    --bs-btn-active-bg: #{darken(mix($primary-content, $primary-light, .5%), 10%)};
+    --bs-btn-active-border-color: #{rgba($primary-light, .5)};
+    --bs-btn-focus-border-color: #{rgba($primary-light, .5)};
+    --bs-btn-focus-box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .2);
+  }
+
+  trix-toolbar {
+    background-color: $primary-medium;
+    border-color: $primary-medium;
+  }
+}
