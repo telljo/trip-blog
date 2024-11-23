@@ -11,7 +11,9 @@ Rails.application.routes.draw do
     resource :password_reset,     only: [ :new, :edit, :create, :update ]
   end
   root "trips#index"
-  resources :trips
+  resources :trips do
+    resources :trip_companions
+  end
   resource :session
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -21,6 +23,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   # User routes
+  get "users/search", to: "users#search"
   get ":username", to: "users#show", as: "user"
   get ":username/trips", to: "trips#index"
 

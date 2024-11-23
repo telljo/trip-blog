@@ -1,8 +1,18 @@
 $primary: #3454D1;
 $primary-content: #F9F9F9;
-$primary-medium: #F5F7FA;
+$primary-medium: #f5f7fa;
 $primary-light: #5e77da;
 $primary-dark: #2742ab;
+
+.selected-user {
+  background-color: $primary-light;
+  color: white;
+  border-radius: 1.3em;
+  width: fit-content;
+  text-align: center;
+  padding: 0.5em;
+  min-width: 4em;
+}
 
 .btn-success {
   background-color: $primary;
@@ -64,6 +74,6 @@ $primary-dark: #2742ab;
 
   trix-toolbar {
     background-color: $primary-medium;
-    border-color: $primary-medium;
+    border-color: #dee2e6;
   }
 }

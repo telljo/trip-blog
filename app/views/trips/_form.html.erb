@@ -15,11 +15,14 @@
     <div class="d-flex justify-content-start gap-2" role="group">
       <%= form.submit class: "btn btn-success" %>
       <% if @trip.persisted? %>
+        <%= link_to "Add companions", new_trip_trip_companion_path(@trip),
+          data: { turbo_frame: "modal" },
+          class: "btn btn-info w-3" %>
         <%= link_to "Cancel", trip_url(@trip),
-            class: "btn btn-light w-3" %>
+            class: "btn btn-secondary w-3" %>
       <% else %>
         <%= link_to "Cancel", trips_url,
-          class: "btn btn-light" %>
+          class: "btn btn-secondary" %>
       <% end %>
     </div>
 

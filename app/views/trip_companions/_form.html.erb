@@ -1,0 +1,24 @@
+<%= render partial: 'users/search' %>
+
+<%= form_with(id: "trip_companion_form", model: trip_companion, url: @trip.persisted? ? trip_trip_companions_path(@trip) : trips_path) do |form| %>
+  <div
+    data-controller="search-users"
+    class="form d-flex flex-column gap-3"
+  >
+    <%= form.hidden_field :selected_user_ids, value: [].to_s, data: {'search-users-target': 'userIds'} %>
+    <%= render partial: 'users/search_results'%>
+
+    <div data-search-users-target="selectedUsers"></div>
+
+    <div class="d-flex justify-content-start gap-2" role="group">
+      <%= form.submit "Add companion", class: "btn btn-success" %>
+      <button
+        type="button"
+        data-action="click->modal#close"
+        class="btn btn-secondary w-3"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+<% end %>

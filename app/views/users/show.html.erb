@@ -1,12 +1,8 @@
 <div class="container">
   <h2><%= @user.username %></h2>
+  <div><%= @user.email %></div>
 
-    <div><%= @user.email %></div>
-
-    <div>
-      <%= link_to "Trips", trips_path %>
-    </div>
-
+  <% if Current.user.id == @user.id %>
     <h2>Login and verification</h2>
     <div>
       <%= link_to "Change password", edit_password_path %>
@@ -20,5 +16,12 @@
     </div>
     <br>
     <%= button_to "Log out", Current.session, method: :delete, class:"btn btn-secondary" %>
+  <% end%>
 
+  <h2>Trips</h2>
+  <% if @user.trips.any? %>
+    <%= render @user.trips.order(created_at: :desc) %>
+  <% else %>
+    <%= render "trips/empty_state" %>
+  <% end %>
 </div>

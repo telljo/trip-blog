@@ -4,5 +4,11 @@
 
 import { application } from "./application"
 
-import TogleThemeController from "./toggle_theme_controller"
-application.register("toggle-theme", TogleThemeController)
+import ModalController from "./modal_controller"
+application.register("modal", ModalController)
+
+import SearchUsersController from "./search_users_controller"
+application.register("search-users", SearchUsersController)
+
+import ToggleThemeController from "./toggle_theme_controller"
+application.register("toggle-theme", ToggleThemeController)

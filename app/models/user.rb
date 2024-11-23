@@ -24,5 +24,10 @@ class User < ApplicationRecord
     sessions.where.not(id: Current.session).delete_all
   end
 
+  # Trips created by the user
   has_many :trips, dependent: :destroy
+
+  # Trips where the user is a companion
+  has_many :trip_companions, dependent: :destroy
+  has_many :companion_trips, through: :trip_companions, source: :trip
 end

@@ -25,8 +25,21 @@
   <body>
     <div class="mx-auto">
       <%= render "layouts/navbar" %>
-      <div class="container">
+      <div class="container mt-5">
         <%= yield %>
+      </div>
+    </div>
+
+    <div
+      class="modal"
+      tabindex="-1"
+      data-controller="modal"
+      data-action="turbo:frame-load->modal#open"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content p-3">
+          <%= turbo_frame_tag "modal" %>
+        </div>
       </div>
     </div>
   </body>

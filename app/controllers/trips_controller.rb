@@ -57,13 +57,12 @@ class TripsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_trip
-      @trip = Trip.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def trip_params
-      params.require(:trip).permit(:name, :body)
-    end
+  def set_trip
+    @trip = Trip.find(params.expect(:id))
+  end
+
+  def trip_params
+    params.require(:trip).permit(:name, :body)
+  end
 end
