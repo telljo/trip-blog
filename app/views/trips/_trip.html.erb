@@ -18,29 +18,54 @@
         started this trip on <%= trip.updated_at&.strftime("%B %d, %Y") %>
       </p>
 
-      <% if Current.user == trip.user %>
-        <div class="dropdown">
-          <button class="btn" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
-            <i class="bi bi-three-dots"></i>
-          </button>
+      <span class="d-flex flex-row gap-1">
+        <% if trip.companions.any? %>
+          <div class="dropdown">
+            <button class="btn px-1" id="bd-companions" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="View trip companions">
+              <i class="bi bi-people"></i>
+            </button>
 
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-            <li>
-              <%= link_to "Edit trip",
-                  edit_trip_path(trip),
-                  data: { turbo_frame: dom_id(trip) },
-                  class: "dropdown-item" %>
-            </li>
-            <li>
-              <%= button_to "Delete trip",
-                  trip, method: :delete,
-                  data: { turbo: "false" },
-                  form: { data: { 'turbo-confirm': 'Are you sure?' } },
-                  class: "dropdown-item dropdown-item--danger" %>
-            </li>
-          </ul>
-        </div>
-      <% end %>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+              <% trip.companions.each do |companion| %>
+                <li>
+                  <%= link_to companion.user.username,
+                      url_for(
+                        controller: '/users',
+                        action: 'show',
+                        username: companion.user.username
+                      ),
+                      class: "dropdown-item",
+                      data: { turbo_frame: "_top" } %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <% if Current.user == trip.user %>
+          <div class="dropdown">
+            <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
+              <i class="bi bi-three-dots"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+              <li>
+                <%= link_to "Edit trip",
+                    edit_trip_path(trip),
+                    data: { turbo_frame: dom_id(trip) },
+                    class: "dropdown-item" %>
+              </li>
+              <li>
+                <%= button_to "Delete trip",
+                    trip, method: :delete,
+                    data: { turbo: "false" },
+                    form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                    class: "dropdown-item dropdown-item--danger" %>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </span>
     </div>
     <div class="d-flex flex-column border rounded-bottom-2 px-2 h-4" style="min-height: 5em;">
       <%= trip.body %>

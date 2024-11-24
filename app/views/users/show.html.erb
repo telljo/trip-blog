@@ -1,27 +1,40 @@
-<div class="container">
-  <h2><%= @user.username %></h2>
-  <div><%= @user.email %></div>
+<div class="container d-flex flex-column gap-4">
+  <span>
+    <h2><%= @user.username %></h2>
+    <div><%= @user.email %></div>
 
-  <% if Current.user.id == @user.id %>
-    <h2>Login and verification</h2>
-    <div>
-      <%= link_to "Change password", edit_password_path %>
-    </div>
-    <div>
-      <%= link_to "Change email address", edit_identity_email_path %>
-    </div>
-    <h2>Access history</h2>
-    <div>
-      <%= link_to "Devices & Sessions", sessions_path %>
-    </div>
-    <br>
-    <%= button_to "Log out", Current.session, method: :delete, class:"btn btn-secondary" %>
-  <% end%>
+    <% if Current.user.id == @user.id %>
+      <h2>Login and verification</h2>
+      <div>
+        <%= link_to "Change password", edit_password_path %>
+      </div>
+      <div>
+        <%= link_to "Change email address", edit_identity_email_path %>
+      </div>
+      <h2>Access history</h2>
+      <div>
+        <%= link_to "Devices & Sessions", sessions_path %>
+      </div>
+      <br>
+      <%= button_to "Log out", Current.session, method: :delete, class:"btn btn-secondary" %>
+    <% end%>
+  </span>
 
-  <h2>Trips</h2>
-  <% if @user.trips.any? %>
-    <%= render @user.trips.order(created_at: :desc) %>
-  <% else %>
-    <%= render "trips/empty_state" %>
-  <% end %>
+  <span>
+    <h2>Trips</h2>
+    <% if @user.trips.any? %>
+      <%= render @user.trips.order(created_at: :desc) %>
+    <% else %>
+      <%= render "trips/empty_state" %>
+    <% end %>
+  </span>
+
+  <span>
+    <h2>Companion Trips</h2>
+    <% if @user.companion_trips.any? %>
+      <%= render @user.companion_trips.order(created_at: :desc) %>
+    <% else %>
+      <%= render "trips/empty_state" %>
+    <% end %>
+  </span>
 </div>

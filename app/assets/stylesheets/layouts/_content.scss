@@ -4,15 +4,29 @@ $primary-medium: #f5f7fa;
 $primary-light: #5e77da;
 $primary-dark: #2742ab;
 
-.selected-user {
-  background-color: $primary-light;
+.companion {
   color: white;
-  border-radius: 1.3em;
+  background: transparent;
   width: fit-content;
   text-align: center;
   padding: 0.5em;
   min-width: 4em;
+  border-radius: 3em;
 }
+
+.checkbox-inside {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  padding: 0.5em;
+  border: 1px solid #ced4da;
+  border-radius: 0.25em;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+
 
 .btn-success {
   background-color: $primary;

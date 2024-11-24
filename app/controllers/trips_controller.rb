@@ -13,10 +13,12 @@ class TripsController < ApplicationController
   # GET /trips/new
   def new
     @trip = Trip.new
+    @trip.companions.build
   end
 
   # GET /trips/1/edit
   def edit
+    @trip.companions.build if @trip.companions.empty?
   end
 
   # POST /trips
@@ -39,14 +41,10 @@ class TripsController < ApplicationController
 
   # PATCH/PUT /trips/1
   def update
-    respond_to do |format|
-      if @trip.update(trip_params)
-        format.html { redirect_to trips_url }
-        format.turbo_stream { flash.now[:notice] = "Trip was successfully created." }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream { render :new, status: :unprocessable_entity }
-      end
+    if @trip.update(trip_params)
+      redirect_to @trip
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -63,6 +61,8 @@ class TripsController < ApplicationController
   end
 
   def trip_params
-    params.require(:trip).permit(:name, :body)
+    params.require(:trip).permit(:name, :body, companions_attributes: [ :id, :user_id, :_destroy ]).tap do |whitelisted|
+      whitelisted[:companions_attributes]&.reject! { |_, companion| companion[:user_id].blank? }
+    end
   end
 end

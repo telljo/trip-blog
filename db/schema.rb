@@ -62,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_21_021416) do
     t.integer "user_id", null: false
     t.integer "trip_id", null: false
     t.boolean "accepted", default: false
+    t.boolean "declined", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["trip_id"], name: "index_trip_companions_on_trip_id"

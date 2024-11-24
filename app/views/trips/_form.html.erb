@@ -12,12 +12,43 @@
         size: "30x3", required: true %>
     </div>
 
+    <%= form.fields_for :companions, form.object.companions.build do |companion_form| %>
+      <div class="field">
+        <%= companion_form.collection_select :user_id,
+          User.not_current,
+          :id,
+          :username,
+          { include_blank: 'Add companion' },
+          { class:"form-select" }
+        %>
+      </div>
+    <% end %>
+
+    <div class="d-flex flex-row gap-2">
+      <% form.object.companions.each do |companion| %>
+        <%= form.fields_for :companions, companion do |companion_form| %>
+          <% if companion.user %>
+            <div class="field">
+              <%= companion_form.hidden_field :user_id, value: companion.user.id %>
+              <div class="d-flex align-items-center gap-1">
+                <%= companion_form.text_field :username,
+                  value: companion.user.username,
+                  class:"border border-light-subtle companion",
+                  readonly: true
+                %>
+
+                <%= companion_form.check_box :_destroy, { class: "btn-check" } %>
+                <%= companion_form.label :_destroy, "Remove", {class: "btn btn-outline-danger h-auto"} %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
     <div class="d-flex justify-content-start gap-2" role="group">
       <%= form.submit class: "btn btn-success" %>
       <% if @trip.persisted? %>
-        <%= link_to "Add companions", new_trip_trip_companion_path(@trip),
-          data: { turbo_frame: "modal" },
-          class: "btn btn-info w-3" %>
         <%= link_to "Cancel", trip_url(@trip),
             class: "btn btn-secondary w-3" %>
       <% else %>

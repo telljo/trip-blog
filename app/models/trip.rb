@@ -6,10 +6,16 @@ class Trip < ApplicationRecord
 
   broadcasts_refreshes
 
-  has_many :companions, class_name: "User", primary_key: :id, foreign_key: :companion_ids
+  has_many :companions, class_name: "TripCompanion", dependent: :destroy
+  has_many :users, through: :companions
+  accepts_nested_attributes_for :companions, allow_destroy: true
+  after_update_commit :broadcast_companions
 
-  def add_companion(user)
-    self.companion_ids << user.id
-    save
+  private
+
+  def broadcast_companions
+    companions.each do |companion|
+      broadcast_replace_to companion
+    end
   end
 end
