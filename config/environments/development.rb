@@ -1,7 +1,29 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  Geocoder.configure(
+    ip_lookup: :test,
+    lookup: :test
+  )
+
+  Geocoder::Lookup::Test.add_stub(
+    "81.38.174.158", [
+      {
+        "latitude"     => 40.7128,
+        "longitude"    => -74.0060,
+        "address"      => "New York, NY, USA",
+        "state"        => "New York",
+        "state_code"   => "NY",
+        "country"      => "United States",
+        "country_code" => "US"
+      }
+    ]
+  )
+
   # Settings specified here will take precedence over those in config/application.rb.
+
+  # Stub the IP address for testing.
+  config.middleware.use SetRemoteIp
 
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true

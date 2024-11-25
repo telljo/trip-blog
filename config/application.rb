@@ -1,5 +1,9 @@
 require_relative "boot"
 
+# config/application.rb
+require_relative "../lib/middleware/set_remote_ip"
+
+
 require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems

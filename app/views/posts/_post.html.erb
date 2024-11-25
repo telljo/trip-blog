@@ -1,0 +1,55 @@
+<%= turbo_frame_tag dom_id(post) do %>
+  <div class="d-flex flex-column w-100"">
+    <h2 class="text__link"><%= post.title %></h2>
+  </div>
+  <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">
+    <p class="d-flex m-0 align-items-center gap-1">
+      <%=
+        link_to post.user.username,
+        url_for(
+          controller: '/users',
+          action: 'show',
+          username: post.user.username
+        ),
+        class: "text__link",
+        data: { turbo_frame: "_top" }
+      %>
+      created this post on <%= post.updated_at&.strftime("%B %d, %Y") %>
+    </p>
+    <span class="d-flex flex-row gap-1">
+      <% if Current.user == post.user %>
+        <div class="dropdown">
+          <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Post">
+            <i class="bi bi-three-dots"></i>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+            <li>
+              <%= link_to "Edit post",
+                  edit_post_path(post),
+                  data: { turbo_frame: dom_id(post) },
+                  class: "dropdown-item" %>
+            </li>
+            <li>
+              <%= button_to "Delete post",
+                  post, method: :delete,
+                  data: { turbo: "false" },
+                  form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                  class: "dropdown-item dropdown-item--danger" %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </span>
+  </div>
+  <div class="d-flex flex-row border rounded-bottom-2 gap-1 p-2">
+    <% if post.image.attached? %>
+      <div class="w-auto d-flex h-50 w-50">
+        <%= link_to image_tag(post.image_as_thumbnail), post.image, target: "_blank", class: "h-4 w-4" %>
+      </div>
+    <% end %>
+    <div class="post__body-text">
+      <%= post.body %>
+    </div>
+  </div>
+<% end %>

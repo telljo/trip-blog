@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(trip) do %>
-  <div class="d-flex flex-column w-100" id="<%= dom_id trip %>">
+  <div class="d-flex flex-column gap-2" id="<%= dom_id trip %>">
     <%= link_to trip_path(trip), data: { turbo_frame: "_top" } do %>
       <h2 class="text__link"><%= trip.name %></h2>
     <% end %>

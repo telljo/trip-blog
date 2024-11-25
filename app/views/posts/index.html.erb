@@ -1,0 +1,7 @@
+<p style="color: green"><%= notice %></p>
+<h1>Posts for <%= @trip.title %></h1>
+
+<%= turbo_frame_tag "posts" do %>
+  <%= render @posts %>
+<% end %>
+
