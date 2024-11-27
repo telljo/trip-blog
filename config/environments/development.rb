@@ -9,13 +9,8 @@ Rails.application.configure do
   Geocoder::Lookup::Test.add_stub(
     "81.38.174.158", [
       {
-        "latitude"     => 40.7128,
-        "longitude"    => -74.0060,
-        "address"      => "New York, NY, USA",
-        "state"        => "New York",
-        "state_code"   => "NY",
-        "country"      => "United States",
-        "country_code" => "US"
+        "latitude"     => 37.615223,
+        "longitude"    => -122.389977
       }
     ]
   )

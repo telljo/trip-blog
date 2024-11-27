@@ -26,7 +26,6 @@ class Post < ApplicationRecord
   end
   after_validation :reverse_geocode
 
-
   scope :with_location, -> { where.not(latitude: nil, longitude: nil) }
 
   def image_as_thumbnail
@@ -35,11 +34,15 @@ class Post < ApplicationRecord
     image.variant(resize_to_limit: [ 300, 300 ]).processed
   end
 
-  private
-
   def address
     [ street, city, state, country ].compact.join(", ")
   end
+
+  def short_address
+    [ city, state, country ].compact.join(", ")
+  end
+
+  private
 
   def purge_image
     image.purge_later

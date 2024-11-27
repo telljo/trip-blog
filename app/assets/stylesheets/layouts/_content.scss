@@ -4,6 +4,12 @@ $primary-medium: #f5f7fa;
 $primary-light: #5e77da;
 $primary-dark: #2742ab;
 
+.custom-popup {
+  background-color: $primary-content;
+  border-radius: 0.5em;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+
 .companion {
   color: white;
   background: transparent;
@@ -35,6 +41,10 @@ $primary-dark: #2742ab;
     background-color: $primary-light;
     border-color: $primary-light;
   }
+}
+
+.dropdown-menu {
+  z-index: 1500;
 }
 
 [data-bs-theme="dark"] {

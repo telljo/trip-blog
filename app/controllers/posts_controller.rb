@@ -29,7 +29,6 @@ class PostsController < ApplicationController
     @post.trip = @trip
     @post.latitude = @location.latitude
     @post.longitude = @location.longitude
-    binding.pry
 
     respond_to do |format|
       if @post.save
