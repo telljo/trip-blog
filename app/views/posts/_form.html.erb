@@ -23,6 +23,11 @@
       <% end %>
     </div>
 
+    <div data-controller="location" class="d-flex flex-row gap-1">
+      <%= form.hidden_field :latitude, data: { location_target: 'latitude' } %>
+      <%= form.hidden_field :longitude, data: { location_target: 'longitude' } %>
+    </div>
+
     <% unless @post.image.attached? %>
       <div class="mb-3">
         <label for="formFile" class="form-label">Upload an image</label>

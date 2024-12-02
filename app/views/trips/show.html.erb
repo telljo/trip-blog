@@ -16,9 +16,6 @@
     </div>
 
     <div class="d-flex flex-row gap-2">
-      <i
-        class="bi bi-house-door-fill align-content-center border border-3 rounded-circle p-2"
-      ></i>
       <div class="d-flex flex-column">
         <p class="fw-bold m-0">Trip started</p>
         <p class="m-0"><%= @trip.created_at&.strftime("%B %d, %Y") %></p>
@@ -40,11 +37,13 @@
     <% end %>
   </div>
 
-  <div
-    class="sticky-lg-top border rounded-2 bg-white shadow-sm"
-    style="min-width: 500px; min-height: 500px; max-height: 500px; top: 5em; z-index: 100;"
-    data-map-target="map"
-    id="posts-map"
-    data-points='<%= raw generated_points(@trip) %>'>
-  </div>
+  <% if @trip.posts.with_location.any? %>
+    <div
+      class="sticky-lg-top border rounded-2 bg-white shadow-sm"
+      style="min-width: 500px; min-height: 500px; max-height: 500px; top: 5em; z-index: 100;"
+      data-map-target="map"
+      id="posts-map"
+      data-points='<%= raw generated_points(@trip) %>'>
+    </div>
+  <% end %>
 </div>

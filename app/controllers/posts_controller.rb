@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[show edit update destroy]
   before_action :set_trip, only: %i[show edit update destroy]
-  before_action :set_location, only: [ :create ]
+  # before_action :set_location, only: %i[create]
 
   # GET /posts
   def index
@@ -27,8 +27,6 @@ class PostsController < ApplicationController
     @trip = Trip.find(params[:trip_id])
     @post = Post.new(post_params)
     @post.trip = @trip
-    @post.latitude = @location.latitude
-    @post.longitude = @location.longitude
 
     respond_to do |format|
       if @post.save
@@ -67,10 +65,6 @@ class PostsController < ApplicationController
 
   private
 
-  def set_location
-    @location = request.location
-  end
-
   # Use callbacks to share common setup or constraints between actions.
   def set_post
     @post = Post.find(params.expect(:id))
@@ -82,6 +76,6 @@ class PostsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :trip_id, :image, :remove_image, :address, :latitude, :longitude)
+    params.require(:post).permit(:title, :body, :trip_id, :image, :remove_image, :latitude, :longitude)
   end
 end

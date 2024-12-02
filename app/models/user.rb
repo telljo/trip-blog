@@ -17,6 +17,8 @@ class User < ApplicationRecord
 
   normalizes :email, with: -> { _1.strip.downcase }
 
+  has_one_attached :profile_picture, dependent: :destroy
+
   before_validation if: :email_changed?, on: :update do
     self.verified = false
   end
@@ -33,4 +35,10 @@ class User < ApplicationRecord
   has_many :trip_companions, dependent: :destroy
   has_many :companion_trips, through: :trip_companions, source: :trip
   has_many :companion_posts, through: :companion_trips, source: :posts
+
+  def image_as_thumbnail
+    return unless profile_picture.content_type.in?(%w[image/jpeg image/png])
+
+    profile_picture.variant(resize_to_limit: [ 300, 300 ]).processed
+  end
 end

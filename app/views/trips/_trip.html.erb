@@ -7,11 +7,7 @@
       <p class="d-flex m-0 align-items-center gap-1">
         <%=
           link_to trip.user.username,
-          url_for(
-            controller: '/users',
-            action: 'show',
-            username: trip.user.username
-          ),
+          user_path(username: trip.user.username),
           class: "text__link",
           data: { turbo_frame: "_top" }
         %>

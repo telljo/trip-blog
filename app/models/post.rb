@@ -22,6 +22,8 @@ class Post < ApplicationRecord
       obj.city    = geo.city
       obj.state = geo.state
       obj.country = geo.country_code
+    else
+      Rails.logger.debug "Geocoding results are empty for latitude: #{obj.latitude}, longitude: #{obj.longitude}"
     end
   end
   after_validation :reverse_geocode

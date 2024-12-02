@@ -1,24 +1,24 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  Geocoder.configure(
-    ip_lookup: :test,
-    lookup: :test
-  )
+  # Geocoder.configure(
+  #   ip_lookup: :test,
+  #   lookup: :test
+  # )
 
-  Geocoder::Lookup::Test.add_stub(
-    "81.38.174.158", [
-      {
-        "latitude"     => 37.615223,
-        "longitude"    => -122.389977
-      }
-    ]
-  )
+  # Geocoder::Lookup::Test.add_stub(
+  #   "81.38.174.158", [
+  #     {
+  #       "latitude"     => 37.615223,
+  #       "longitude"    => -122.389977
+  #     }
+  #   ]
+  # )
 
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Stub the IP address for testing.
-  config.middleware.use SetRemoteIp
+  # config.middleware.use SetRemoteIp
 
   # Make code changes take effect immediately without server restart.
   config.enable_reloading = true

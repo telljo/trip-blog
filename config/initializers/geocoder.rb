@@ -10,7 +10,7 @@ Geocoder.configure(
   # http_proxy: nil,            # HTTP proxy server (user:pass@host:port)
   # https_proxy: nil,           # HTTPS proxy server (user:pass@host:port)
   lookup: :google,
-  api_key: ENV["GOOGLE_MAPS_RAILS_API_KEY"], # API key for geocoding service
+  api_key: ENV["GOOGLE_MAPS_API_KEY"], # API key for geocoding service
   cache: ActiveSupport::Cache::FileStore.new("./db/cache"), # cache object (must respond to #[], #[]=, and #del)
 
   # Exceptions that should not be rescued by default

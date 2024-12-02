@@ -1,7 +1,18 @@
 <div class="container d-flex flex-column gap-4">
   <span>
+    <% if @user.profile_picture.attached? %>
+      <div class="w-auto d-flex h-50 w-50">
+        <%= image_tag @user.image_as_thumbnail %>
+      </div>
+    <% end %>
     <h2><%= @user.username %></h2>
     <div><%= @user.email %></div>
+
+    <%=
+      link_to "Edit profile",
+      edit_user_path(username: @user.username),
+      class: "text__link"
+    %>
 
     <% if Current.user.id == @user.id %>
       <h2>Login and verification</h2>
