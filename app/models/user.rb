@@ -9,7 +9,6 @@ class User < ApplicationRecord
     password_salt.last(10)
   end
 
-
   has_many :sessions, dependent: :destroy
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -39,6 +38,6 @@ class User < ApplicationRecord
   def image_as_thumbnail
     return unless profile_picture.content_type.in?(%w[image/jpeg image/png])
 
-    profile_picture.variant(resize_to_limit: [ 300, 300 ]).processed
+    profile_picture.variant(resize_to_limit: [ 200, 200 ]).processed
   end
 end

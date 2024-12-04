@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import CropController from "./crop_controller"
+application.register("crop", CropController)
+
 import LocationController from "./location_controller"
 application.register("location", LocationController)
 

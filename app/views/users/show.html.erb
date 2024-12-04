@@ -1,35 +1,19 @@
 <div class="container d-flex flex-column gap-4">
-  <span>
+
+  <div class="d-flex flex-row gap-2 align-items-center">
     <% if @user.profile_picture.attached? %>
-      <div class="w-auto d-flex h-50 w-50">
-        <%= image_tag @user.image_as_thumbnail %>
-      </div>
+      <%= image_tag @user.image_as_thumbnail, class:"rounded-circle", style:"height: 100px; width: 100px;" %>
     <% end %>
-    <h2><%= @user.username %></h2>
-    <div><%= @user.email %></div>
-
-    <%=
-      link_to "Edit profile",
-      edit_user_path(username: @user.username),
-      class: "text__link"
-    %>
-
-    <% if Current.user.id == @user.id %>
-      <h2>Login and verification</h2>
-      <div>
-        <%= link_to "Change password", edit_password_path %>
-      </div>
-      <div>
-        <%= link_to "Change email address", edit_identity_email_path %>
-      </div>
-      <h2>Access history</h2>
-      <div>
-        <%= link_to "Devices & Sessions", sessions_path %>
-      </div>
-      <br>
-      <%= button_to "Log out", Current.session, method: :delete, class:"btn btn-secondary" %>
-    <% end%>
-  </span>
+    <span class="d-flex flex-column gap-1">
+      <h2><%= @user.username %></h2>
+      <div><%= @user.email %></div>
+      <%=
+        link_to "Edit profile",
+        edit_user_path(username: @user.username),
+        class: "text__link"
+      %>
+    </span>
+  </div>
 
   <span>
     <h2>Trips</h2>

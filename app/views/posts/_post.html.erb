@@ -15,6 +15,9 @@
   </div>
   <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">
     <p class="d-flex m-0 align-items-center gap-1 text-body-secondary">
+      <% if post.user.profile_picture.attached? %>
+        <%= image_tag post.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+      <% end %>
       <%=
         link_to post.user.username,
         url_for(

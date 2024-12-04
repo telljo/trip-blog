@@ -1,12 +1,22 @@
-<h2>Profile</h2>
 <%= form_with model: user, url: user.persisted? ? user_path(user.username) : users_path, local: true do |form| %>
   <div class="mb-3">
     <label for="username" class="form-label">Username</label>
     <%= form.text_field :username, class: "form-control", id: "username" %>
   </div>
-  <div class="mb-3">
-    <label for="formFile" class="form-label">Profile picture</label>
-    <%= form.file_field :profile_picture, accept: 'image/png,image/jpeg', class: "form-control", id:"formFile" %>
+  <label for="formFile" class="form-label">Profile picture</label>
+  <div
+    class="d-flex flex-row gap-2 py-2 align-items-center"
+    data-controller="crop"
+  >
+    <div class="d-flex justify-content-end">
+      <% if @user.profile_picture.attached? %>
+        <%= image_tag @user.image_as_thumbnail, id: "imagePreview", class: "rounded-circle", style: "height: 100px; width: 100px;", data: { crop_target: "imagePreview" } %>
+      <% else %>
+        <img id="imagePreview" class="rounded-circle", style="height: 200px; width: 200px;" data-crop-target="imagePreview" />
+      <% end %>
+    </div>
+    <%= form.file_field :profile_picture, accept: 'image/png,image/jpeg', class: "form-control", style: "height: 38px;", id: "formFile", data: { action: "change->crop#selectImage", crop_target: "fileInput" } %>
+    <%= form.hidden_field :cropped_image_data, id: "croppedImageData", data: { crop_target: "croppedImageData" } %>
   </div>
-  <%= form.submit class: "btn btn-success" %>
+  <%= form.submit "Update", class: "btn btn-success" %>
 <% end %>
