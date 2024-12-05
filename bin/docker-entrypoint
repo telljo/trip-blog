@@ -1,4 +1,6 @@
 #!/bin/bash -e
+# Decode the GOOGLE_APPLICATION_CREDENTIALS and save it to /tmp/gcskey.json
+echo $GOOGLE_APPLICATION_CREDENTIALS | base64 -d > /tmp/gcskey.json
 
 # Enable jemalloc for reduced memory usage and latency.
 if [ -z "${LD_PRELOAD+x}" ]; then
