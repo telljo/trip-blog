@@ -4,6 +4,38 @@ $primary-medium: #f5f7fa;
 $primary-light: #5e77da;
 $primary-dark: #2742ab;
 
+$breakpoint: 950px;
+$trip-map-width: 900px;
+$trip-map-height: 500px;
+$trip-map-mobile-height: 300px;
+
+.desktop-only {
+  display: none;
+
+  @media screen and (min-width: $breakpoint) {
+    display: block;
+  }
+}
+
+.mobile-only {
+  display: none;
+  @media screen and (max-width: $breakpoint) {
+    display: block;
+  }
+}
+
+.trip-map {
+  width: $trip-map-width;
+  height: $trip-map-height;
+  top: 5em;
+
+  @media screen and (max-width: $breakpoint) {
+    width: 100%;
+    height: $trip-map-mobile-height;
+    top: 0;
+  }
+}
+
 .custom-popup {
   background-color: $primary-content;
   border-radius: 0.5em;

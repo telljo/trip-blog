@@ -2,16 +2,23 @@
   style="width: 100%;"
   class="sticky-top top-0 d-flex flex-row navbar p-2"
 >
-  <%= render "layouts/theme_switcher" %>
-  <div class="dropdown">
-    <a data-bs-toggle="dropdown" class="btn dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
-      role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-      <% if Current.user&.profile_picture&.attached? %>
-        <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-      <% end %>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-profile">
-      <% if Current.user %>
+  <div class="d-flex flex-row gap-1">
+    <%= link_to root_path, class:"d-flex btn" do %>
+      <i class="bi bi-globe-americas" style="color: white;"></i>
+    <% end %>
+  </div>
+
+  <div class="d-flex flew-row gap-1">
+    <%= render "layouts/theme_switcher" %>
+    <% if Current.user %>
+    <div class="dropdown">
+      <a data-bs-toggle="dropdown" class="btn dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
+        role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+        <% if Current.user&.profile_picture&.attached? %>
+          <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+        <% end %>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-profile">
         <li>
           <%=
             link_to "My profile",
@@ -27,29 +34,15 @@
           %>
         </li>
         <li>
-          <%=
-            button_to "Log out",
-            Current.session,
-            method: :delete,
-            class:"dropdown-item"
-          %>
+          <%= button_to "Log out", Current.session, method: :delete, class:"dropdown-item" %>
         </li>
-      <% else %>
-        <li>
-          <%=
-            link_to "Login",
-            new_session_path,
-            class: "dropdown-item"
-          %>
-        </li>
-        <li>
-          <%=
-            link_to "Sign up",
-            sign_up_path,
-            class: "dropdown-item"
-          %>
-        </li>
-      <% end %>
-    </ul>
+      </ul>
+    </div>
+    <% else %>
+      <div class="d-flex flex-row gap-2" role="group">
+        <%= link_to "Sign up", sign_up_path, class:"btn btn-primary" %>
+        <%= link_to "Log in", new_session_path, class:"btn btn-primary" %>
+      </div>
+    <% end %>
   </div>
 </nav>
