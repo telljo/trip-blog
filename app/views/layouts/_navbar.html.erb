@@ -6,28 +6,50 @@
   <div class="dropdown">
     <a data-bs-toggle="dropdown" class="btn dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
       role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-      <% if Current.user.profile_picture.attached? %>
+      <% if Current.user&.profile_picture&.attached? %>
         <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
       <% end %>
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-profile">
-      <li>
-        <%=
-          link_to "My profile",
-          user_path(username: Current.user.username),
-          class: "dropdown-item"
-        %>
-      </li>
-      <li>
-        <%=
-          link_to "Edit profile",
-          edit_user_path(username: Current.user.username),
-          class: "dropdown-item"
-        %>
-      </li>
-      <li>
-        <a class="dropdown-item" href="#">Logout</a>
-      </li>
+      <% if Current.user %>
+        <li>
+          <%=
+            link_to "My profile",
+            user_path(username: Current.user.username),
+            class: "dropdown-item"
+          %>
+        </li>
+        <li>
+          <%=
+            link_to "Edit profile",
+            edit_user_path(username: Current.user.username),
+            class: "dropdown-item"
+          %>
+        </li>
+        <li>
+          <%=
+            button_to "Log out",
+            Current.session,
+            method: :delete,
+            class:"dropdown-item"
+          %>
+        </li>
+      <% else %>
+        <li>
+          <%=
+            link_to "Login",
+            new_session_path,
+            class: "dropdown-item"
+          %>
+        </li>
+        <li>
+          <%=
+            link_to "Sign up",
+            sign_up_path,
+            class: "dropdown-item"
+          %>
+        </li>
+      <% end %>
     </ul>
   </div>
 </nav>
