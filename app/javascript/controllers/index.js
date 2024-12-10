@@ -16,8 +16,5 @@ application.register("map", MapController)
 import ModalController from "./modal_controller"
 application.register("modal", ModalController)
 
-import SearchController from "./search_controller"
-application.register("search", SearchController)
-
 import ToggleThemeController from "./toggle_theme_controller"
 application.register("toggle-theme", ToggleThemeController)

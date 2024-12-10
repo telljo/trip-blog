@@ -17,7 +17,6 @@ export default class extends Controller {
 
     if (longitude && latitude) {
       this.initializeMap(longitude, latitude);
-      this.addMarker([longitude, latitude]);
     } else {
       this.findLocation();
     }
@@ -38,7 +37,28 @@ export default class extends Controller {
     const { latitude, longitude } = position.coords;
 
     this.initializeMap(longitude, latitude);
-    this.addMarker([longitude, latitude]);
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content
+
+    fetch("/geolocations/find_location", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      body: JSON.stringify({ latitude, longitude }),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      return response.json()
+    })
+    .then((data) => {
+      this.selectedAddressTarget.value = data.formatted_address;
+    })
+    .catch((error) => {
+      console.error("Error communicating with Rails:", error)
+    })
   }
 
   initializeMap(longitude, latitude) {
@@ -50,6 +70,17 @@ export default class extends Controller {
       style: 'mapbox://styles/mapbox/satellite-v9',
       center: [longitude, latitude],
       zoom: 6
+    });
+
+    this.map.on('load', () => {
+      this.map.resize();
+
+      // Add marker after map is fully loaded and resized
+      const marker = new mapboxgl.Marker()
+        .setLngLat([longitude, latitude])
+        .addTo(this.map);
+
+      this.mapMarkers.push(marker);
     });
   }
 

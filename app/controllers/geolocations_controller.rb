@@ -15,4 +15,14 @@ class GeolocationsController < ApplicationController
       ]
     end
   end
+
+  def find_location
+    # Access latitude and longitude parameters sent from frontend
+    latitude = params[:latitude]
+    longitude = params[:longitude]
+
+    location_data = Geocoder.search([ latitude, longitude ])
+
+    render json: location_data.first.data
+  end
 end
