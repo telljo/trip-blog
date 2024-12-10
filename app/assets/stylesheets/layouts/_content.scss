@@ -9,6 +9,31 @@ $trip-map-width: 900px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.modal-dialog {
+  height: 100vh;
+  align-content: center;
+
+}
+
+.search-results {
+  padding: 1em;
+  position: absolute;
+  width: 100%;
+  z-index: 101;
+  select {
+    border: none;
+    outline: none;
+    line-height: 32px;
+    width: 100%;
+    option {
+      padding: 5px;
+      &:hover {
+        background:#eee;
+      }
+    }
+  }
+}
+
 .desktop-only {
   display: none;
 
@@ -21,6 +46,15 @@ $trip-map-mobile-height: 300px;
   display: none;
   @media screen and (max-width: $breakpoint) {
     display: block;
+  }
+}
+
+.search-map {
+  height: 400px;
+
+  .mapboxgl-canvas {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 

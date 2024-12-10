@@ -23,6 +23,7 @@
       <% end %>
     </div>
   </div>
+
   <%= turbo_frame_tag Trip.new do %>
     <% if @trips.none? %>
         <%= render "trips/empty_state" %>

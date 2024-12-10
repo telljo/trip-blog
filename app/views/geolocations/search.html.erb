@@ -1,0 +1,36 @@
+<%= turbo_frame_tag "modal" do %>
+  <div
+    data-controller="location"
+    data-location-lng-value="<%= @current_longitude %>"
+    data-location-lat-value="<%= @current_latitude %>"
+    class="modal-body d-flex flex-column gap-2"
+  >
+    <div class="d-flex flex-row justify-content-between">
+      <h5 class="modal-title">Choose location</h5>
+      <button type="button" class="btn-close" data-action="modal#close" aria-label="Close"></button>
+    </div>
+    <%= form_with url: search_geolocations_path,
+      method: :get,
+      class: "d-flex flex-row gap-1",
+      data: {
+        turbo_stream: true
+      } do |form| %>
+      <%= form.text_field :query,
+            placeholder: "Search for an address",
+            class: "form-control",
+            input_html: { autofocus: true }
+      %>
+      <%= form.submit "Search", class: "btn btn-primary" %>
+    <% end %>
+
+    <%= render partial: "geolocations/search_results" %>
+
+    <div class="d-flex flex-row gap-1">
+      <input data-location-target="selectedAddress" type="text" name="selectedLocation"
+        class="form-control" readonly value="<%=
+          @current_address ? @current_address : "No location chosen"
+        %>">
+      <button type="button" class="btn btn-primary" data-action="click->location#selectLocation click->modal#closeModal">Update</button>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,21 @@
+<%= turbo_frame_tag "location-list" do %>
+  <% if @geolocations.present? %>
+    <div
+      class="form-group"
+    >
+      <%= select_tag 'user_id[]',
+        options_for_select(@geolocations),
+        class: "form-control search-results",
+        multiple: true,
+        data: { action: "click->location#chooseLocation" }
+      %>
+    </div>
+  <% end %>
+<% end %>
+
+<div
+  data-location-target="map"
+  class="sticky-lg-top border rounded-2 bg-white shadow-sm search-map"
+  style="max-height: 500px; z-index: 100;"
+  id="search-map">
+</div>
