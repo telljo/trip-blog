@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import mapboxgl from "mapbox-gl";
+import maplibregl from 'maplibre-gl';
 
 // Connects to data-controller="location"
 export default class extends Controller {
@@ -7,7 +7,6 @@ export default class extends Controller {
   static values = { lng: Number, lat: Number };
 
   connect() {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGVsbGpvIiwiYSI6ImNtMnU0d2N5NzBhbXAyaXB4Ym1tM3A2cnMifQ.CxCQDXvDYdTte4eXrsvRhA';
     this.map = null;
     this.mapMarkers = [];
     this.selectedCoordinates = null;
@@ -65,9 +64,9 @@ export default class extends Controller {
     // Clear the map container
     this.mapTarget.innerHTML = '';
 
-    this.map = new mapboxgl.Map({
+    this.map = new maplibregl.Map({
       container: this.mapTarget,
-      style: 'mapbox://styles/mapbox/satellite-v9',
+      style: 'https://api.maptiler.com/maps/hybrid/style.json?key=YceGCelRYIEShW1l58mK',
       center: [longitude, latitude],
       zoom: 6
     });
@@ -76,7 +75,7 @@ export default class extends Controller {
       this.map.resize();
 
       // Add marker after map is fully loaded and resized
-      const marker = new mapboxgl.Marker()
+      const marker = new maplibregl.Marker()
         .setLngLat([longitude, latitude])
         .addTo(this.map);
 
@@ -109,7 +108,7 @@ export default class extends Controller {
   }
 
   addMarker(coordinates) {
-    const marker = new mapboxgl.Marker()
+    const marker = new maplibregl.Marker()
       .setLngLat(coordinates)
       .addTo(this.map);
 

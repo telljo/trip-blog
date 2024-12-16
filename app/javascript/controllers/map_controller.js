@@ -1,5 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
-import mapboxgl from "mapbox-gl";
+import maplibregl from 'maplibre-gl';
 
 export default class extends Controller {
   static targets = ["map"];
@@ -8,8 +8,6 @@ export default class extends Controller {
   static map = null;
 
   connect() {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGVsbGpvIiwiYSI6ImNtMnU0d2N5NzBhbXAyaXB4Ym1tM3A2cnMifQ.CxCQDXvDYdTte4eXrsvRhA';
-
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
     const points = JSON.parse(mapElement.dataset.points);
@@ -22,17 +20,17 @@ export default class extends Controller {
 
     const firstPoint = points[0];
 
-    this.constructor.map = new mapboxgl.Map({
+    this.constructor.map = new maplibregl.Map({
       container: mapElement,
-      style: 'mapbox://styles/mapbox/satellite-v9',
+      style: 'https://api.maptiler.com/maps/hybrid/style.json?key=YceGCelRYIEShW1l58mK',
       center: [firstPoint.longitude, firstPoint.latitude],
       zoom: 5
     });
 
     points.forEach(point => {
-      new mapboxgl.Marker()
+      new maplibregl.Marker()
         .setLngLat([point.longitude, point.latitude])
-        .setPopup(new mapboxgl.Popup({
+        .setPopup(new maplibregl.Popup({
           closeButton: false,
           closeOnClick: true,
           closeOnMove: true
@@ -73,10 +71,8 @@ export default class extends Controller {
   moveToMarker(event) {
     const postId = event.target.dataset.postId;
 
-    // Assuming you have a function to get coordinates by postId
     const coordinates = this.constructor.coordinatesMap[postId];
 
-    // Assuming 'map' is your Mapbox GL map instance
     if (coordinates) {
       this.constructor.map.flyTo({
         center: coordinates,
