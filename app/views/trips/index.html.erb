@@ -26,7 +26,9 @@
 
   <%= turbo_frame_tag Trip.new do %>
     <% if @trips.none? %>
-        <%= render "trips/empty_state" %>
+      <%= render partial: "trips/empty_state", locals: {
+        message: "There are no trips yet."
+      } %>
       <% end %>
   <% end %>
 

@@ -439,7 +439,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  authentication-zero (~> 3)
+  authentication-zero (~> 3.0)
   awesome_print
   aws-sdk-s3 (~> 1.174)
   bcrypt (~> 3.1.7)

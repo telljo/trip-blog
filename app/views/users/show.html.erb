@@ -6,12 +6,14 @@
     <% end %>
     <span class="d-flex flex-column gap-1">
       <h2><%= @user.username %></h2>
-      <div><%= @user.email %></div>
-      <%=
-        link_to "Edit profile",
-        edit_user_path(username: @user.username),
-        class: "text__link"
-      %>
+      <% if Current.user == @user %>
+        <div><%= @user.email %></div>
+        <%=
+          link_to "Edit profile",
+          edit_user_path(username: @user.username),
+          class: "text__link"
+        %>
+      <% end %>
     </span>
   </div>
 
@@ -20,7 +22,10 @@
     <% if @user.trips.any? %>
       <%= render @user.trips.order(created_at: :desc) %>
     <% else %>
-      <%= render "trips/empty_state" %>
+      <%= render partial: "trips/empty_state", locals: {
+        user: @user,
+        message: "You have not created any trips yet."
+      } %>
     <% end %>
   </span>
 
@@ -29,7 +34,10 @@
     <% if @user.companion_trips.any? %>
       <%= render @user.companion_trips.order(created_at: :desc) %>
     <% else %>
-      <%= render "trips/empty_state" %>
+      <%= render partial: "trips/empty_state", locals: {
+        user: @user,
+        message: "You have not been added to any trips yet."
+      } %>
     <% end %>
   </span>
 </div>
