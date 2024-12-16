@@ -12,7 +12,13 @@
       <% if @user.profile_picture.attached? %>
         <%= image_tag @user.image_as_thumbnail, id: "imagePreview", class: "rounded-circle", style: "height: 100px; width: 100px;", data: { crop_target: "imagePreview" } %>
       <% else %>
-        <img id="imagePreview" class="rounded-circle", style="height: 200px; width: 200px;" data-crop-target="imagePreview" />
+        <img
+          id="imagePreview"
+          class="image-preview"
+          data-crop-target="imagePreview"
+          style="height: 200px; width: 200px;"
+          src="<%= asset_path('person-circle.svg') %>"
+        />
       <% end %>
     </div>
     <%= form.file_field :profile_picture, accept: 'image/png,image/jpeg', class: "form-control", style: "height: 38px;", id: "formFile", data: { action: "change->crop#selectImage", crop_target: "fileInput" } %>

@@ -66,6 +66,9 @@ export default class extends Controller {
 
     this.map = new maplibregl.Map({
       container: this.mapTarget,
+      attributionControl: {
+        compact: true
+      },
       style: 'https://api.maptiler.com/maps/hybrid/style.json?key=YceGCelRYIEShW1l58mK',
       center: [longitude, latitude],
       zoom: 6
@@ -108,6 +111,7 @@ export default class extends Controller {
   }
 
   addMarker(coordinates) {
+    console.log(coordinates);
     const marker = new maplibregl.Marker()
       .setLngLat(coordinates)
       .addTo(this.map);

@@ -3,6 +3,11 @@
   <div class="d-flex flex-row gap-2 align-items-center">
     <% if @user.profile_picture.attached? %>
       <%= image_tag @user.image_as_thumbnail, class:"rounded-circle", style:"height: 100px; width: 100px;" %>
+    <% else %>
+      <i
+        class="bi bi-person-circle px-2"
+        style="font-size: 5em; color: white;"
+      ></i>
     <% end %>
     <span class="d-flex flex-column gap-1">
       <h2><%= @user.username %></h2>

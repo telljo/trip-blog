@@ -9,6 +9,11 @@
       <p class="d-flex m-0 align-items-center gap-1">
         <% if trip.user.profile_picture.attached? %>
           <%= image_tag trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+        <% else %>
+          <i
+            class="bi bi-person-circle"
+            style="font-size: 1.3em; color: white;"
+          ></i>
         <% end %>
         <%=
           link_to trip.user.username,
