@@ -34,14 +34,14 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
               <% trip.companions.each do |companion| %>
                 <li>
-                  <%= link_to companion.user.username,
-                      url_for(
-                        controller: '/users',
-                        action: 'show',
-                        username: companion.user.username
-                      ),
-                      class: "dropdown-item",
-                      data: { turbo_frame: "_top" } %>
+                  <%= link_to url_for(controller: '/users', action: 'show', username: companion.user.username), class: "dropdown-item d-flex align-items-center gap-2", data: { turbo_frame: "_top" } do %>
+                    <% if companion.user.profile_picture.attached? %>
+                      <%= image_tag companion.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+                    <% else %>
+                      <i class="bi bi-person-circle" style="font-size: 1.3em; color: white;"></i>
+                    <% end %>
+                    <%= companion.user.username %>
+                  <% end %>
                 </li>
               <% end %>
             </ul>
