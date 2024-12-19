@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   belongs_to :trip
-  has_one :user, through: :trip
+  belongs_to :user
   validates :title, presence: true
   validates :body, presence: true
   # geocoded_by :address

@@ -28,7 +28,7 @@ class User < ApplicationRecord
 
   # Trips created by the user
   has_many :trips, dependent: :destroy
-  has_many :posts, through: :trips
+  has_many :posts, dependent: :destroy
 
   # Trips where the user is a companion
   has_many :trip_companions, dependent: :destroy

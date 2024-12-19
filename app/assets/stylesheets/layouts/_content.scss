@@ -9,10 +9,13 @@ $trip-map-width: 900px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.maplibregl-ctrl-bottom-right {
+  display: none;
+}
+
 .modal-dialog {
   height: 100vh;
   align-content: center;
-
 }
 
 .image-preview {
@@ -129,14 +132,34 @@ $trip-map-mobile-height: 300px;
   trix-toolbar {
     background-color: #2d333b;
   }
+
+  .maplibregl-popup-content {
+    background-color: #2d333b;
+    color: white;
+
+    .bi-person-circle {
+      color: white !important;
+    }
+  }
 }
 
 [data-bs-theme="light"] {
   --bs-body-bg: #{$primary-content};
   --bs-body-bg-rgb: #{to-rgb($primary-content)};
 
+  .bi-person-circle {
+    color: #333 !important;
+  }
+
   .bg-light-subtle{
-    background-color: $primary-medium !important;
+    background-color: $primary-light !important;
+    p, a {
+      color: white !important;
+    }
+
+    .dropdown-item {
+      color: unset !important;
+    }
   }
 
   .navbar {

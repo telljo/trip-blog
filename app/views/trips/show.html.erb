@@ -8,7 +8,7 @@
       <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
         <%= @trip.body %>
 
-        <% if Current.user == @trip.user %>
+        <% if Current.user == @trip.user || Current.user.companion_trips.include?(@trip) %>
           <%= link_to "Create new post",
             new_post_path(trip_id: @trip.id),
             class: "btn btn-success",
@@ -54,7 +54,7 @@
     <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
       <%= @trip.body %>
 
-       <% if Current.user == @trip.user %>
+       <% if Current.user == @trip.user || Current.user.companion_trips.include?(@trip) %>
         <%= link_to "Create new post",
           new_post_path(trip_id: @trip.id),
           class: "btn btn-success",

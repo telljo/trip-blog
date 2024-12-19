@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[show edit update destroy]
   before_action :set_trip, only: %i[show edit update destroy]
-  # before_action :set_location, only: %i[create]
+  before_action :validate_user, only: %i[edit update destroy]
 
   # GET /posts
   def index
@@ -27,6 +27,7 @@ class PostsController < ApplicationController
     @trip = Trip.find(params[:trip_id])
     @post = Post.new(post_params)
     @post.trip = @trip
+    @post.user = Current.user
 
     respond_to do |format|
       if @post.save
@@ -72,6 +73,12 @@ class PostsController < ApplicationController
 
   def set_trip
     @trip = @post.trip
+  end
+
+  def validate_user
+    return if @trip.user == Current.user || @trip.users.include?(Current.user)
+
+    redirect_to @trip, notice: "You are not authorized to perform this action."
   end
 
   # Only allow a list of trusted parameters through.
