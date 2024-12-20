@@ -3,7 +3,7 @@
     <%= link_to trip_path(trip),
       style:"width: max-content;",
       data: { turbo_frame: "_top" } do %>
-      <h2 class="text__link pb-2"><%= trip.name %></h2>
+      <h4 class="text__link my-2"><%= trip.name %></h4>
     <% end %>
     <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">
       <p class="d-flex m-0 align-items-center gap-1">
@@ -73,7 +73,7 @@
         <% end %>
       </span>
     </div>
-    <div class="d-flex flex-column border rounded-bottom-2 px-2 h-4" style="min-height: 5em;">
+    <div class="d-flex flex-column border rounded-bottom-2 p-2 h-4" style="min-height: 5em;">
       <%= trip.body %>
     </div>
   </div>

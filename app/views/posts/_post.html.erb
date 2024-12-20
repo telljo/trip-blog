@@ -2,15 +2,15 @@
   <div class="d-flex flex-column w-100"">
     <% if post.city %>
     <div class="d-flex flex-row gap-2">
-        <h2 class="text__link"><%= post.title %></h2>
+      <h4 class="text__link my-2"><%= post.title %></h4>
 
-        <%= link_to '#', class:"d-flex flex-row gap-1", data: { action: "click->map#moveToMarker" } do %>
-          <i class="bi bi-geo-alt align-content-center"></i>
-          <p class="text-body-secondary m-0 align-content-center", data-post-id=<%= post.id %>><%= post.short_address %></p>
-        <% end %>
+      <%= link_to '#', class:"d-flex flex-row gap-1", data: { action: "click->map#moveToMarker" } do %>
+        <i class="bi bi-geo-alt align-content-center"></i>
+        <p class="text-body-secondary m-0 align-content-center", data-post-id=<%= post.id %>><%= post.short_address %></p>
+      <% end %>
       </div>
     <% else %>
-      <h2 class="text__link"><%= post.title %></h2>
+      <h4 class="text__link my-2"><%= post.title %></h4>
     <% end %>
   </div>
   <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">

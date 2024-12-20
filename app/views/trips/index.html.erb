@@ -1,4 +1,4 @@
-<div class="d-flex flex-column gap-3">
+<div class="d-flex flex-column">
   <p style="color: green"><%= notice %></p>
 
   <% content_for :title, "Trips" %>
@@ -35,7 +35,7 @@
   <%= turbo_stream_from @trips if @trips.any? %>
 
   <%= turbo_frame_tag "trips" do %>
-    <div id="trips">
+    <div id="trips" class="d-flex flex-column gap-4 pt-4">
       <% @trips.order(created_at: :desc).each do |trip| %>
         <%= render trip %>
       <% end %>
