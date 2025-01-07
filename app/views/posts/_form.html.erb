@@ -39,7 +39,7 @@
           <div class="d-flex flex-row gap-1">
             <input id="addressValue" value="<%= @post.address %>" type="text" name="selectedLocation"
               class="form-control" placeholder="No location chosen" readonly>
-            <%= link_to "Update location",
+            <%= link_to "Set location",
               search_geolocations_path(
                 latitude: post.latitude,
                 longitude: post.longitude,
@@ -74,7 +74,8 @@
 
     <div class="d-flex justify-content-start gap-2" role="group">
       <%= form.submit class: "btn btn-success" %>
-      <%= button_to "Cancel", trip_url(@trip),
+      <%= link_to "Cancel", trip_url(@trip),
+          type:"button",
           class: "btn btn-secondary w-3" %>
     </div>
 

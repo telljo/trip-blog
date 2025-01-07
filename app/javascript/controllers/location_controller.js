@@ -54,6 +54,7 @@ export default class extends Controller {
     })
     .then((data) => {
       this.selectedAddressTarget.value = data.formatted_address;
+      this.selectedCoordinates = [longitude, latitude];
     })
     .catch((error) => {
       console.error("Error communicating with Rails:", error)
@@ -111,7 +112,6 @@ export default class extends Controller {
   }
 
   addMarker(coordinates) {
-    console.log(coordinates);
     const marker = new maplibregl.Marker()
       .setLngLat(coordinates)
       .addTo(this.map);
