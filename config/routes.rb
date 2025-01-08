@@ -13,7 +13,11 @@ Rails.application.routes.draw do
   end
   root "trips#index"
   resources :trips do
-    resources :posts
+    resources :posts do
+      member do
+        delete :remove_image
+      end
+    end
     resources :trip_companions
   end
   resources :users, param: :username

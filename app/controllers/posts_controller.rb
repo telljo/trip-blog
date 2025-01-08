@@ -64,6 +64,12 @@ class PostsController < ApplicationController
     end
   end
 
+  def remove_image
+    @image = ActiveStorage::Attachment.find(params[:id])
+    @image.purge_later
+    redirect_to edit_post_url(@image.record)
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -83,6 +89,6 @@ class PostsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :trip_id, :remove_image, :latitude, :longitude, images: [])
+    params.require(:post).permit(:title, :body, :trip_id, :latitude, :longitude, images: [])
   end
 end

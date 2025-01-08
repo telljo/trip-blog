@@ -11,10 +11,6 @@ class Post < ApplicationRecord
 
   broadcasts_refreshes_to :trip
 
-  attr_accessor :remove_image
-
-  after_save :purge_image, if: :remove_image
-
   # after_validation :geocode
   reverse_geocoded_by :latitude, :longitude do |obj, results|
     if geo = results.first
@@ -36,6 +32,12 @@ class Post < ApplicationRecord
     image.variant(resize_to_limit: [ 300, 300 ]).processed
   end
 
+  def image_as_small(image)
+    return unless image.content_type.in?(%w[image/jpeg image/png])
+
+    image.variant(resize_to_limit: [ 150, 150 ]).processed
+  end
+
   def address
     [ street, city, state, country ].compact.join(", ")
   end
@@ -45,10 +47,6 @@ class Post < ApplicationRecord
   end
 
   private
-
-  def purge_images
-    image.purge_later
-  end
 
   def image_type
     images.each do |image|
