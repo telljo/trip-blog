@@ -1,5 +1,5 @@
+<% content_for :title, "#{@user.username} · Footprints" %>
 <div class="container d-flex flex-column gap-4">
-
   <div class="d-flex flex-row gap-2 align-items-center">
     <% if @user.profile_picture.attached? %>
       <%= image_tag @user.image_as_thumbnail, class:"rounded-circle", style:"height: 100px; width: 100px;" %>

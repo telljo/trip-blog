@@ -55,7 +55,7 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    @post.image.purge_later if @post.image.attached?
+    @post.images.purge_later if @post.images.attached?
     @post.destroy
 
     respond_to do |format|
@@ -83,6 +83,6 @@ class PostsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :trip_id, :image, :remove_image, :latitude, :longitude)
+    params.require(:post).permit(:title, :body, :trip_id, :remove_image, :latitude, :longitude, images: [])
   end
 end

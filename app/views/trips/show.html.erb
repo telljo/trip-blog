@@ -1,8 +1,12 @@
+<% content_for :title, "#{@trip.name} · Footprints" %>
 <div
   data-controller="map"
-  class="d-flex flex-column-reverse flex-lg-row gap-2" id="<%= dom_id @trip %>"
+  class="d-flex flex-column-reverse flex-lg-row gap-2 mb-5" id="<%= dom_id @trip %>"
 >
-  <div class="d-flex flex-column gap-2 w-100">
+  <div
+    class="d-flex flex-column gap-2 w-100"
+    style="max-width: 650px;"
+  >
     <div class="desktop-only">
       <h2><%= @trip.name %></h2>
       <div class="d-flex flex-row flex-lg-row justify-content-between h-4">

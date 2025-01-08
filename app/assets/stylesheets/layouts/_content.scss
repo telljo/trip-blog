@@ -9,6 +9,11 @@ $trip-map-width: 900px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.container {
+  display: flex;
+  justify-content: center;
+}
+
 .maplibregl-ctrl-bottom-right {
   display: none;
 }
@@ -123,6 +128,8 @@ $trip-map-mobile-height: 300px;
   z-index: 1500;
 }
 
+// Themes
+
 [data-bs-theme="dark"] {
   .navbar {
     box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15),inset 0 -1px 0 rgba(255,255,255,0.15);
@@ -141,11 +148,31 @@ $trip-map-mobile-height: 300px;
       color: white !important;
     }
   }
+
+  .carousel-control-next-icon, .carousel-control-prev-icon {
+    filter: invert(0) grayscale(100%) !important;
+  }
+
+  .carousel-indicators {
+    filter: invert(0) grayscale(100%) !important;
+    button {
+      background-color: white !important;
+    }
+  }
+
 }
 
 [data-bs-theme="light"] {
   --bs-body-bg: #{$primary-content};
   --bs-body-bg-rgb: #{to-rgb($primary-content)};
+
+  .carousel-control-next-icon, .carousel-control-prev-icon {
+    filter: invert(1) grayscale(100);
+  }
+
+  .carousel-indicators {
+    filter: invert(1) grayscale(100);
+  }
 
   .bi-person-circle {
     color: #333 !important;

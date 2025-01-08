@@ -13,7 +13,9 @@
       <h4 class="text__link my-2"><%= post.title %></h4>
     <% end %>
   </div>
-  <div class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2">
+  <div
+    class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2"
+  >
     <p class="d-flex m-0 align-items-center gap-1 text-body-secondary">
       <% if post.user.profile_picture.attached? %>
         <%= image_tag post.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
@@ -61,14 +63,56 @@
       <% end %>
     </span>
   </div>
-  <div class="d-flex flex-row border rounded-bottom-2 gap-1 p-2">
-    <% if post.image.attached? %>
-      <div class="w-auto d-flex h-50 w-50">
-        <%= link_to image_tag(post.image_as_thumbnail), post.image, target: "_blank", class: "h-4 w-4" %>
+  <% if post.images.attached? %>
+    <div
+      class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+    >
+      <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
+        <div
+          class="carousel-inner"
+          style="height: 300px;"
+        >
+          <% post.images.each_with_index do |image, index| %>
+            <div
+              class="carousel-item <%= 'active' if index == 0 %>"
+              style="height: 100%;"
+            >
+              <div class="d-flex justify-content-center" style="height: inherit;">
+                <div
+                  class="d-flex justify-content-center align-items-center"
+                  style="height: inherit; width: 300px;"
+                >
+                  <%= link_to image_tag(post.image_as_thumbnail(image)), image, target: "_blank", class: "h-4 w-4" %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <div class="carousel-indicators">
+          <% post.images.each_with_index do |image, index| %>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
+          <% end %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-    <% end %>
-    <div class="post__body-text">
-      <%= post.body %>
+      <div class="post__body-text">
+        <%= post.body %>
+      </div>
     </div>
-  </div>
+  <% else %>
+    <div
+      class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+    >
+      <div class="post__body-text">
+        <%= post.body %>
+      </div>
+    </div>
+  <% end %>
 <% end %>

@@ -6,8 +6,8 @@ class Post < ApplicationRecord
   # geocoded_by :address
 
   has_rich_text :body
-  has_one_attached :image, dependent: :destroy
-  validate :image_type
+  has_many_attached :images, dependent: :destroy
+  # validate :image_type
 
   broadcasts_refreshes_to :trip
 
@@ -30,7 +30,7 @@ class Post < ApplicationRecord
 
   scope :with_location, -> { where.not(latitude: nil, longitude: nil) }
 
-  def image_as_thumbnail
+  def image_as_thumbnail(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
     image.variant(resize_to_limit: [ 300, 300 ]).processed
@@ -46,16 +46,18 @@ class Post < ApplicationRecord
 
   private
 
-  def purge_image
+  def purge_images
     image.purge_later
   end
 
   def image_type
-    return unless image.attached?
+    images.each do |image|
+      return unless image.attached?
 
-    errors.add(:image, "is missing!") if image.attached? == false
-    return if image.content_type.in?(%('image/jpeg image/png'))
+      errors.add(:image, "is missing!") if image.attached? == false
+      return if image.content_type.in?(%('image/jpeg image/png'))
 
-    errors.add(:image, "Image must be a jpeg or png.")
+      errors.add(:image, "Image must be a jpeg or png.")
+    end
   end
 end
