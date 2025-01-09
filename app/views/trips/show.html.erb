@@ -1,75 +1,95 @@
 <% content_for :title, "#{@trip.name} · Footprints" %>
-<div
-  data-controller="map"
-  class="d-flex flex-column-reverse flex-lg-row gap-2 mb-5" id="<%= dom_id @trip %>"
->
+<div class="d-flex flex-column">
+  <h2 class="my-0"><%= @trip.name %></h2>
+  <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
+    <% if @trip.user.profile_picture.attached? %>
+      <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+    <% else %>
+      <i
+        class="bi bi-person-circle"
+        style="font-size: 1.3em; color: white;"
+      ></i>
+    <% end %>
+    <%=
+      link_to @trip.user.username,
+      url_for(
+        controller: '/users',
+        action: 'show',
+        username: @trip.user.username
+      ),
+      class: "text__link",
+      data: { turbo_frame: "_top" }
+    %>
+    started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
+  </p>
   <div
-    class="d-flex flex-column gap-2 w-100"
-    style="max-width: 650px;"
+    class="d-flex flex-row justify-content-between border rounded-top-2 bg-body p-4"
   >
-    <div class="desktop-only">
-      <h2><%= @trip.name %></h2>
-      <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
-        <%= @trip.body %>
+    <div
+      data-controller="map"
+      class="d-flex flex-column-reverse flex-lg-row gap-2 mb-5" id="<%= dom_id @trip %>"
+    >
+      <div
+        class="d-flex flex-column gap-2 w-100"
+        style="max-width: 650px;"
+      >
+        <div class="desktop-only">
+          <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
+            <%= @trip.body %>
 
-        <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-          <%= link_to "Create new post",
-            new_post_path(trip_id: @trip.id),
-            class: "btn btn-success",
-            data: { turbo_frame: dom_id(Post.new) } %>
+            <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
+              <%= link_to "Create new post",
+                new_post_path(trip_id: @trip.id),
+                class: "btn btn-success",
+                data: { turbo_frame: dom_id(Post.new) } %>
+            <% end %>
+          </div>
+        </div>
+
+        <%= turbo_frame_tag Post.new do %>
+          <% if @trip.posts.none? %>
+            <%= render "posts/empty_state", locals: { trip: @trip } %>
+          <% end %>
+        <% end %>
+
+        <%= turbo_stream_from @trip %>
+
+        <%= turbo_frame_tag "posts" do %>
+          <div class="d-flex flex-column gap-4">
+            <%= render @trip.posts.order(created_at: :desc) %>
+          </div>
         <% end %>
       </div>
 
-      <div class="d-flex flex-row gap-2">
-        <div class="d-flex flex-column">
-          <p class="fw-bold m-0">Trip started</p>
-          <p class="m-0"><%= @trip.created_at&.strftime("%B %d, %Y") %></p>
+      <% if @trip.posts.with_location.any? %>
+        <div
+          class="sticky-lg-top border rounded-2 bg-white shadow-sm trip-map"
+          style="max-height: 500px; z-index: 100;"
+          data-map-target="map"
+          id="posts-map"
+          data-points='<%= raw generated_points(@trip) %>'>
         </div>
-      </div>
-    </div>
-
-    <%= turbo_frame_tag Post.new do %>
-      <% if @trip.posts.none? %>
-        <%= render "posts/empty_state", locals: { trip: @trip } %>
       <% end %>
-    <% end %>
 
-    <%= turbo_stream_from @trip %>
+      <div class="mobile-only">
+        <h2><%= @trip.name %></h2>
+        <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
+          <%= @trip.body %>
 
-    <%= turbo_frame_tag "posts" do %>
-      <div class="d-flex flex-column gap-4">
-        <%= render @trip.posts.order(created_at: :desc) %>
-      </div>
-    <% end %>
-  </div>
+          <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
+            <%= link_to "Create new post",
+              new_post_path(trip_id: @trip.id),
+              class: "btn btn-success",
+              data: { turbo_frame: dom_id(Post.new) } %>
+          <% end %>
+        </div>
 
-  <% if @trip.posts.with_location.any? %>
-    <div
-      class="sticky-lg-top border rounded-2 bg-white shadow-sm trip-map"
-      style="max-height: 500px; z-index: 100;"
-      data-map-target="map"
-      id="posts-map"
-      data-points='<%= raw generated_points(@trip) %>'>
-    </div>
-  <% end %>
-
-  <div class="mobile-only">
-    <h2><%= @trip.name %></h2>
-    <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
-      <%= @trip.body %>
-
-       <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-        <%= link_to "Create new post",
-          new_post_path(trip_id: @trip.id),
-          class: "btn btn-success",
-          data: { turbo_frame: dom_id(Post.new) } %>
-      <% end %>
-    </div>
-
-    <div class="d-flex flex-row gap-2">
-      <div class="d-flex flex-column">
-        <p class="fw-bold m-0">Trip started</p>
-        <p class="m-0"><%= @trip.created_at&.strftime("%B %d, %Y") %></p>
+        <div class="d-flex flex-row gap-2">
+          <div class="d-flex flex-column">
+            <p class="fw-bold m-0">Trip started</p>
+            <p class="m-0"><%= @trip.created_at&.strftime("%B %d, %Y") %></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>

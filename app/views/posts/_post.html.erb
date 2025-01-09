@@ -13,106 +13,102 @@
       <h4 class="text__link my-2"><%= post.title %></h4>
     <% end %>
   </div>
-  <div
-    class="d-flex flex-row justify-content-between border rounded-top-2 bg-light-subtle px-2"
-  >
-    <p class="d-flex m-0 align-items-center gap-1 text-body-secondary">
-      <% if post.user.profile_picture.attached? %>
-        <%= image_tag post.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-      <% else %>
-        <i
-          class="bi bi-person-circle"
-          style="font-size: 1.3em; color: white;"
-        ></i>
-      <% end %>
-      <%=
-        link_to post.user.username,
-        url_for(
-          controller: '/users',
-          action: 'show',
-          username: post.user.username
-        ),
-        class: "text__link",
-        data: { turbo_frame: "_top" }
-      %>
-      created this post on <%= post.updated_at&.strftime("%B %d, %Y") %>
-    </p>
-    <span class="d-flex flex-row gap-1">
-      <% if Current.user == post.user %>
-        <div class="dropdown">
-          <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Post">
-            <i class="bi bi-three-dots"></i>
-          </button>
+  <div class="bg-body">
+    <div class="d-flex flex-row justify-content-between border rounded-top-2 px-2 bg-light-subtle">
+      <p class="d-flex m-0 align-items-center gap-1 text-body-secondary">
+        <% if post.user.profile_picture.attached? %>
+          <%= image_tag post.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+        <% else %>
+          <i
+            class="bi bi-person-circle"
+            style="font-size: 1.3em; color: white;"
+          ></i>
+        <% end %>
+        <%=
+          link_to post.user.username,
+          url_for(
+            controller: '/users',
+            action: 'show',
+            username: post.user.username
+          ),
+          class: "text__link",
+          data: { turbo_frame: "_top" }
+        %>
+        created this post on <%= post.created_at&.strftime("%B %d, %Y") %>
+      </p>
+      <span class="d-flex flex-row gap-1">
+        <% if Current.user == post.user %>
+          <div class="dropdown">
+            <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Post">
+              <i class="bi bi-three-dots"></i>
+            </button>
 
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-            <li>
-              <%= link_to "Edit post",
-                  edit_post_path(post),
-                  data: { turbo_frame: dom_id(post) },
-                  class: "dropdown-item" %>
-            </li>
-            <li>
-              <%= button_to "Delete post",
-                  post, method: :delete,
-                  data: { turbo: "false" },
-                  form: { data: { 'turbo-confirm': 'Are you sure?' } },
-                  class: "dropdown-item dropdown-item--danger" %>
-            </li>
-          </ul>
-        </div>
-      <% end %>
-    </span>
-  </div>
-  <% if post.images.attached? %>
-    <div
-      class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
-    >
-      <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
-        <div
-          class="carousel-inner"
-          style="height: 300px;"
-        >
-          <% post.images.each_with_index do |image, index| %>
-            <div
-              class="carousel-item <%= 'active' if index == 0 %>"
-              style="height: 100%;"
-            >
-              <div class="d-flex justify-content-center" style="height: inherit;">
-                <div
-                  class="d-flex justify-content-center align-items-center"
-                  style="height: inherit; width: 300px;"
-                >
-                  <%= link_to image_tag(post.image_as_thumbnail(image)), image, target: "_blank", class: "h-4 w-4" %>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+              <li>
+                <%= link_to "Edit post",
+                    edit_post_path(post),
+                    data: { turbo_frame: dom_id(post) },
+                    class: "dropdown-item" %>
+              </li>
+              <li>
+                <%= button_to "Delete post",
+                    post, method: :delete,
+                    data: { turbo: "false" },
+                    form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                    class: "dropdown-item dropdown-item--danger" %>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </span>
+    </div>
+    <% if post.images.attached? %>
+      <div
+        class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+      >
+        <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
+          <div
+            class="carousel-inner"
+            style="height: 300px;"
+          >
+            <% post.images.each_with_index do |image, index| %>
+              <div
+                class="carousel-item <%= 'active' if index == 0 %>"
+                style="height: 100%;"
+              >
+                <div class="d-flex justify-content-center" style="height: inherit;">
+                  <div
+                    class="d-flex justify-content-center align-items-center"
+                    style="height: inherit; width: 300px;"
+                  >
+                    <%= link_to image_tag(post.image_as_thumbnail(image)), image, target: "_blank", class: "h-4 w-4" %>
+                  </div>
                 </div>
               </div>
-            </div>
-          <% end %>
+            <% end %>
+          </div>
+          <div class="carousel-indicators">
+            <% post.images.each_with_index do |image, index| %>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
+            <% end %>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
         </div>
-        <div class="carousel-indicators">
-          <% post.images.each_with_index do |image, index| %>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
-          <% end %>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-      <div class="post__body-text">
         <%= post.body %>
       </div>
-    </div>
-  <% else %>
-    <div
-      class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
-    >
-      <div class="post__body-text">
+    <% else %>
+      <div
+        class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+      >
         <%= post.body %>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 <% end %>
