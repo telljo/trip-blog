@@ -21,7 +21,7 @@
           class: "text__link",
           data: { turbo_frame: "_top" }
         %>
-        started this trip on <%= trip.updated_at&.strftime("%B %d, %Y") %>
+        started this trip on <%= trip.created_at&.strftime("%B %d, %Y") %>
       </p>
 
       <span class="d-flex flex-row gap-1">

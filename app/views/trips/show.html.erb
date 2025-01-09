@@ -1,33 +1,89 @@
 <% content_for :title, "#{@trip.name} · Footprints" %>
-<div class="d-flex flex-column">
-  <h2 class="my-0"><%= @trip.name %></h2>
-  <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
-    <% if @trip.user.profile_picture.attached? %>
-      <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-    <% else %>
-      <i
-        class="bi bi-person-circle"
-        style="font-size: 1.3em; color: white;"
-      ></i>
-    <% end %>
-    <%=
-      link_to @trip.user.username,
-      url_for(
-        controller: '/users',
-        action: 'show',
-        username: @trip.user.username
-      ),
-      class: "text__link",
-      data: { turbo_frame: "_top" }
-    %>
-    started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
-  </p>
-  <div
-    class="d-flex flex-row justify-content-between border rounded-top-2 bg-body p-4"
-  >
+<div
+  class="d-flex flex-column"
+  style="max-width: 1000px;"
+>
+  <h2><%= @trip.name %></h2>
+  <div class="py-2">
+    <%= @trip.body %>
+  </div>
+
+  <div class="d-flex flex-row justify-content-between border rounded-top-2 px-2 bg-light-subtle mt-2">
+    <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
+      <% if @trip.user.profile_picture.attached? %>
+        <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+      <% else %>
+        <i
+          class="bi bi-person-circle"
+          style="font-size: 1.3em; color: white;"
+        ></i>
+      <% end %>
+      <%=
+        link_to @trip.user.username,
+        url_for(
+          controller: '/users',
+          action: 'show',
+          username: @trip.user.username
+        ),
+        class: "text__link",
+        data: { turbo_frame: "_top" }
+      %>
+      started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
+    </p>
+    <span class="d-flex flex-row gap-1">
+      <% if @trip.companions.any? %>
+        <div class="dropdown">
+          <button class="btn px-1" id="bd-companions" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="View trip companions">
+            <i class="bi bi-people"></i>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+            <% @trip.companions.each do |companion| %>
+              <li>
+                <%= link_to url_for(controller: '/users', action: 'show', username: companion.user.username), class: "dropdown-item d-flex align-items-center gap-2", data: { turbo_frame: "_top" } do %>
+                  <% if companion.user.profile_picture.attached? %>
+                    <%= image_tag companion.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+                  <% else %>
+                    <i class="bi bi-person-circle" style="font-size: 1.3em; color: white;"></i>
+                  <% end %>
+                  <%= companion.user.username %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <% if Current.user == @trip.user %>
+        <div class="dropdown">
+          <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
+            <i class="bi bi-three-dots"></i>
+          </button>
+
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+            <li>
+              <%= link_to "Edit trip",
+                  edit_trip_path(@trip),
+                  data: { turbo_frame: dom_id(@trip) },
+                  class: "dropdown-item" %>
+            </li>
+            <li>
+              <%= button_to "Delete trip",
+                  @trip, method: :delete,
+                  data: { turbo: "false" },
+                  form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                  class: "dropdown-item dropdown-item--danger" %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </span>
+  </div>
+  <div class="d-flex flex-column justify-content-between border rounded-bottom-2 bg-body p-4 mb-4">
+
     <div
       data-controller="map"
-      class="d-flex flex-column-reverse flex-lg-row gap-2 mb-5" id="<%= dom_id @trip %>"
+      class="d-flex flex-column-reverse flex-lg-row gap-2 mb-1" id="<%= dom_id @trip %>"
     >
       <div
         class="d-flex flex-column gap-2 w-100"
@@ -35,7 +91,7 @@
       >
         <div class="desktop-only">
           <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
-            <%= @trip.body %>
+            <h3 class="mb-0">Posts</h3>
 
             <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
               <%= link_to "Create new post",
