@@ -9,6 +9,15 @@ $trip-map-width: 900px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.trip-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  padding-top: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
 .container {
   display: flex;
   justify-content: center;

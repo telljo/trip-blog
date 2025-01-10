@@ -1,9 +1,18 @@
 <% content_for :title, "#{@trip.name} · Footprints" %>
 <div
   class="d-flex flex-column"
-  style="max-width: 1000px;"
+  style="max-width: 1200px;"
 >
-  <h2><%= @trip.name %></h2>
+  <div class="d-flex flex-row w-100 justify-content-between">
+    <h2 class="mb-0"><%= @trip.name %></h2>
+
+    <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
+    <%= link_to "Create new post",
+      new_post_path(trip_id: @trip.id),
+      class: "btn btn-success",
+      data: { turbo_frame: dom_id(Post.new) } %>
+    <% end %>
+  </div>
   <div class="py-2">
     <%= @trip.body %>
   </div>
@@ -79,35 +88,21 @@
       <% end %>
     </span>
   </div>
-  <div class="d-flex flex-column justify-content-between border rounded-bottom-2 bg-body p-4 mb-4">
-
+  <div class="trip-content border rounded-bottom-2">
     <div
       data-controller="map"
-      class="d-flex flex-column-reverse flex-lg-row gap-2 mb-1" id="<%= dom_id @trip %>"
+      class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1 mt-2" id="<%= dom_id @trip %>"
     >
       <div
-        class="d-flex flex-column gap-2 w-100"
+        class="d-flex flex-column w-100"
         style="max-width: 650px;"
       >
-        <div class="desktop-only">
-          <div class="d-flex flex-row flex-lg-row justify-content-between h-4">
-            <h3 class="mb-0">Posts</h3>
-
-            <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-              <%= link_to "Create new post",
-                new_post_path(trip_id: @trip.id),
-                class: "btn btn-success",
-                data: { turbo_frame: dom_id(Post.new) } %>
-            <% end %>
-          </div>
-        </div>
 
         <%= turbo_frame_tag Post.new do %>
           <% if @trip.posts.none? %>
             <%= render "posts/empty_state", locals: { trip: @trip } %>
           <% end %>
         <% end %>
-
         <%= turbo_stream_from @trip %>
 
         <%= turbo_frame_tag "posts" do %>
@@ -119,7 +114,7 @@
 
       <% if @trip.posts.with_location.any? %>
         <div
-          class="sticky-lg-top border rounded-2 bg-white shadow-sm trip-map"
+          class="sticky-lg-top border rounded-2 bg-white shadow-sm trip-map mt-4"
           style="max-height: 500px; z-index: 100;"
           data-map-target="map"
           id="posts-map"
