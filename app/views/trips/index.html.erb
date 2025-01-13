@@ -2,25 +2,27 @@
 <div class="d-flex flex-column">
   <p style="color: green"><%= notice %></p>
 
-  <div class="row">
-    <div class="col">
-      <h1>Trips</h1>
-      <p class="fs-5">Explore peoples trips through simple posts with an image.</p>
+  <div class="d-flex flex-row gap-2 pb-4">
+    <div class="d-flex flex-column gap-1">
+      <%= image_tag("logo-text.svg", width: "200", height: "50") %>
+      <p class="fs-5">Discover travel adventures through simple, inspiring posts paired with captivating images.</p>
     </div>
-    <div class="col d-flex align-items-center justify-content-end">
-      <% if Current.user %>
-        <%= link_to "Create new trip",
-                    new_trip_path,
-                    class: "btn btn-success",
-                    data: { turbo_frame: dom_id(Trip.new) } %>
+  </div>
 
-      <% else %>
-        <%= link_to "Sign up to create a trip",
-                    sign_up_path,
-                    class: "btn btn-success",
-                    data: { turbo_frame: "_top" } %>
-      <% end %>
-    </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <h2>Trips</h2>
+    <% if Current.user %>
+      <%= link_to "Create new trip",
+                  new_trip_path,
+                  class: "btn btn-success",
+                  data: { turbo_frame: dom_id(Trip.new) } %>
+
+    <% else %>
+      <%= link_to "Sign up to create a trip",
+                  sign_up_path,
+                  class: "btn btn-success",
+                  data: { turbo_frame: "_top" } %>
+    <% end %>
   </div>
 
   <%= turbo_frame_tag Trip.new do %>
@@ -34,7 +36,7 @@
   <%= turbo_stream_from @trips if @trips.any? %>
 
   <%= turbo_frame_tag "trips" do %>
-    <div id="trips" class="d-flex flex-column gap-4 pt-4">
+    <div id="trips" class="d-flex flex-column gap-4 pt-2">
       <% @trips.order(created_at: :desc).each do |trip| %>
         <%= render trip %>
       <% end %>

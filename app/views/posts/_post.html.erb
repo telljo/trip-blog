@@ -1,8 +1,8 @@
 <%= turbo_frame_tag dom_id(post) do %>
   <div class="d-flex flex-column w-100"">
     <% if post.city %>
-    <div class="d-flex flex-row gap-2">
-      <h4 class="text__link my-2"><%= post.title %></h4>
+    <div class="d-flex flex-row flex-wrap gap-1 my-2">
+      <h4 class="mb-0"><%= post.title %></h4>
 
       <%= link_to '#', class:"d-flex flex-row gap-1", data: { action: "click->map#moveToMarker" } do %>
         <i class="bi bi-geo-alt align-content-center"></i>
@@ -34,7 +34,12 @@
           class: "text__link",
           data: { turbo_frame: "_top" }
         %>
-        created this post on <%= post.created_at&.strftime("%B %d, %Y") %>
+        <span class="desktop-only">
+          created this post on <%= post.created_at&.strftime("%B %d, %Y") %>
+        </span>
+        <span class="mobile-only">
+          <%= post.created_at&.strftime("%B %d, %Y") %>
+        </span>
       </p>
       <span class="d-flex flex-row gap-1">
         <% if Current.user == post.user %>

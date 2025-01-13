@@ -21,7 +21,12 @@
           class: "text__link",
           data: { turbo_frame: "_top" }
         %>
-        started this trip on <%= trip.created_at&.strftime("%B %d, %Y") %>
+        <span class="desktop-only">
+          started this trip on <%= trip.created_at&.strftime("%B %d, %Y") %>
+        </span>
+        <span class="mobile-only">
+          <%= trip.created_at&.strftime("%B %d, %Y") %>
+        </span>
       </p>
 
       <span class="d-flex flex-row gap-1">

@@ -1,46 +1,50 @@
-<h1>Sign up</h1>
+<div
+  class="d-flex flex-column gap-1"
+>
+  <h1>Sign up</h1>
 
-<%= form_with(url: sign_up_path) do |form| %>
-  <% if @user.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+  <%= form_with(url: sign_up_path) do |form| %>
+    <% if @user.errors.any? %>
+      <div style="color: red">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
-      <ul>
-        <% @user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+        <ul>
+          <% @user.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= form.label :username, class:"form-label", style: "display: block" %>
+      <%= form.text_field :username, class:"form-control", value: @user.username, required: true, autofocus: true, autocomplete: "username" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :email, class:"form-label", style: "display: block" %>
+      <%= form.email_field :email, class:"form-control", value: @user.email, required: true, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :password, class:"form-label", style: "display: block" %>
+      <%= form.password_field :password, class:"form-control", required: true, autocomplete: "new-password" %>
+      <div class="text-danger">8 characters minimum.</div>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :password_confirmation, class:"form-label", style: "display: block" %>
+      <%= form.password_field :password_confirmation, class:"form-control", required: true, autocomplete: "new-password" %>
+    </div>
+
+    <div>
+      <%= form.submit "Sign up", class: "btn btn-primary" %>
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= form.label :username, class:"form-label", style: "display: block" %>
-    <%= form.text_field :username, class:"form-control", value: @user.username, required: true, autofocus: true, autocomplete: "username" %>
-  </div>
-
-  <div class="mb-3">
-    <%= form.label :email, class:"form-label", style: "display: block" %>
-    <%= form.email_field :email, class:"form-control", value: @user.email, required: true, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="mb-3">
-    <%= form.label :password, class:"form-label", style: "display: block" %>
-    <%= form.password_field :password, class:"form-control", required: true, autocomplete: "new-password" %>
-    <div class="text-danger">8 characters minimum.</div>
-  </div>
-
-  <div class="mb-3">
-    <%= form.label :password_confirmation, class:"form-label", style: "display: block" %>
-    <%= form.password_field :password_confirmation, class:"form-control", required: true, autocomplete: "new-password" %>
-  </div>
+  <br>
 
   <div>
-    <%= form.submit "Sign up", class: "btn btn-primary" %>
+    <%= link_to "Log in", sign_in_path %>
   </div>
-<% end %>
-
-<br>
-
-<div>
-  <%= link_to "Log in", sign_in_path %>
 </div>

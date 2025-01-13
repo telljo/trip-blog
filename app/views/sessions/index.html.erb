@@ -1,34 +1,38 @@
-<p style="color: green"><%= notice %></p>
+<div
+  class="d-flex flex-column gap-1"
+>
+  <p style="color: green"><%= notice %></p>
 
-<h1>Devices & Sessions</h1>
+  <h1>Devices & Sessions</h1>
 
-<div id="sessions">
-  <% @sessions.each do |session| %>
-    <div id="<%= dom_id session %>">
+  <div id="sessions">
+    <% @sessions.each do |session| %>
+      <div id="<%= dom_id session %>">
+        <p>
+          <strong>User Agent:</strong>
+          <%= session.user_agent %>
+        </p>
+
+        <p>
+          <strong>Ip Address:</strong>
+          <%= session.ip_address %>
+        </p>
+
+        <p>
+          <strong>Created at:</strong>
+          <%= session.created_at %>
+        </p>
+
+      </div>
       <p>
-        <strong>User Agent:</strong>
-        <%= session.user_agent %>
+        <%= button_to "Log out", session, method: :delete, class:"btn btn-secondary" %>
       </p>
+    <% end %>
+  </div>
 
-      <p>
-        <strong>Ip Address:</strong>
-        <%= session.ip_address %>
-      </p>
+  <br>
 
-      <p>
-        <strong>Created at:</strong>
-        <%= session.created_at %>
-      </p>
-
-    </div>
-    <p>
-      <%= button_to "Log out", session, method: :delete, class:"btn btn-secondary" %>
-    </p>
-  <% end %>
-</div>
-
-<br>
-
-<div>
-  <%= link_to "Back", root_path %>
+  <div>
+    <%= link_to "Back", root_path %>
+  </div>
 </div>

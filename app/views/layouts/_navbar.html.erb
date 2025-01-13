@@ -1,11 +1,18 @@
 <nav
-  style="width: 100%;"
+  style="width: 100%; flex-wrap: nowrap;"
   class="sticky-top top-0 d-flex flex-row navbar p-2"
 >
   <div class="d-flex flex-row gap-1">
-    <%= link_to root_path, class: "d-flex btn" do %>
-      <%= image_tag("logo.svg", width: "200", height: "50") %>
-    <% end %>
+    <div class="desktop-only">
+      <%= link_to root_path, class: "d-flex btn" do %>
+        <%= image_tag("desktop-logo.svg", width: "200", height: "50") %>
+      <% end %>
+    </div>
+    <div class="mobile-only">
+      <%= link_to root_path, class: "d-flex btn" do %>
+        <%= image_tag("mobile-logo.svg", width: "50", height: "50") %>
+      <% end %>
+    </div>
   </div>
 
   <div class="d-flex flew-row gap-1">
