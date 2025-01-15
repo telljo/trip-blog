@@ -7,7 +7,7 @@ class Post < ApplicationRecord
 
   has_rich_text :body
   has_many_attached :attachments, dependent: :destroy
-  validate :attachment_type
+  # validate :attachment_type
 
   broadcasts_refreshes_to :trip
 
@@ -48,13 +48,13 @@ class Post < ApplicationRecord
 
   private
 
-  def  attachment_type
-    attachments.each do |attachment|
-      return unless attachment.attached?
+  # def attachment_type
+  #   attachments.each do |attachment|
+  #     return unless attachment.attached?
 
-      return if image.content_type.in?(%('image/png image/jpeg video/mp4 video/avi video/mov'))
+  #     return if image.content_type.in?(%('image/png image/jpeg video/mp4 video/avi video/mov'))
 
-      errors.add(:image, "Image must be a jpeg or png.")
-    end
-  end
+  #     errors.add(:image, "Image must be a jpeg or png.")
+  #   end
+  # end
 end
