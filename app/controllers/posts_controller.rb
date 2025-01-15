@@ -65,9 +65,12 @@ class PostsController < ApplicationController
   end
 
   def remove_attachment
-    @image = ActiveStorage::Attachment.find(params[:id])
-    @image.purge
-    redirect_to edit_post_url(@image.record)
+    @attachment = ActiveStorage::Attachment.find(params[:id])
+
+    @attachment.variant_records.each(&:purge)
+    @attachment.purge
+
+    redirect_to edit_post_url(@attachment.record)
   end
 
   private
