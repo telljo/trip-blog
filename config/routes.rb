@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   resources :trips do
     resources :posts do
       member do
-        delete :remove_image
+        delete :remove_attachment
       end
     end
     resources :trip_companions

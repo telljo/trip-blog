@@ -60,9 +60,9 @@
       <div class="d-flex flex-row gap-4 mt-3">
         <% @post.attachments.each do |attachment| %>
           <div class="d-flex flex-column gap-2 position-relative">
-            <%= link_to remove_image_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
+            <%= link_to remove_attachment_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
               class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
-              style:"height: 40px; width: 40px;",
+              style:"height: 40px; width: 40px; z-index: 200;",
               data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
               <i class="bi bi-trash-fill"></i>
             <% end %>
