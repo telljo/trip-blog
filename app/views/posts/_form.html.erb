@@ -14,18 +14,18 @@
         size: "20x3", required: true %>
     </div>
 
-    <div class="d-flex flex-row gap-2">
-      <div class="py-3">
-        <label for="formFile" class="form-label">Upload an image</label>
-        <%= form.file_field :images, multiple: true, accept: 'image/png,image/jpeg', class: "form-control", id:"formFile" %>
+    <div class="d-flex flex-row gap-2 flex-wrap">
+      <div style="max-width: 400px;">
+        <label for="formFile" class="form-label">Upload files</label>
+        <%= form.file_field :attachments, multiple: true, accept: '.png,.jpeg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
       </div>
 
-      <div class="form__field d-flex flex-row gap-1 align-items-end py-3">
+      <div class="form__field d-flex flex-row gap-1 align-items-end">
         <%= form.hidden_field :latitude, id: "latitudeValue" %>
         <%= form.hidden_field :longitude, id: "longitudeValue" %>
 
         <div class="d-flex flex-column">
-          <label class="form-label">Location</label>
+          <label class="form-label">Set location</label>
           <div class="d-flex flex-row gap-1">
             <input id="addressValue" value="<%= @post.address %>" type="text" name="selectedLocation"
               class="form-control" placeholder="No location chosen" readonly>
@@ -56,22 +56,26 @@
       </div>
     </div>
 
-    <% if @post.images.attached? %>
+    <% if @post.attachments.attached? %>
       <div class="d-flex flex-row gap-4 mt-3">
-        <% @post.images.each do |image| %>
+        <% @post.attachments.each do |attachment| %>
           <div class="d-flex flex-column gap-2 position-relative">
-            <%= link_to remove_image_trip_post_path(trip_id: @trip, post_id: @post.id, id: image.id),
+            <%= link_to remove_image_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
               class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
               style:"height: 40px; width: 40px;",
               data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
               <i class="bi bi-trash-fill"></i>
             <% end %>
-            <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
+            <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
             <span
               style="height: 150px; width: 150px;"
               class="d-flex justify-content-center align-items-center"
             >
-              <%= image_tag(@post.image_as_small(image)) %>
+              <% if attachment.image? %>
+                <%= image_tag(@post.image_as_small(attachment)) %>
+              <% else %>
+                <%= video_tag url_for(attachment), controls: true, style: "height: 150px; width: 150px;" %>
+              <% end %>
             </span>
           </div>
         <% end %>

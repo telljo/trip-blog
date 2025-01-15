@@ -6,8 +6,8 @@ class Post < ApplicationRecord
   # geocoded_by :address
 
   has_rich_text :body
-  has_many_attached :images, dependent: :destroy
-  # validate :image_type
+  has_many_attached :attachments, dependent: :destroy
+  validate :attachment_type
 
   broadcasts_refreshes_to :trip
 
@@ -29,7 +29,7 @@ class Post < ApplicationRecord
   def image_as_thumbnail(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
-    image.variant(resize_to_limit: [ 300, 300 ]).processed
+    image.variant(resize_to_limit: [ 400, 400 ]).processed
   end
 
   def image_as_small(image)
@@ -48,12 +48,11 @@ class Post < ApplicationRecord
 
   private
 
-  def image_type
-    images.each do |image|
-      return unless image.attached?
+  def  attachment_type
+    attachments.each do |attachment|
+      return unless attachment.attached?
 
-      errors.add(:image, "is missing!") if image.attached? == false
-      return if image.content_type.in?(%('image/jpeg image/png'))
+      return if image.content_type.in?(%('image/png image/jpeg video/mp4 video/avi video/mov'))
 
       errors.add(:image, "Image must be a jpeg or png.")
     end

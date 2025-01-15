@@ -1,6 +1,6 @@
 $primary: #3454D1;
 $primary-content: #F9F9F9;
-$primary-medium: #f5f7fa;
+$primary-medium: #E3EAF4;
 $primary-light: #5e77da;
 $primary-dark: #2742ab;
 
@@ -8,6 +8,24 @@ $breakpoint: 999px;
 $trip-map-width: 900px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
+
+.carousel {
+  max-width: 400px;
+
+  @media screen and (min-width: $breakpoint) {
+    align-self: center;
+  }
+}
+
+.trip {
+  max-width: 1200px;
+
+  @media screen and (max-width: $breakpoint) {
+    width: 100vw;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
 
 .trip-content {
   display: flex;
@@ -123,7 +141,6 @@ $trip-map-mobile-height: 300px;
   transition: background-color 0.15s ease-in-out;
 }
 
-
 .btn-success {
   background-color: $primary;
   border-color: $primary;
@@ -135,6 +152,10 @@ $trip-map-mobile-height: 300px;
 
 .dropdown-menu {
   z-index: 1500;
+}
+
+.bg-primary {
+  background-color: $primary !important;
 }
 
 // Themes
@@ -169,11 +190,25 @@ $trip-map-mobile-height: 300px;
     }
   }
 
+  .logo-text {
+    fill: white;
+    svg{
+      g {
+        fill: white;
+      }
+    }
+  }
+
 }
 
 [data-bs-theme="light"] {
   --bs-body-bg: #{$primary-content};
   --bs-body-bg-rgb: #{to-rgb($primary-content)};
+  --bs-border-color: #{$primary-medium};
+
+  .logo-text {
+    fill: $primary;
+  }
 
   .carousel-control-next-icon, .carousel-control-prev-icon {
     filter: invert(1) grayscale(100);
@@ -188,10 +223,7 @@ $trip-map-mobile-height: 300px;
   }
 
   .bg-light-subtle{
-    background-color: $primary-light !important;
-    p, a {
-      color: white !important;
-    }
+    background-color: $primary-medium !important;
 
     .dropdown-item {
       color: unset !important;
@@ -212,7 +244,7 @@ $trip-map-mobile-height: 300px;
     --bs-dropdown-item-active-bg: #{$primary-medium};
 
     &:hover:not(.active) {
-      background-color: #E3EAF4;
+      background-color: #{$primary-medium};
     }
   }
 
