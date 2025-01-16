@@ -32,12 +32,6 @@ class Post < ApplicationRecord
     image.variant(resize_to_limit: [ 400, 400 ]).processed
   end
 
-  def image_as_small(image)
-    return unless image.content_type.in?(%w[image/jpeg image/png])
-
-    image.variant(resize_to_limit: [ 150, 150 ]).processed
-  end
-
   def address
     [ street, city, state, country ].compact.join(", ")
   end

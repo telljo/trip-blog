@@ -1,6 +1,7 @@
 <%= form_with(id: "post_form", model: [@trip, @post]) do |form| %>
   <div class="form d-flex flex-column gap-2">
     <div class="form__field">
+      <%= form.label :title, class: "form-label" %>
       <%= form.text_field :title,
         class: "form-control",
         placeholder: "Add a title",
@@ -8,11 +9,71 @@
     </div>
 
     <div class="form__field">
+      <%= form.label :body, class: "form-label" %>
       <%= form.rich_text_area :body,
         placeholder: "Add a trip description",
         class: "form-control rounded-top-0",
         size: "20x3", required: true %>
     </div>
+    <% if @post.attachments.attached? %>
+      <%= form.label :attachments, class: "form-label" %>
+      <div
+        class="d-flex flex-column border rounded gap-1 p-2"
+      >
+        <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
+          <div
+            class="carousel-inner"
+            style="height: 400px;"
+          >
+            <% post.attachments.each_with_index do |attachment, index| %>
+              <div
+                class="carousel-item <%= 'active' if index == 0 %>"
+                style="height: 100%;"
+              >
+                <div
+                  class="position-absolute d-flex top-0 m-2 bg-light-subtle border rounded-circle align-items-center justify-content-center"
+                  style="z-index: 1; height: 30px; width: 30px;"
+                >
+                  <p class="mb-0"><%= index + 1 %></p>
+                </div>
+                <%= link_to remove_attachment_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
+                  class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
+                  style:"height: 40px; width: 40px; z-index: 200;",
+                  data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
+                  <i class="bi bi-trash-fill"></i>
+                <% end %>
+                <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
+                <div class="d-flex justify-content-center" style="height: inherit;">
+                  <div
+                    class="d-flex justify-content-center align-items-center"
+                    style="height: inherit; width: 400px;"
+                  >
+                    <% if attachment.image? %>
+                      <%= link_to image_tag(post.image_as_thumbnail(attachment)), attachment, target: "_blank", class: "h-4 w-4" %>
+                    <% else %>
+                      <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="carousel-indicators">
+            <% post.attachments.each_with_index do |attachment, index| %>
+              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
+            <% end %>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    <% end %>
 
     <div class="d-flex flex-row gap-2 flex-wrap">
       <div style="max-width: 400px;">
@@ -55,32 +116,6 @@
         </div>
       </div>
     </div>
-
-    <% if @post.attachments.attached? %>
-      <div class="d-flex flex-row gap-4 mt-3">
-        <% @post.attachments.each do |attachment| %>
-          <div class="d-flex flex-column gap-2 position-relative">
-            <%= link_to remove_attachment_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
-              class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
-              style:"height: 40px; width: 40px; z-index: 200;",
-              data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
-              <i class="bi bi-trash-fill"></i>
-            <% end %>
-            <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
-            <span
-              style="height: 150px; width: 150px;"
-              class="d-flex justify-content-center align-items-center"
-            >
-              <% if attachment.image? %>
-                <%= image_tag(@post.image_as_small(attachment)) %>
-              <% else %>
-                <%= video_tag url_for(attachment), controls: true, style: "height: 150px; width: 150px;" %>
-              <% end %>
-            </span>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
 
     <% if @trip %>
       <%= form.hidden_field :trip_id, value: @trip.id %>

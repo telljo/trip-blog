@@ -5,7 +5,7 @@ $primary-light: #5e77da;
 $primary-dark: #2742ab;
 
 $breakpoint: 999px;
-$trip-map-width: 900px;
+$trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
@@ -101,14 +101,18 @@ $trip-map-mobile-height: 300px;
 }
 
 .trip-map {
-  width: $trip-map-width;
+  width: 100%;
+  min-width: 500px;
   height: $trip-map-height;
   top: 5em;
+  margin-top: 3em;
 
   @media screen and (max-width: $breakpoint) {
     width: 100%;
     height: $trip-map-mobile-height;
+    min-width: unset;
     top: 0;
+    margin-top: 1em;
   }
 }
 
