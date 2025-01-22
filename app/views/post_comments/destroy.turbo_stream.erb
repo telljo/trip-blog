@@ -1,0 +1,7 @@
+<%= turbo_stream.remove "post_comment_#{@post_comment.id}" %>
+<%= turbo_stream.replace "post-#{@post.id}__comment-count" do %>
+  <p id='<%= "post-#{@post.id}__comment-count" %>' class="text-body-secondary mb-0 pt-2">
+    <i class="bi bi-chat"></i>
+    <%= @post.comments.count %> <%= "comment".pluralize(@post.comments.count) %>
+  </p>
+<% end %>

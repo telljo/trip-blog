@@ -1,0 +1,59 @@
+<%= turbo_frame_tag dom_id(post_comment) do %>
+  <div
+    class="form d-flex flex-column gap-2 p-2 bg-body rounded border border-1 border-light-subtle"
+  >
+    <div class="d-flex flex-row justify-content-between">
+      <div class="form__field d-flex flex-row gap-2">
+        <% if post_comment.user.profile_picture.attached? %>
+          <%= image_tag post_comment.user.image_as_thumbnail, class:"rounded-circle mt-1", style:"height: 22px; width: 22px;" %>
+        <% else %>
+          <i
+            class="bi bi-person-circle mt-1"
+            style="font-size: 1.3em; color: white;"
+          ></i>
+        <% end %>
+        <div class="d-flex flex-column">
+          <span class="d-flex flex-row gap-1">
+            <%=
+              link_to post_comment.user.username,
+              url_for(
+                controller: '/users',
+                action: 'show',
+                username: post_comment.user.username
+              ),
+              class: "text__link",
+              data: { turbo_frame: "_top" }
+            %>
+            <p class="mb-0 fw-lighter"><%= time_ago_in_words_with_units(post_comment.created_at) %></p>
+          </span>
+          <p class="mb-0 text-wrap"><%= post_comment.content %></p>
+        </div>
+      </div>
+      <span class="d-flex flex-row gap-1">
+        <% if Current.user == post_comment.user %>
+          <div class="dropdown">
+            <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Comment">
+              <i class="bi bi-three-dots"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+              <li>
+                <%= link_to "Edit Comment",
+                    edit_post_comment_path(id: post_comment.id, post_id: post_comment.post_id),
+                    data: { turbo_frame: dom_id(post_comment) },
+                    class: "dropdown-item" %>
+              </li>
+              <li>
+                <%= button_to "Delete Comment",
+                    post_comment, method: :delete,
+                    data: { turbo: "true" },
+                    form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                    class: "dropdown-item dropdown-item--danger" %>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </span>
+    </div>
+  </div>
+<% end %>

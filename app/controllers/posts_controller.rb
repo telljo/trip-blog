@@ -55,7 +55,6 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
-    @post.attachments.purge_later if @post.attachments.attached?
     @post.destroy
 
     respond_to do |format|

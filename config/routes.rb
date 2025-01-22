@@ -17,9 +17,11 @@ Rails.application.routes.draw do
       member do
         delete :remove_attachment
       end
+      resources :post_comments
     end
     resources :trip_companions
   end
+  resources :post_comments, only: [:edit, :update, :destroy]
   resources :users, param: :username
   resource :session
   resources :passwords, param: :token

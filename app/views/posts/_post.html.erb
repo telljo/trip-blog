@@ -71,7 +71,7 @@
     </div>
     <% if post.attachments.attached? %>
       <div
-        class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+        class="d-flex flex-column align-items-center border gap-1 p-2"
       >
         <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
           <div
@@ -122,9 +122,33 @@
       </div>
     <% else %>
       <div
-        class="d-flex flex-column border rounded-bottom-2 gap-1 p-2"
+        class="d-flex flex-column border gap-1 p-2"
       >
         <%= post.body %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="d-flex flex-column border rounded-bottom-2 px-2 py-1 bg-light-subtle gap-2">
+    <p id='<%= "post-#{post.id}__comment-count" %>' class="text-body-secondary mb-0 pt-2">
+      <i class="bi bi-chat"></i>
+      <%= post.comments.count %> <%= "comment".pluralize(post.comments.count) %>
+    </p>
+    <%= turbo_stream_from post %>
+
+    <% if post.comments.any? %>
+      <%= turbo_frame_tag "post-#{post.id}__comments" do %>
+        <div
+          class="d-flex flex-column gap-2"
+        >
+          <%= render post.comments.order(created_at: :asc) %>
+        </div>
+      <% end %>
+    <% end %>
+    <% if Current.user %>
+      <div id='<%= "post-#{post.id}__comment-form" %>'>
+        <%= render partial: "post_comments/form",
+          locals: { trip: post.trip, post_comment: post.comments.new, post: post } %>
       </div>
     <% end %>
   </div>

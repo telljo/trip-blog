@@ -1,0 +1,15 @@
+<%= turbo_stream.append "post-#{@post.id}__comments", partial: "post_comments/post_comment", locals: { post_comment: @post_comment } %>
+
+<%= turbo_stream.replace "post-#{@post.id}__comment-form" do %>
+  <div id='<%= "post-#{@post.id}__comment-form" %>'>
+    <%= render partial: "post_comments/form",
+      locals: { trip: @post.trip, post_comment: @post.comments.new, post: @post } %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "post-#{@post.id}__comment-count" do %>
+  <p id='<%= "post-#{@post.id}__comment-count" %>' class="text-body-secondary mb-0 pt-2">
+    <i class="bi bi-chat"></i>
+    <%= @post.comments.count %> <%= "comment".pluralize(@post.comments.count) %>
+  </p>
+<% end %>

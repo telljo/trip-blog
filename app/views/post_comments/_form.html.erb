@@ -1,0 +1,25 @@
+<%= form_with(id: "post_comment_form", model: [trip, post, post_comment]) do |form| %>
+  <div class="form d-flex flex-column gap-2 p-2">
+    <div class="form__field d-flex flex-row gap-1 align-items-center">
+      <% if Current.user.profile_picture.attached? %>
+        <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+      <% else %>
+        <i
+          class="bi bi-person-circle"
+          style="font-size: 1.3em; color: white;"
+        ></i>
+      <% end %>
+      <%= form.text_field :content,
+        class: "form-control",
+        placeholder: "Add a comment" %>
+
+      <div class="d-flex justify-content-start gap-2" role="group">
+        <% if post_comment.persisted? %>
+          <%= form.submit "Update", class: "btn btn-success" %>
+        <% else %>
+          <%= form.submit "Send", class: "btn btn-success" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,9 +1,9 @@
 class Post < ApplicationRecord
   belongs_to :trip
   belongs_to :user
+  has_many :comments, class_name: 'PostComment', dependent: :destroy
   validates :title, presence: true
   validates :body, presence: true
-  # geocoded_by :address
 
   has_rich_text :body
   has_many_attached :attachments, dependent: :destroy
@@ -11,7 +11,6 @@ class Post < ApplicationRecord
 
   broadcasts_refreshes_to :trip
 
-  # after_validation :geocode
   reverse_geocoded_by :latitude, :longitude do |obj, results|
     if geo = results.first
       obj.street  = geo.street_address
