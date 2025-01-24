@@ -2,6 +2,7 @@ class Post < ApplicationRecord
   belongs_to :trip
   belongs_to :user
   has_many :comments, class_name: 'PostComment', dependent: :destroy
+  has_many :likes, class_name: 'UserPostLike', dependent: :destroy
   validates :title, presence: true
   validates :body, presence: true
 
@@ -37,6 +38,10 @@ class Post < ApplicationRecord
 
   def short_address
     [ city, state, country ].compact.join(", ")
+  end
+
+  def liked_by?(user)
+    likes.exists?(user: user)
   end
 
   private

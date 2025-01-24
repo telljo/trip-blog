@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_18_200256) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_23_041626) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -104,6 +104,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_18_200256) do
     t.index ["user_id"], name: "index_trips_on_user_id"
   end
 
+  create_table "user_post_likes", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_user_post_likes_on_post_id"
+    t.index ["user_id"], name: "index_user_post_likes_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -124,4 +133,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_18_200256) do
   add_foreign_key "trip_companions", "trips"
   add_foreign_key "trip_companions", "users"
   add_foreign_key "trips", "users"
+  add_foreign_key "user_post_likes", "posts"
+  add_foreign_key "user_post_likes", "users"
 end

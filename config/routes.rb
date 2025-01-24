@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :posts
   get  "sign_in", to: "sessions#new"
   post "sign_in", to: "sessions#create"
   get  "sign_up", to: "registrations#new"
@@ -17,9 +16,12 @@ Rails.application.routes.draw do
       member do
         delete :remove_attachment
       end
-      resources :post_comments
+      resources :post_comments, only: [:create]
     end
     resources :trip_companions
+  end
+  resources :posts do
+    resources :user_post_likes, only: [:create, :destroy]
   end
   resources :post_comments, only: [:edit, :update, :destroy]
   resources :users, param: :username
