@@ -55,6 +55,29 @@
             </div>
           <% end %>
 
+          <% if Current.user %>
+            <% if @trip.followed_by?(Current.user) %>
+              <%= button_to trip_trip_follower_path(@trip.id, @trip.followers.find_by(user: Current.user).id),
+                class:"btn btn-danger align-items-center gap-2",
+                style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
+                data: { turbo_confirm: "By unfollowing this trip you will no longer receive emails when new posts are added." },
+                method: :delete do %>
+                <i class="bi bi-envelope-x-fill"></i>
+                Unfollow
+              <% end %>
+            <% else %>
+              <%= button_to trip_trip_followers_path(trip_id: @trip.id),
+                style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
+                data: { turbo_confirm: "By following this trip you will receive emails when new posts are added." },
+                class: "btn btn-primary align-items-center gap-2" do %>
+                <i class="bi bi-envelope-plus-fill"></i>
+                Follow
+              <% end %>
+            <% end %>
+          <% else %>
+            <p class="text-body-secondary mb-0"><%= link_to "Log in", new_session_path, data: { turbo_frame: "_top" } %> to follow</p>
+          <% end %>
+
           <% if Current.user == @trip.user %>
             <div class="dropdown">
               <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">

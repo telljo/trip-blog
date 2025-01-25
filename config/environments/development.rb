@@ -1,20 +1,6 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Geocoder.configure(
-  #   ip_lookup: :test,
-  #   lookup: :test
-  # )
-
-  # Geocoder::Lookup::Test.add_stub(
-  #   "81.38.174.158", [
-  #     {
-  #       "latitude"     => 37.615223,
-  #       "longitude"    => -122.389977
-  #     }
-  #   ]
-  # )
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Stub the IP address for testing.
@@ -52,13 +38,26 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:         "smtp.gmail.com",
+    port:            587,
+    domain:          "localhost:3000",
+    user_name:       "jtell1997@gmail.com",
+    password:   ENV["GMAIL_APP_PASSWORD"],
+    authentication:  "plain",
+    enable_starttls: true,
+    open_timeout:    5,
+    read_timeout:    5
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

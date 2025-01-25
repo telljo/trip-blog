@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_23_041626) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_25_071431) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -96,6 +96,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_041626) do
     t.index ["user_id"], name: "index_trip_companions_on_user_id"
   end
 
+  create_table "trip_followers", force: :cascade do |t|
+    t.integer "trip_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trip_id"], name: "index_trip_followers_on_trip_id"
+    t.index ["user_id"], name: "index_trip_followers_on_user_id"
+  end
+
   create_table "trips", force: :cascade do |t|
     t.string "name"
     t.integer "user_id", null: false
@@ -132,6 +141,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_23_041626) do
   add_foreign_key "sessions", "users"
   add_foreign_key "trip_companions", "trips"
   add_foreign_key "trip_companions", "users"
+  add_foreign_key "trip_followers", "trips"
+  add_foreign_key "trip_followers", "users"
   add_foreign_key "trips", "users"
   add_foreign_key "user_post_likes", "posts"
   add_foreign_key "user_post_likes", "users"

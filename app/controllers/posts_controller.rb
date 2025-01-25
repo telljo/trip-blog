@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  include PostNotifier
   before_action :set_post, only: %i[show edit update destroy]
   before_action :set_trip, only: %i[show edit update destroy]
   before_action :validate_user, only: %i[edit update destroy]

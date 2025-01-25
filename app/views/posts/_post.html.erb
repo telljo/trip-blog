@@ -151,13 +151,13 @@
             <% end %>
           <% end %>
         <% else %>
-          <button class="btn px-0", style="background: none; border: none;">
+          <button class="btn px-0" style="background: none; border: none;">
             <i class="bi bi-heart"></i>
             <%= post.likes.count %>
           </button>
         <% end %>
 
-        <button id='<%= "post-#{post.id}__comment-count" %>' class= "btn px-0", style="background: none; border: none;">
+        <button id='<%= "post-#{post.id}__comment-count" %>' class="btn px-0" style="background: none; border: none;">
           <i class="bi bi-chat"></i>
           <%= post.comments.count %>
         </button>

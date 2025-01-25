@@ -8,7 +8,7 @@
 <% end %>
 
 <%= turbo_stream.replace "post-#{@post.id}__comment-count" do %>
-  <button id='<%= "post-#{@post.id}__comment-count" %>' class= "btn px-0", style="background: none; border: none;">
+  <button id='<%= "post-#{@post.id}__comment-count" %>' class= "btn px-0" style="background: none; border: none;">
     <i class="bi bi-chat"></i>
     <%= @post.comments.count %>
   </button>

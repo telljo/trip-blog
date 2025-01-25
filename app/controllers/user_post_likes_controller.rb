@@ -2,7 +2,6 @@ class UserPostLikesController < ApplicationController
   before_action :set_user_post_like, only: %i[destroy]
   before_action :set_post, only: %i[create destroy]
 
-  # POST /posts
   def create
     @user_post_like = @post.likes.new(user: Current.user)
 
