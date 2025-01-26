@@ -70,10 +70,6 @@ FROM base
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Copy the start script and set permissions before switching to non-root user
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
-
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
@@ -86,4 +82,4 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 # Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
 
-CMD ["/start.sh"]
+CMD ["./bin/thrust", "./bin/rails", "server"]
