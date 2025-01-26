@@ -7,7 +7,7 @@ class PostMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: "New Post on #{@post.trip.name}"
+      subject: "New Post on Footprints - #{@post.trip.name}"
     )
   end
 end

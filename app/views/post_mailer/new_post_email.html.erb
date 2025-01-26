@@ -2,15 +2,16 @@
   <div
     style="display: table; background: #5e77da; color: #fff; text-align: center; align-items: center;
       border-radius: 0.5em; font-size: 1em; padding: 1em;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';"
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      width: 95%; margin: 0 auto; align-items: center;"
   >
-    <div class="new-post-mail__logo">
-      <%= image_tag("desktop-logo.svg", width: "200", height: "50") %>
+    <div>
+      <img src="https://storage.googleapis.com/travel-blog-josh/desktop-logo.svg" width=400 height=60>
     </div>
-
-    <h2 style="margin: 0.5em 0;">Hi <%= @user.username %></h2>
-
-    <p><%= @post.user.username %> has created <%= link_to "a new post", url_for(controller: 'trips', action: 'show', id: @post.trip.id) %> on their trip <%= @post.trip.name %></p>
-  </span>
-  <p style="margin: 0.5em 0;">Check it out and leave a comment!</p>
+    <div style="max-width: 30em; margin: 0 auto;">
+      <h2 style="margin: 0.5em 0;">Hi <%= @user.username %></h2>
+      <p><%= @post.user.username %> has just shared a new post about their journey, <%= link_to @post.trip.name, url_for(controller: 'trips', action: 'show', id: @post.trip.id) %>.</p>
+      <p style="margin: 0.5em 0;">Check it out <%= link_to "here", url_for(controller: 'trips', action: 'show', id: @post.trip.id, anchor: "post_#{@post.id}") %> and don’t forget to leave a comment and share your thoughts—they’d love to hear from you!</p>
+    </div>
+  </div>
 </html>
