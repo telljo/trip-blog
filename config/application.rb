@@ -22,5 +22,10 @@ module TripBlog
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    #
+    # Set a less strict referrer policy
+    config.action_dispatch.default_headers = {
+      "Referrer-Policy" => "strict-origin-when-cross-origin"
+    }
   end
 end

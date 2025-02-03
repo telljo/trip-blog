@@ -17,20 +17,21 @@
     <% end %>
 
     <%= form.hidden_field :sid, value: params[:sid] %>
+    <div style="color: red;">8 characters minimum.</div>
+
 
     <div>
-      <%= form.label :password, "New password", style: "display: block" %>
-      <%= form.password_field :password, required: true, autofocus: true, autocomplete: "new-password" %>
-      <div>12 characters minimum.</div>
+      <%= form.label :password, "New password", class:"form-label", style: "display: block" %>
+      <%= form.password_field :password, required: true, autofocus: true, autocomplete: "new-password", class:"form-control" %>
     </div>
 
     <div>
-      <%= form.label :password_confirmation, "Confirm new password", style: "display: block" %>
-      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password" %>
+      <%= form.label :password_confirmation, "Confirm new password", class:"form-label", style: "display: block" %>
+      <%= form.password_field :password_confirmation, required: true, autocomplete: "new-password", class:"form-control" %>
     </div>
 
     <div class="mt-3">
-      <%= form.submit "Save changes" %>
+      <%= form.submit "Save changes", class:"btn btn-success" %>
     </div>
   <% end %>
 </div>
