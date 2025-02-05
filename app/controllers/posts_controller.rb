@@ -6,7 +6,12 @@ class PostsController < ApplicationController
 
   # GET /posts
   def index
-    @posts = Post.all
+    if params[:trip_id]
+      @trip = Trip.find(params[:trip_id])
+      @pagy, @posts = pagy_countless(@trip.posts.order(:id), items: 5)
+    else
+      @pagy, @posts = pagy_countless(Post.all.order(:id), items: 5)
+    end
   end
 
   # GET /posts/1

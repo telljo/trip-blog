@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include Pagy::Frontend
   def time_ago_in_words_with_units(from_time)
     distance_in_seconds = ((Time.current - from_time) / 1.second).round
     case distance_in_seconds
