@@ -6,11 +6,10 @@
 
 <%= turbo_stream.replace :pagination do %>
   <% if @pagy.next.present? %>
-    <div class="d-flex justify-content-center">
-      <%= link_to "Load more",
-        posts_path(page: @pagy.next),
-        class: "btn btn-primary",
-        data: { turbo_frame: "pagination" } %>
-    </div>
+    <%= turbo_frame_tag :pagination, src: trip_path(page: @pagy.next, format: :turbo_stream), loading: :lazy do %>
+      <div class="spinner-border text-primary mt-3 align-self-center" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    <% end %>
   <% end %>
 <% end %>

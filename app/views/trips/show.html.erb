@@ -133,25 +133,21 @@
           <% end %>
           <%= turbo_stream_from @trip %>
 
-          <%= turbo_frame_tag "posts" do %>
-            <div class="d-flex flex-column gap-4">
+          <div class="d-flex flex-column gap-4">
+            <%= turbo_frame_tag "posts" do %>
               <% @posts.each do |post| %>
                 <%= render "posts/post", post: post %>
               <% end %>
-            </div>
-          <% end %>
-          <%= turbo_frame_tag :pagination,
-                        src: trip_path(page: @pagy.next, format: :turbo_stream),
-                        loading: :lazy do %>
-            <% if @pagy.next.present? %>
-              <div class="d-flex justify-content-center">
-                <%= link_to "Load more",
-                  posts_path(page: @pagy.next),
-                  class: "btn btn-primary",
-                  data: { turbo_frame: "pagination" } %>
-              </div>
+
+              <% if @pagy.next.present? %>
+                <%= turbo_frame_tag :pagination, src: trip_path(page: @pagy.next, format: :turbo_stream), loading: :lazy do %>
+                  <div class="spinner-border text-primary mt-3 align-self-center" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                <% end %>
+              <% end %>
             <% end %>
-          <% end %>
+          </div>
         </div>
 
         <% if @trip.posts.with_location.any? %>

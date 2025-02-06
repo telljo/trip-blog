@@ -9,7 +9,6 @@ class TripsController < ApplicationController
 
   # GET /trips/1
   def show
-    puts params.inspect
     @pagy, @posts = pagy(@trip.posts.order(created_at: :desc), items: 5)
     respond_to do |format|
       format.html
