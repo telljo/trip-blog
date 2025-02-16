@@ -1,8 +1,8 @@
 class Post < ApplicationRecord
   belongs_to :trip
   belongs_to :user
-  has_many :comments, class_name: 'PostComment', dependent: :destroy
-  has_many :likes, class_name: 'UserPostLike', dependent: :destroy
+  has_many :comments, class_name: "PostComment", dependent: :destroy
+  has_many :likes, class_name: "UserPostLike", dependent: :destroy
   validates :title, presence: true
   validates :body, presence: true
 
@@ -29,7 +29,7 @@ class Post < ApplicationRecord
   def image_as_thumbnail(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
-    image.variant(resize_to_limit: [ 400, 400 ]).processed
+    image.variant(resize_to_limit: [ 1000, 1000 ]).processed
   end
 
   def address

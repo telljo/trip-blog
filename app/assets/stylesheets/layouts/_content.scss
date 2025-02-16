@@ -9,6 +9,16 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.post-image {
+  max-width: 400px;
+  max-height: 400px;
+
+  @media screen and (max-width: $breakpoint) {
+    max-width: 300px;
+    max-height: 300px;
+  }
+}
+
 .bi-heart::before {
   padding-top: 6px;
 }
@@ -18,6 +28,14 @@ $trip-map-mobile-height: 300px;
 
   @media screen and (min-width: $breakpoint) {
     align-self: center;
+  }
+}
+
+.carousel-inner {
+  height: 400px;
+
+  @media screen and (max-width: $breakpoint) {
+    height: 300px;
   }
 }
 

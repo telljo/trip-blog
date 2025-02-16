@@ -75,10 +75,7 @@
         class="d-flex flex-column align-items-center border gap-1 p-2"
       >
         <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
-          <div
-            class="carousel-inner"
-            style="height: 400px;"
-          >
+          <div class="carousel-inner">
             <% post.attachments.each_with_index do |attachment, index| %>
               <div
                 class="carousel-item <%= 'active' if index == 0 %>"
@@ -96,7 +93,7 @@
                     style="height: inherit; width: 400px;"
                   >
                     <% if attachment.image? %>
-                      <%= link_to image_tag(post.image_as_thumbnail(attachment)), attachment, target: "_blank", class: "h-4 w-4" %>
+                      <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank", class: "h-4 w-4" %>
                     <% else %>
                       <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
                     <% end %>
