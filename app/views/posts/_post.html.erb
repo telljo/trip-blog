@@ -74,7 +74,7 @@
       <div
         class="d-flex flex-column align-items-center border gap-1 p-2"
       >
-        <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
+        <div id="carouselExampleIndicators-<%= post.id %>" class="carousel slide d-flex flex-column">
           <div class="carousel-inner">
             <% post.attachments.each_with_index do |attachment, index| %>
               <div
@@ -105,14 +105,14 @@
           <% if post.attachments.count > 1 %>
             <div class="carousel-indicators">
               <% post.attachments.each_with_index do |attachment, index| %>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
               <% end %>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Next</span>
             </button>
