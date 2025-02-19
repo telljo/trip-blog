@@ -27,5 +27,7 @@ module TripBlog
     config.action_dispatch.default_headers = {
       "Referrer-Policy" => "strict-origin-when-cross-origin"
     }
+
+    config.solid_queue.preserve_finished_jobs = false
   end
 end
