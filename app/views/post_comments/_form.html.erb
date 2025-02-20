@@ -16,6 +16,9 @@
       <div class="d-flex justify-content-start gap-2" role="group">
         <% if post_comment.persisted? %>
           <%= form.submit "Update", class: "btn btn-success" %>
+          <%= link_to "Cancel", trip_url(@post_comment.post.trip),
+            type:"button",
+            class: "btn btn-secondary w-3" %>
         <% else %>
           <%= form.submit "Send", class: "btn btn-success" %>
         <% end %>

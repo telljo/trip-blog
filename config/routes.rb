@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       member do
         delete :remove_attachment
       end
-      resources :post_comments, only: [ :create ]
+      resources :post_comments, only: [ :create, :edit, :update ]
     end
     resources :trip_followers, only: [ :create, :destroy ]
     resources :trip_companions
