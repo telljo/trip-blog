@@ -24,7 +24,9 @@ Rails.application.routes.draw do
   resources :posts do
     resources :user_post_likes, only: [ :create, :destroy ]
   end
-  resources :post_comments, only: [ :edit, :update, :destroy ]
+  resources :post_comments, only: [ :edit, :update, :destroy ] do
+    resources :post_comment_likes, only: [ :create, :destroy ]
+  end
   resources :users, param: :username
   resource :session
   resources :passwords, param: :token

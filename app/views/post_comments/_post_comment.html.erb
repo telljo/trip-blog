@@ -30,6 +30,27 @@
         </div>
       </div>
       <span class="d-flex flex-row gap-1">
+        <% if Current.user %>
+          <% if post_comment.liked_by?(Current.user) %>
+            <%= button_to post_comment_post_comment_like_path(post_comment.id, post_comment.likes.find_by(user: Current.user).id),
+              class:"btn px-0",
+              style:"background: none; border: none;",
+              method: :delete do %>
+              <i class="bi bi-heart-fill text-danger"></i>
+              <%= post_comment.likes.count %>
+            <% end %>
+          <% else %>
+            <%= button_to post_comment_post_comment_likes_path(post_comment_id: post_comment.id), class: "btn px-0", style: "background: none; border: none;" do %>
+              <i class="bi bi-heart"></i>
+              <%= post_comment.likes.count %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <button class="btn px-0" style="background: none; border: none;">
+            <i class="bi bi-heart"></i>
+            <%= post_comment.likes.count %>
+          </button>
+        <% end %>
         <% if Current.user == post_comment.user %>
           <div class="dropdown">
             <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Comment">
