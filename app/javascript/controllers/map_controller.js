@@ -8,6 +8,10 @@ export default class extends Controller {
   static map = null;
 
   connect() {
+    if(!this.hasMapTarget) {
+      return;
+    }
+
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
     const points = JSON.parse(mapElement.dataset.points);

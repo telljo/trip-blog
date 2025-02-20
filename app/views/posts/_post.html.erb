@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(post) do %>
-  <div class="d-flex flex-column w-100"">
+  <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
     <div class="d-flex flex-row flex-wrap gap-1 my-2">
       <h4 class="mb-0"><%= post.title %></h4>
