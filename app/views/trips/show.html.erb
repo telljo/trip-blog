@@ -7,27 +7,29 @@
       <div class="d-flex flex-row w-100 justify-content-between">
         <span class="d-flex flex-row gap-2 flex-wrap">
           <h2 class="mb-0"><%= @trip.name %></h2>
-          <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
-            <% if @trip.user.profile_picture.attached? %>
-              <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-            <% else %>
-              <i
-                class="bi bi-person-circle"
-                style="font-size: 1.3em; color: white;"
-              ></i>
-            <% end %>
-            <%=
-              link_to @trip.user.username,
-              url_for(
-                controller: '/users',
-                action: 'show',
-                username: @trip.user.username
-              ),
-              class: "text__link",
-              data: { turbo_frame: "_top" }
-            %>
-            started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
-          </p>
+          <div class="desktop-only">
+            <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
+              <% if @trip.user.profile_picture.attached? %>
+                <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+              <% else %>
+                <i
+                  class="bi bi-person-circle"
+                  style="font-size: 1.3em; color: white;"
+                ></i>
+              <% end %>
+              <%=
+                link_to @trip.user.username,
+                url_for(
+                  controller: '/users',
+                  action: 'show',
+                  username: @trip.user.username
+                ),
+                class: "text__link",
+                data: { turbo_frame: "_top" }
+              %>
+              started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
+            </p>
+          </div>
         </span>
       </div>
       <div class="d-flex flex-row justify-content-between px-2">
@@ -105,6 +107,29 @@
       </div>
     </div>
     <%= @trip.body %>
+    <div class="mobile-only">
+      <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
+        <% if @trip.user.profile_picture.attached? %>
+          <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+        <% else %>
+          <i
+            class="bi bi-person-circle"
+            style="font-size: 1.3em; color: white;"
+          ></i>
+        <% end %>
+        <%=
+          link_to @trip.user.username,
+          url_for(
+            controller: '/users',
+            action: 'show',
+            username: @trip.user.username
+          ),
+          class: "text__link",
+          data: { turbo_frame: "_top" }
+        %>
+        started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
+      </p>
+    </div>
     <div class="trip-content border rounded mt-3">
       <div
         class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1 mt-2" id="<%= dom_id @trip %>"
