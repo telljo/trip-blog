@@ -4,11 +4,11 @@
     <div class="d-flex flex-row flex-wrap gap-1 my-2">
       <h4 class="mb-0"><%= post.title %></h4>
 
-      <%= link_to '#', class:"d-flex flex-row gap-1", data: { action: "click->map#moveToMarker" } do %>
+      <div class="d-flex flex-row gap-1" data-action="click->map#moveToMarker" data-turbo-frame="_top">
         <i class="bi bi-geo-alt align-content-center"></i>
-        <p class="text-body-secondary m-0 align-content-center", data-post-id=<%= post.id %>><%= post.short_address %></p>
-      <% end %>
+        <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
       </div>
+    </div>
     <% else %>
       <h4 class="text__link my-2"><%= post.title %></h4>
     <% end %>
