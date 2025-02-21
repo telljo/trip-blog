@@ -77,6 +77,6 @@ class PostCommentsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_comment_params
-    params.require(:post_comment).permit(:content, :like_count, :post_id)
+    params.require(:post_comment).permit(:content, :post_id)
   end
 end

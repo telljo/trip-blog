@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_20_082413) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_20_160224) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -56,6 +56,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_082413) do
     t.datetime "updated_at", null: false
     t.index ["post_comment_id"], name: "index_post_comment_likes_on_post_comment_id"
     t.index ["user_id"], name: "index_post_comment_likes_on_user_id"
+  end
+
+  create_table "post_comment_replies", force: :cascade do |t|
+    t.text "content"
+    t.integer "post_comment_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_comment_id"], name: "index_post_comment_replies_on_post_comment_id"
+    t.index ["user_id"], name: "index_post_comment_replies_on_user_id"
   end
 
   create_table "post_comments", force: :cascade do |t|
@@ -146,6 +156,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_082413) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "post_comment_likes", "post_comments"
   add_foreign_key "post_comment_likes", "users"
+  add_foreign_key "post_comment_replies", "post_comments"
+  add_foreign_key "post_comment_replies", "users"
   add_foreign_key "post_comments", "posts"
   add_foreign_key "post_comments", "users"
   add_foreign_key "posts", "trips"
