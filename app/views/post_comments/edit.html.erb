@@ -1,4 +1,4 @@
 <%= turbo_frame_tag dom_id(@post_comment) do %>
   <%= render partial: "post_comments/form",
-    locals: { trip: @post.trip, post_comment: @post_comment, post: @post } %>
+    locals: { post_comment: @post_comment, post: @post } %>
 <% end %>

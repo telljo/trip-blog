@@ -16,15 +16,17 @@ Rails.application.routes.draw do
       member do
         delete :remove_attachment
       end
-      resources :post_comments, only: [ :create, :edit, :update ]
     end
     resources :trip_followers, only: [ :create, :destroy ]
     resources :trip_companions
   end
   resources :posts do
     resources :user_post_likes, only: [ :create, :destroy ]
+    resources :post_comments, only: [ :create, :edit, :update ]
   end
+  resources :post_comment_replies, only: [ :destroy ]
   resources :post_comments, only: [ :edit, :update, :destroy ] do
+    resources :post_comment_replies, only: [ :create, :edit, :update, :destroy ]
     resources :post_comment_likes, only: [ :create, :destroy ]
   end
   resources :users, param: :username

@@ -7,6 +7,9 @@ import { application } from "./application"
 import CropController from "./crop_controller"
 application.register("crop", CropController)
 
+import PostRepliesController from "./post_replies_controller"
+application.register("post-replies", PostRepliesController)
+
 import LocationController from "./location_controller"
 application.register("location", LocationController)
 

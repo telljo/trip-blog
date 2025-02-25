@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(post_comment_reply) do %>
   <div
-    class="form d-flex flex-column gap-2 p-2 bg-body rounded border border-1 border-light-subtle"
+    class="form d-flex flex-column gap-2 p-2 bg-body"
   >
     <div class="form__field d-flex flex-row gap-2 w-100">
       <% if post_comment_reply.user.profile_picture.attached? %>
@@ -34,13 +34,13 @@
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
                 <li>
-                  <%= link_to "Edit Comment",
-                      edit_post_comment_reply_path(id: post_comment_reply.id, post_comment_id: post_comment_reply.post_comment_id),
+                  <%= link_to "Edit Reply",
+                      edit_post_comment_post_comment_reply_path(id: post_comment_reply.id, post_comment_id: post_comment_reply.post_comment_id),
                       data: { turbo_frame: dom_id(post_comment_reply) },
                       class: "dropdown-item" %>
                 </li>
                 <li>
-                  <%= button_to "Delete Comment",
+                  <%= button_to "Delete Reply",
                       post_comment_reply, method: :delete,
                       data: { turbo: "true" },
                       form: { data: { 'turbo-confirm': 'Are you sure?' } },

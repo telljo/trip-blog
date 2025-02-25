@@ -1,4 +1,4 @@
-<%= form_with(id: "post_comment_form", model: [trip, post, post_comment]) do |form| %>
+<%= form_with(id: "post_comment_form", model: [post, post_comment]) do |form| %>
   <div class="form d-flex flex-column gap-2 p-2">
     <div class="form__field d-flex flex-row gap-1 align-items-center">
       <% if Current.user.profile_picture.attached? %>

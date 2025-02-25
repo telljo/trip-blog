@@ -1,0 +1,20 @@
+<%= turbo_stream.remove "post_comment_reply_#{@post_comment_reply.id}" %>
+
+<%= turbo_stream.replace "postComment-#{@post_comment_reply.post_comment.id}__reply-count" do %>
+    <button
+      class="visually-hidden btn btn-link text__link pt-0"
+      style="text-align: left;"
+      data-post-replies-target="showRepliesButton"
+      data-action="click->post-replies#showReplies"
+    >
+      View <%= pluralize(@post_comment_reply.post_comment.replies.count, "more reply") %>
+    </button>
+    <button
+    class="btn btn-link text__link pt-0"
+    style="text-align: left;"
+    data-post-replies-target="hideRepliesButton"
+    data-action="click->post-replies#hideReplies"
+  >
+    Hide <%= @post_comment_reply.post_comment.replies.count == 1 ? "reply" : "replies" %>
+  </button>
+<% end %>

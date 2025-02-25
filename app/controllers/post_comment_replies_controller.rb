@@ -1,15 +1,14 @@
 class PostCommentRepliesController < ApplicationController
-  before_action :set_post_comment_reply, only: %i[show edit update destroy]
-  before_action :set_post_comment, only: %i[show edit update destroy]
-  before_action :set_trip, only: %i[show edit update destroy]
-
-  def index
-    @post_comment_replies = @post_comment.replies
-  end
+  before_action :set_post_comment_reply, only: %i[ edit update destroy]
+  before_action :set_post_comment, only: %i[edit update]
 
   def new
     @post_comment = PostCommet.find(params[:post_comment_id])
     @post_comment_reply = @post_comment.replies.new
+  end
+
+  # GET /posts/1/edit
+  def edit
   end
 
   def create

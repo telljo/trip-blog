@@ -1,0 +1,31 @@
+<%= turbo_stream.replace "postComment-#{@post_comment.id}__replies" do %>
+  <div data-post-replies-target="replies">
+    <%= render @post_comment.replies %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "postComment-#{@post_comment.id}__form" do %>
+   <div class="visually-hidden" data-post-replies-target="replyForm">
+    <%= render partial: "post_comment_replies/form",
+      locals: { post_comment_reply: @post_comment.replies.new, post_comment: @post_comment } %>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "postComment-#{@post_comment.id}__reply-count" do %>
+    <button
+      class="visually-hidden btn btn-link text__link pt-0"
+      style="text-align: left;"
+      data-post-replies-target="showRepliesButton"
+      data-action="click->post-replies#showReplies"
+    >
+      View <%= pluralize(@post_comment.replies.count, "more reply") %>
+    </button>
+    <button
+    class="btn btn-link text__link pt-0"
+    style="text-align: left;"
+    data-post-replies-target="hideRepliesButton"
+    data-action="click->post-replies#hideReplies"
+  >
+    Hide <%= @post_comment.replies.count == 1 ? "reply" : "replies" %>
+  </button>
+<% end %>

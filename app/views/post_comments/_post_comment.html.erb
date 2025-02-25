@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(post_comment) do %>
   <div
-    class="form d-flex flex-column gap-2 p-2 bg-body rounded border border-1 border-light-subtle"
+    class="form d-flex flex-column p-2 bg-body rounded border border-1 border-light-subtle"
   >
     <div class="form__field d-flex flex-row gap-2 w-100">
       <% if post_comment.user.profile_picture.attached? %>
@@ -75,6 +75,52 @@
           <% end %>
         </div>
       </div>
+    </div>
+    <div class="d-flex flex-column ms-3" data-controller="post-replies">
+      <div class="d-flex flex-row">
+        <button
+          class="btn btn-link text__link pt-0"
+          style="text-align: left;"
+          data-action="click->post-replies#showReplyForm"
+        >
+          Reply
+        </button>
+
+        <% if post_comment.has_replies %>
+          <%= turbo_frame_tag "postComment-#{post_comment.id}__reply-count" do %>
+            <button
+              class="btn btn-link text__link pt-0"
+              style="text-align: left;"
+              data-post-replies-target="showRepliesButton"
+              data-action="click->post-replies#showReplies"
+            >
+              View <%= pluralize(post_comment.replies.count, "more reply") %>
+            </button>
+
+            <button
+              class="visually-hidden btn btn-link text__link pt-0"
+              style="text-align: left;"
+              data-post-replies-target="hideRepliesButton"
+              data-action="click->post-replies#hideReplies"
+            >
+              Hide <%= post_comment.replies.count == 1 ? "reply" : "replies" %>
+            </button>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= turbo_frame_tag "postComment-#{post_comment.id}__replies" do %>
+        <div class="visually-hidden" data-post-replies-target="replies">
+          <%= render post_comment.replies %>
+        </div>
+      <% end %>
+
+      <%= turbo_frame_tag "postComment-#{post_comment.id}__form" do %>
+        <div class="visually-hidden" data-post-replies-target="replyForm">
+          <%= render partial: "post_comment_replies/form",
+            locals: { post_comment_reply: post_comment.replies.new, post_comment: post_comment } %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>

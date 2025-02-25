@@ -1,0 +1,3 @@
+<%= turbo_frame_tag @post_comment_reply do %>
+  <%= render partial: "form", locals: { post_comment: @post_comment } %>
+<% end %>

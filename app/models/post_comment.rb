@@ -9,6 +9,10 @@ class PostComment < ApplicationRecord
 
   validates :content, presence: true
 
+  def has_replies
+    replies.count > 0
+  end
+
   def liked_by?(user)
     likes.exists?(user: user)
   end

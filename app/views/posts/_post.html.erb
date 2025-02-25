@@ -173,7 +173,7 @@
     <% if Current.user %>
       <div id='<%= "post-#{post.id}__comment-form" %>'>
         <%= render partial: "post_comments/form",
-          locals: { trip: post.trip, post_comment: post.comments.new, post: post } %>
+          locals: { post_comment: post.comments.new, post: post } %>
       </div>
     <% end %>
   </div>
