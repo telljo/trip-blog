@@ -26,6 +26,12 @@ class Post < ApplicationRecord
 
   scope :with_location, -> { where.not(latitude: nil, longitude: nil) }
 
+  def preview_image
+    attachment = attachments.find(&:image?)
+
+    image_as_thumbnail(attachment) if attachment
+  end
+
   def image_as_thumbnail(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 

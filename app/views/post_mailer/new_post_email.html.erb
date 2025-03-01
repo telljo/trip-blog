@@ -9,9 +9,21 @@
       <%= email_image_tag("desktop-logo.png") %>
     </div>
     <div style="max-width: 30em; margin: 0 auto;">
-      <h2 style="margin: 0.5em 0;">Hi <%= @user.username %></h2>
-      <p><%= @post.user.username %> has just shared a new post about their journey, <%= link_to @post.trip.name, url_for(controller: 'trips', action: 'show', id: @post.trip.id) %>.</p>
-      <p style="margin: 0.5em 0;">Check it out <%= link_to "here", url_for(controller: 'trips', action: 'show', id: @post.trip.id, anchor: "post_#{@post.id}") %> and don’t forget to leave a comment and share your thoughts—they’d love to hear from you!</p>
+      <h2 style="margin-bottom: 0.5em;">Hi <%= @user.username %></h2>
+      <p><%= @post.user.username %> has just shared a new post:</p>
+
+
+      <% if @post.preview_image %>
+        <div style="border: 2px solid; border-radius: 10px; padding: 1em; max-width: 310px; background: white; margin: auto;">
+          <%= image_tag(url_for(@post.preview_image), style: "max-width: 300px; max-height: 300px;") %>
+
+          <p><strong><%= link_to @post.title, url_for(controller: 'trips', action: 'show', id: @post.trip.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+        </div>
+      <% else %>
+        <p><strong><%= link_to @post.title, url_for(controller: 'trips', action: 'show', id: @post.trip.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+      <% end %>
+
+      <p style="margin: 0.5em 0; margin-top: 1em;">Check it out  and don’t forget to leave a comment and share your thoughts. They’d love to hear from you!</p>
     </div>
   </div>
 </html>

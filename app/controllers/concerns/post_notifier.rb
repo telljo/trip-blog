@@ -14,7 +14,7 @@ module PostNotifier
         user = follower.user
         next if user == Current.user
 
-        PostMailer.new_post_email(user, @post).deliver_later
+        PostMailer.new_post_email(user, @post).deliver_later(wait_until: 1.minutes.from_now)
       end
     end
   end
