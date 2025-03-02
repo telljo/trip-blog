@@ -22,6 +22,9 @@ gem "bcrypt", "~> 3.1.7"
 
 gem "pagy", "~> 9.3"
 
+gem "sentry-ruby"
+gem "sentry-rails"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
