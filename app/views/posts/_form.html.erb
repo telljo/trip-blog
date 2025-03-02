@@ -55,12 +55,14 @@
                     <% end %>
 
 
-                    <%= form.fields_for :captions do |caption_form| %>
-                      <div class="form__field d-flex flex-row gap-1 align-items-center">
-                        <%= caption_form.text_field :text,
-                          class: "form-control",
-                          placeholder: "Add a caption" %>
-                      </div>
+                    <%= form.fields_for :post_attachments, attachment do |attachment_form| %>
+                      <%= attachment_form.fields_for :caption, attachment.caption || attachment.build_caption do |caption_form| %>
+                        <div class="form__field d-flex flex-row gap-1 align-items-center">
+                          <%= caption_form.text_field :text,
+                            class: "form-control",
+                            placeholder: "Add a caption" %>
+                        </div>
+                      <% end %>
                     <% end %>
                   </div>
                 </div>

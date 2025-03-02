@@ -123,8 +123,15 @@ class PostsController < ApplicationController
       :trip_id,
       :latitude, :longitude,
       attachments: [],
-      captions_attributes: [ :id, :text, :attachment_id, :_destroy ]).tap do |whitelisted|
-        whitelisted[:companions_attributes]&.reject! { |_, caption| caption[:attachment_id].blank? }
-      end
+      post_attachments_attributes: [
+        :id,
+        :_destroy,
+        caption_attributes: [
+          :id,
+          :text,
+          :_destroy
+        ]
+      ]
+    )
   end
 end
