@@ -118,6 +118,13 @@ class PostsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :trip_id, :latitude, :longitude, attachments: [])
+    params.require(:post).permit(
+      :title, :body,
+      :trip_id,
+      :latitude, :longitude,
+      attachments: [],
+      captions_attributes: [ :id, :text, :attachment_id, :_destroy ]).tap do |whitelisted|
+        whitelisted[:companions_attributes]&.reject! { |_, caption| caption[:attachment_id].blank? }
+      end
   end
 end

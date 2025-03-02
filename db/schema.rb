@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_20_160224) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_01_063414) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -47,6 +47,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_160224) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "post_attachment_captions", force: :cascade do |t|
+    t.integer "attachment_id", null: false
+    t.integer "post_id", null: false
+    t.text "text", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attachment_id"], name: "index_post_attachment_captions_on_attachment_id"
+    t.index ["post_id"], name: "index_post_attachment_captions_on_post_id"
   end
 
   create_table "post_comment_likes", force: :cascade do |t|
@@ -154,6 +164,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_20_160224) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "post_attachment_captions", "active_storage_attachments", column: "attachment_id"
+  add_foreign_key "post_attachment_captions", "posts"
   add_foreign_key "post_comment_likes", "post_comments"
   add_foreign_key "post_comment_likes", "users"
   add_foreign_key "post_comment_replies", "post_comments"

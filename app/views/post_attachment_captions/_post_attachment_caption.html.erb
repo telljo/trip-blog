@@ -1,0 +1,13 @@
+<%= turbo_frame_tag dom_id(post_comment_attachment) do %>
+  <div
+    class="form d-flex flex-column p-2 bg-body rounded border border-1 border-light-subtle"
+  >
+    <div class="form__field d-flex flex-row gap-2 w-100">
+      <div class="d-flex flex-column w-100">
+        <div class="d-flex flex-row gap-1 justify-content-between w-100">
+          <p class="mb-0 text-wrap"><%= post_comment_attachment.text %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

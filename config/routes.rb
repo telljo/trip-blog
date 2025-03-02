@@ -23,8 +23,10 @@ Rails.application.routes.draw do
   resources :posts do
     resources :user_post_likes, only: [ :create, :destroy ]
     resources :post_comments, only: [ :create, :edit, :update ]
+    resources :post_attachment_captions, only: [ :create, :edit, :update ]
   end
   resources :post_comment_replies, only: [ :destroy ]
+  resources :post_attachment_captions, only: [ :destroy ]
   resources :post_comments, only: [ :edit, :update, :destroy ] do
     resources :post_comment_replies, only: [ :create, :edit, :update, :destroy ]
     resources :post_comment_likes, only: [ :create, :destroy ]

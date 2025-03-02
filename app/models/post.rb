@@ -7,7 +7,13 @@ class Post < ApplicationRecord
   validates :body, presence: true
 
   has_rich_text :body
-  has_many_attached :attachments, dependent: :destroy
+  has_many_attached :attachments
+  has_many :post_attachments, class_name: "ActiveStorage::Attachment", as: :record
+  has_many :captions, through: :post_attachments
+
+  accepts_nested_attributes_for :post_attachments
+  accepts_nested_attributes_for :captions, allow_destroy: true
+
   before_destroy :purge_attachments
 
   broadcasts_refreshes_to :trip

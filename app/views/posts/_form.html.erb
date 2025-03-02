@@ -23,7 +23,7 @@
         <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
           <div
             class="carousel-inner"
-            style="height: 400px;"
+            style="height: 500px;"
           >
             <% post.attachments.each_with_index do |attachment, index| %>
               <div
@@ -45,13 +45,22 @@
                 <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
                 <div class="d-flex justify-content-center" style="height: inherit;">
                   <div
-                    class="d-flex justify-content-center align-items-center"
-                    style="height: inherit; width: 400px;"
+                    class="d-flex flex-column align-items-center"
+                    style="width: 400px;"
                   >
                     <% if attachment.image? %>
                       <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank", class: "h-4 w-4" %>
                     <% else %>
                       <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
+                    <% end %>
+
+
+                    <%= form.fields_for :captions do |caption_form| %>
+                      <div class="form__field d-flex flex-row gap-1 align-items-center">
+                        <%= caption_form.text_field :text,
+                          class: "form-control",
+                          placeholder: "Add a caption" %>
+                      </div>
                     <% end %>
                   </div>
                 </div>
