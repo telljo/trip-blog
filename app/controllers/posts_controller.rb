@@ -64,6 +64,7 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
+    ap post_params
     if @post.update(post_params)
       flash[:notice] = "Post was successfully updated."
       redirect_to @trip
@@ -123,14 +124,12 @@ class PostsController < ApplicationController
       :trip_id,
       :latitude, :longitude,
       attachments: [],
-      post_attachments_attributes: [
+      post_attachment_captions_attributes: [
         :id,
-        :_destroy,
-        caption_attributes: [
-          :id,
-          :text,
-          :_destroy
-        ]
+        :attachment_id,
+        :post_id,
+        :text,
+        :_destroy
       ]
     )
   end

@@ -8,11 +8,8 @@ class Post < ApplicationRecord
 
   has_rich_text :body
   has_many_attached :attachments
-  has_many :post_attachments, class_name: "ActiveStorage::Attachment", as: :record
-  has_many :captions, through: :post_attachments
-
-  accepts_nested_attributes_for :post_attachments
-  accepts_nested_attributes_for :captions, allow_destroy: true
+  has_many :post_attachment_captions, dependent: :destroy
+  accepts_nested_attributes_for :post_attachment_captions, reject_if: proc { |attributes| attributes["text"].blank? }, allow_destroy: true
 
   before_destroy :purge_attachments
 

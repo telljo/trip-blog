@@ -27,7 +27,9 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= turbo_refreshes_with(method: :morph, scroll: :preserve) %>
     <%= yield :head %>
-    <%= Sentry.get_trace_propagation_meta.html_safe %>
+    <% if Rails.env.production? %>
+      <%= Sentry.get_trace_propagation_meta.html_safe %>
+    <% end %>
   </head>
 
   <body>
