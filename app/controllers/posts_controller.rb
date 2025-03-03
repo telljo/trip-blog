@@ -64,7 +64,6 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    ap post_params
     if @post.update(post_params)
       flash[:notice] = "Post was successfully updated."
       redirect_to @trip
