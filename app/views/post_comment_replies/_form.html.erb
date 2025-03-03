@@ -1,7 +1,7 @@
 <%= form_with(id: "post_comment_reply_form", model: [post_comment, post_comment_reply]) do |form| %>
   <div class="form d-flex flex-column gap-2 p-2">
     <div class="form__field d-flex flex-row gap-1 align-items-center">
-      <% if Current.user.profile_picture.attached? %>
+      <% if Current.user&.profile_picture&.attached? %>
         <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
       <% else %>
         <i
