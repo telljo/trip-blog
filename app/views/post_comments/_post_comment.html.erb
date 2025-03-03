@@ -78,13 +78,15 @@
     </div>
     <div class="d-flex flex-column ms-3" data-controller="post-replies">
       <div class="d-flex flex-row">
-        <button
-          class="btn btn-link text__link pt-0"
-          style="text-align: left;"
-          data-action="click->post-replies#showReplyForm"
-        >
-          Reply
-        </button>
+        <% if Current.user %>
+          <button
+            class="btn btn-link text__link pt-0"
+            style="text-align: left;"
+            data-action="click->post-replies#showReplyForm"
+          >
+            Reply
+          </button>
+        <% end %>
 
         <% if post_comment.has_replies %>
           <%= turbo_frame_tag "postComment-#{post_comment.id}__reply-count" do %>
