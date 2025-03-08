@@ -70,10 +70,8 @@
         <% end %>
       </span>
     </div>
-    <% if post.attachments.attached? %>
-      <div
-        class="d-flex flex-column align-items-center border gap-1 p-2"
-      >
+    <div data-controller="toggle-post" class="d-flex flex-column align-items-center border gap-1 p-2">
+      <% if post.attachments.attached? %>
         <div id="carouselExampleIndicators-<%= post.id %>" class="carousel slide d-flex flex-column">
           <div class="carousel-inner">
             <% post.attachments.each_with_index do |attachment, index| %>
@@ -124,15 +122,17 @@
             </button>
           <% end %>
         </div>
+      <% end %>
+      <div data-toggle-post-target="postPreview" class="post-preview">
+        <%= post.body.to_plain_text.truncate(300) %>
+      </div>
+      <div data-toggle-post-target="postBody" class="post-body visually-hidden">
         <%= post.body %>
       </div>
-    <% else %>
-      <div
-        class="d-flex flex-column border gap-1 p-2"
-      >
-        <%= post.body %>
-      </div>
-    <% end %>
+      <% if post.body.to_plain_text.length > 300 %>
+        <button class="btn btn-link" data-toggle-post-target="postButton" data-action="toggle-post#toggle">Read More</button>
+      <% end %>
+    </div>
   </div>
 
   <div class="d-flex flex-column border rounded-bottom-2 px-2 py-1 bg-light-subtle gap-2">
