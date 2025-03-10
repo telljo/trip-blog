@@ -93,7 +93,8 @@ export default class extends Controller {
 
   chooseLocation(event) {
     event.preventDefault();
-    this.selectedAddressTarget.value = event.target.label;
+    event.stopPropagation();
+    this.selectedAddressTarget.value = event.target.textContent;
     this.updateMap(event.target.value.split(',').map(parseFloat));
   }
 
