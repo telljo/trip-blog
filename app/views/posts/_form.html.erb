@@ -96,7 +96,7 @@
     <div class="d-flex flex-row gap-2 flex-wrap">
       <div style="max-width: 400px;">
         <label for="formFile" class="form-label">Upload files</label>
-        <%= form.file_field :attachments, multiple: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
+        <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
       </div>
 
       <div class="form__field d-flex flex-row gap-1 align-items-end">

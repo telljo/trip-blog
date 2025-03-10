@@ -33,23 +33,14 @@ class PostsController < ApplicationController
   # POST /posts
   def create
     @trip = Trip.find(params[:trip_id])
-    @post = Post.new(post_params.except(:attachments))
+    @post = Post.new(post_params)
     @post.trip = @trip
     @post.user = Current.user
-
-    attachments = params[:post][:attachments].select { |attachment| attachment.is_a?(ActionDispatch::Http::UploadedFile) }
-    validate_attachments(attachments)
 
     respond_to do |format|
       if @post.errors.any?
         format.html { render :new, status: :unprocessable_entity, notice: @post.errors.first.full_message }
       elsif @post.save
-        # Process attachments in the background
-        attachment_data = attachments.map do |attachment|
-          { content: Base64.encode64(attachment.read), filename: attachment.original_filename, content_type: attachment.content_type }
-        end
-        ProcessAttachmentsJob.perform_later(@post.id, attachment_data)
-
         format.html do
           flash[:notice] = "Post was successfully created."
           redirect_to @trip
@@ -92,14 +83,6 @@ class PostsController < ApplicationController
   end
 
   private
-
-  def validate_attachments(attachments)
-    attachments.each do |attachment|
-      unless attachment.content_type.in?(%w[image/png image/jpeg video/mp4 video/avi video/mov])
-        @post.errors.add(:image, "Attachment type is not supported")
-      end
-    end
-  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_post
