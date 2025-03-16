@@ -35,7 +35,7 @@ Rails.application.routes.draw do
     resources :post_comment_replies, only: [ :create, :edit, :update, :destroy ]
     resources :post_comment_likes, only: [ :create, :destroy ]
   end
-  resources :users, param: :username
+  resources :users, param: :username, constraints: { username: /[^\/]+/ }, defaults: { format: nil }
   resource :session
   resources :passwords, param: :token
   resources :geolocations do

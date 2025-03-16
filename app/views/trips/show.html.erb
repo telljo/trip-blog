@@ -29,10 +29,7 @@
               %>
               started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
             </p>
-          </div>
-        </span>
-      </div>
-      <div class="d-flex flex-row justify-content-between px-2">
+            <div class="d-flex flex-row justify-content-between px-2">
         <span class="d-flex flex-row gap-1">
           <% if @trip.companions.any? %>
             <div class="dropdown">
@@ -105,6 +102,9 @@
           <% end %>
         </span>
       </div>
+          </div>
+        </span>
+      </div>
     </div>
     <%= @trip.body %>
     <div class="mobile-only">
@@ -127,7 +127,7 @@
           class: "text__link",
           data: { turbo_frame: "_top" }
         %>
-        started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
+        <%= @trip.created_at&.strftime("%B %d, %Y") %>
       </p>
     </div>
     <div class="trip-content border rounded mt-3">
