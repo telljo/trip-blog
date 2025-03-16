@@ -33,6 +33,10 @@ $trip-map-mobile-height: 300px;
 
 .carousel-inner {
   height: 400px;
+  margin-bottom: 1em;
+  overflow: visible;
+  clip-path: inset(0 0 -100% 0);
+
 
   @media screen and (max-width: $breakpoint) {
     height: 300px;
@@ -214,7 +218,6 @@ $trip-map-mobile-height: 300px;
   }
 
   .carousel-indicators {
-    margin-bottom: 0px;
     filter: invert(0) grayscale(100%) !important;
     button {
       background-color: white !important;
