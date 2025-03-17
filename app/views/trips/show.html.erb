@@ -210,6 +210,7 @@
     <div class="trip-content border rounded mt-3">
       <div
         class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1 mt-2" id="<%= dom_id @trip %>"
+        data-controller="map"
       >
         <div
           class="d-flex flex-column w-100"
@@ -253,14 +254,12 @@
         </div>
 
         <% if @trip.posts.with_location.any? %>
-          <div data-controller="map">
-            <div
-              class="sticky-top border rounded-2 bg-white shadow-sm trip-map"
-              style="max-height: 500px; z-index: 100; top: 100px;"
-              data-map-target="map"
-              id="posts-map"
-              data-points='<%= raw generated_points(@trip) %>'>
-            </div>
+          <div
+            class="sticky-top border rounded-2 bg-white shadow-sm trip-map"
+            style="max-height: 500px; z-index: 100; top: 80px;"
+            data-map-target="map"
+            id="posts-map"
+            data-points='<%= raw generated_points(@trip) %>'>
           </div>
         <% end %>
       </div>
