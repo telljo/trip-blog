@@ -11,7 +11,7 @@
   </p>
 
   <div class="d-flex justify-content-center">
-    <% if user && user == Current.user  %>
+    <% if @user && @user == Current.user  %>
       <%= link_to "Create new trip",
         new_trip_path,
         class: "btn btn-success",
