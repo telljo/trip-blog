@@ -6,7 +6,8 @@ module TripsHelper
         latitude: post.latitude,
         longitude: post.longitude,
         label: post.title,
-        tooltip: post_link_with_image(post)
+        tooltip: post_link_with_image(post),
+        travelType: post.travel_type
       }
     end.to_json
   end

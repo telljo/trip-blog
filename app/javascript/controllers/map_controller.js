@@ -42,18 +42,36 @@ export default class extends Controller {
         .addTo(this.map);
     });
 
-    const coordinates = points.map(point => [point.longitude, point.latitude]);
+    const pointData = points.reverse().map((point, index) => {
+      if (index == points.length - 1) {
+        return;
+      }
+      let nextPoint = points[index + 1];
+      return {
+        coordinates: [
+          [point.longitude, point.latitude], // Current point
+          [nextPoint.longitude, nextPoint.latitude] // Next point
+        ],
+        travelType: nextPoint.travelType // Use travelType of the second point
+      };
+    }).filter(Boolean);
 
     this.map.on('load', () => {
+
       this.map.addSource('route', {
         'type': 'geojson',
         'data': {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'LineString',
-            'coordinates': coordinates
-          }
+          'type': 'FeatureCollection',
+          'features': pointData.map(pd => ({
+            'type': 'Feature',
+            'properties': {
+              'travelType': pd.travelType
+            },
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': pd.coordinates
+            }
+          }))
         }
       });
 
@@ -61,12 +79,16 @@ export default class extends Controller {
         'id': 'route',
         'type': 'line',
         'source': 'route',
-        'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
+        'layout': {},
         'paint': {
-          'line-color': '#fff',
+          'line-color': [
+            'match',
+            ['get', 'travelType'],
+            'air', '#FF0000', // Red for air
+            'ocean', '#00FF00', // Green for bike
+            '#FFF' // White for others
+          ],
+          'line-width': 4
         }
       });
     });

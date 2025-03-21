@@ -13,6 +13,8 @@ module ApplicationHelper
       "#{(distance_in_seconds / 86400).round}d"
     when 604800..2678399
       "#{(distance_in_seconds / 604800).round}w"
+    when 2678400..31556951
+      "#{(distance_in_seconds / 2678400).round}mo"
     else
       "#{(distance_in_seconds / 31556952).round}y"
     end
