@@ -142,15 +142,18 @@ $trip-map-mobile-height: 300px;
   width: 100%;
   min-width: 500px;
   height: $trip-map-height;
-  top: 5em;
   margin-top: 3em;
+  position: sticky;
+  z-index: 100;
+  top: 100px;
 
   @media screen and (max-width: $breakpoint) {
     width: 100%;
     height: $trip-map-mobile-height;
     min-width: unset;
-    top: 0;
     margin-top: 0;
+    top: unset;
+    position: relative;
   }
 }
 
