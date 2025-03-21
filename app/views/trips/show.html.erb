@@ -255,8 +255,8 @@
 
         <% if @trip.posts.with_location.any? %>
           <div
-            class="sticky-top border rounded-2 bg-white shadow-sm trip-map"
-            style="max-height: 500px; z-index: 100; top: 80px;"
+            class="border rounded-2 bg-white shadow-sm trip-map"
+            style="max-height: 500px;"
             data-map-target="map"
             id="posts-map"
             data-points='<%= raw generated_points(@trip) %>'>
