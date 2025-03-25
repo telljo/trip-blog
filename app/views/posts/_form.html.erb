@@ -131,6 +131,13 @@
               });
             </script>
           </div>
+          <div class="form__field">
+            <%= form.label :travel_type, class: "form-label" %>
+            <%= form.select :travel_type,
+              options_for_select(Post.travel_types.keys.map { |key| [key.humanize, key] }, post.travel_type),
+              { prompt: "Add a travel type" },
+              class: "form-control" %>
+          </div>
         </div>
       </div>
     </div>

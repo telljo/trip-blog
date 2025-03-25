@@ -11,10 +11,13 @@ export default class extends Controller {
     this.coordinatesMap = {};
     this.map = null;
     this.currentPostId = null;
-
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
     const points = JSON.parse(mapElement.dataset.points);
+    this.boatImagePath = mapElement.dataset.boatImagePath;
+    this.planeImagePath = mapElement.dataset.planeImagePath;
+    this.busImagePath = mapElement.dataset.busImagePath;
+    this.trainImagePath = mapElement.dataset.trainImagePath;
 
     // Initialize coordinatesMap
     this.coordinatesMap = points.reduce((acc, point) => {
@@ -31,6 +34,8 @@ export default class extends Controller {
       zoom: 10
     });
 
+    this.initaliseMapImages();
+
     points.forEach(point => {
       new maplibregl.Marker()
         .setLngLat([point.longitude, point.latitude])
@@ -42,59 +47,28 @@ export default class extends Controller {
         .addTo(this.map);
     });
 
-    const pointData = points.reverse().map((point, index) => {
-      if (index == points.length - 1) {
-        return;
-      }
-      let nextPoint = points[index + 1];
-      return {
-        coordinates: [
-          [point.longitude, point.latitude], // Current point
-          [nextPoint.longitude, nextPoint.latitude] // Next point
-        ],
-        travelType: nextPoint.travelType // Use travelType of the second point
-      };
-    }).filter(Boolean);
-
-    this.map.on('load', () => {
-
-      this.map.addSource('route', {
-        'type': 'geojson',
-        'data': {
-          'type': 'FeatureCollection',
-          'features': pointData.map(pd => ({
-            'type': 'Feature',
-            'properties': {
-              'travelType': pd.travelType
-            },
-            'geometry': {
-              'type': 'LineString',
-              'coordinates': pd.coordinates
-            }
-          }))
-        }
-      });
-
-      this.map.addLayer({
-        'id': 'route',
-        'type': 'line',
-        'source': 'route',
-        'layout': {},
-        'paint': {
-          'line-color': [
-            'match',
-            ['get', 'travelType'],
-            'air', '#FF0000', // Red for air
-            'ocean', '#00FF00', // Green for bike
-            '#FFF' // White for others
-          ],
-          'line-width': 4
-        }
-      });
-    });
+    this.addMapLayers(points);
 
     // Bind to the scroll event
     window.addEventListener('scroll', this.handleScroll.bind(this));
+  }
+
+  async initaliseMapImages() {
+    this.map.loadImage(this.planeImagePath);
+    const planeImage = await this.map.loadImage(this.planeImagePath);
+    this.map.addImage('plane', planeImage.data);
+
+    this.map.loadImage(this.boatImagePath);
+    const boatImage = await this.map.loadImage(this.boatImagePath);
+    this.map.addImage('boat', boatImage.data);
+
+    this.map.loadImage(this.busImagePath);
+    const busImage = await this.map.loadImage(this.busImagePath);
+    this.map.addImage('bus', busImage.data);
+
+    this.map.loadImage(this.trainImagePath);
+    const trainImage = await this.map.loadImage(this.trainImagePath);
+    this.map.addImage('train', trainImage.data);
   }
 
   handleScroll() {
@@ -144,5 +118,114 @@ export default class extends Controller {
     } else {
       console.error(`Coordinates not found for postId: ${postId}`);
     }
+  }
+
+  addMapLayers(points) {
+    const pointData = points.reverse().map((point, index) => {
+      if (index == points.length - 1) {
+        return;
+      }
+      let nextPoint = points[index + 1];
+      return {
+        coordinates: [
+          [point.longitude, point.latitude], // Current point
+          [nextPoint.longitude, nextPoint.latitude] // Next point
+        ],
+        bearing: this.getBearing([point.longitude, point.latitude], [nextPoint.longitude, nextPoint.latitude]),
+        travelType: nextPoint.travelType // Use travelType of the second point
+      };
+    }).filter(Boolean);
+
+    this.map.on('load', () => {
+      this.map.addSource('route', {
+        'type': 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': pointData.map(pd => ({
+            'type': 'Feature',
+            'properties': {
+              'travelType': pd.travelType,
+              'bearing': pd.bearing
+            },
+            'geometry': {
+              'type': 'LineString',
+              'coordinates': pd.coordinates
+            }
+          }))
+        }
+      });
+
+       // Symbol for bus travel
+       this.map.addLayer({
+        'id': 'symbol-bus',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': 'bus',
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.10,
+            'icon-rotate': ['-', ['get', 'bearing'], 90],
+        },
+        'filter': ['==', ['get', 'travelType'], 'bus']
+      });
+
+      // Symbol for plane travel
+      this.map.addLayer({
+        'id': 'symbol-plane',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': 'plane',
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.15,
+            'icon-rotate': ['-', ['get', 'bearing'], 90],
+        },
+        'filter': ['==', ['get', 'travelType'], 'plane']
+      });
+
+      // Symbol for boat travel
+      this.map.addLayer({
+        'id': 'symbol-boat',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': 'boat',
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.15,
+            'icon-rotate': ['-', ['get', 'bearing'], 180],
+        },
+        'filter': ['==', ['get', 'travelType'], 'boat']
+      });
+
+      this.map.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': 'route',
+        'layout': {},
+        'paint': {
+          'line-color': '#FFF',
+          'line-width': 2,
+          'line-dasharray': [2, 1]
+        }
+      });
+    });
+  }
+
+  getBearing(firstCoordinates, secondCoordinates) {
+    const lat1 = firstCoordinates[1];
+    const lon1 = firstCoordinates[0];
+    const lat2 = secondCoordinates[1];
+    const lon2 = secondCoordinates[0];
+
+    const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+    let brng = Math.atan2(y, x);
+    brng = brng * (180 / Math.PI);
+    brng = (brng + 360) % 360;
+
+    return brng;
   }
 }

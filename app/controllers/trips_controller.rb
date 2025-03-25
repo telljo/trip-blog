@@ -48,7 +48,8 @@ class TripsController < ApplicationController
   # PATCH/PUT /trips/1
   def update
     if @trip.update(trip_params)
-      redirect_to @trip
+      flash[:notice] = "Trip was successfully updated."
+      redirect_to trips_url(@trip)
     else
       render :edit, status: :unprocessable_entity
     end

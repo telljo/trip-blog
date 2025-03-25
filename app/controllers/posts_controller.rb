@@ -104,7 +104,9 @@ class PostsController < ApplicationController
     params.require(:post).permit(
       :title, :body,
       :trip_id,
-      :latitude, :longitude,
+      :latitude,
+      :longitude,
+      :travel_type,
       attachments: [],
       post_attachment_captions_attributes: [
         :id,

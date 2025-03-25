@@ -102,7 +102,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_060944) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
-    t.integer "travel_type", default: 0
+    t.integer "travel_type"
     t.index ["trip_id"], name: "index_posts_on_trip_id"
   end
 
