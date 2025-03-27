@@ -1,3 +1,13 @@
-<%= turbo_frame_tag @post do %>
+<div class="d-flex flex-column gap-1">
+  <div class="d-flex flex-row justify-content-between">
+    <h2 class="my-0">Create post</h2>
+
+    <%= link_to trip_path(@trip), class: "btn btn-primary" do %>
+      <i class="bi bi-arrow-left"></i>
+      Back to trip
+    <% end %>
+  </div>
+  <hr>
+
   <%= render partial: "form", locals: { trip: @trip, post: @post } %>
-<% end %>
+</div>

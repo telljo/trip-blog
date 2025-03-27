@@ -223,7 +223,7 @@
                 new_post_path(trip_id: @trip.id),
                 class: "btn btn-success",
                 style: "max-height: 2.5em;",
-                data: { turbo_frame: dom_id(Post.new) } %>
+                data: { turbo: false } %>
             <% end %>
           </div>
           <hr>

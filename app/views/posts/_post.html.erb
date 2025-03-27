@@ -56,8 +56,8 @@
                 <li>
                   <%= link_to "Edit post",
                       edit_post_path(post),
-                      data: { turbo_frame: dom_id(post) },
-                      class: "dropdown-item" %>
+                      class: "dropdown-item",
+                      data: { turbo: false } %>
                 </li>
                 <li>
                   <%= button_to "Delete post",

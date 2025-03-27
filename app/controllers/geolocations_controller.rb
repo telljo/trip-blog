@@ -14,6 +14,7 @@ class GeolocationsController < ApplicationController
         "#{loc.geometry['location']['lng']},#{loc.geometry['location']['lat']}"
       ]
     end
+    render json: @geolocations
   end
 
   def find_location

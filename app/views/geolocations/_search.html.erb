@@ -1,0 +1,39 @@
+<div
+  data-location-lng-value="<%= @current_longitude %>"
+  data-location-lat-value="<%= @current_latitude %>"
+  class="modal-body d-flex flex-column gap-2"
+>
+  <input type="text"
+    placeholder="Search for an address"
+    class="form-control"
+    data-location-target="searchQuery"
+    data-action="input->location#search">
+
+  <div class="form-group">
+    <%= select_tag 'user_id[]',
+      options_for_select([]),
+      class: "form-control search-results visually-hidden",
+      multiple: true,
+      size: 5,
+      data: {
+        action: "change->location#chooseLocation",
+        location_target: "searchResults"
+      }
+    %>
+  </div>
+
+  <div
+    data-location-target="map"
+    class="sticky-lg-top border rounded-2 bg-white shadow-sm search-map"
+    style="max-height: 500px; z-index: 100;"
+    id="search-map">
+  </div>
+
+  <div class="d-flex flex-row gap-1">
+    <input data-location-target="selectedAddress" type="text" name="selectedLocation"
+      class="form-control" readonly value="<%=
+        @current_address ? @current_address : "No location chosen"
+      %>">
+    <button type="button" class="btn btn-primary" data-action="click->location#selectLocation click->modal#close">Update</button>
+  </div>
+</div>

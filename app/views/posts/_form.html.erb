@@ -1,5 +1,5 @@
-<%= form_with(id: "post_form", model: [@trip, @post]) do |form| %>
-  <div class="form d-flex flex-column gap-2">
+<%= form_with(id: "post_form", model: [@trip, @post], data: { turbo: false }) do |form| %>
+  <div class="form d-flex flex-column gap-2 pb-5">
     <div class="form__field">
       <%= form.label :title, class: "form-label" %>
       <%= form.text_field :title,
@@ -93,45 +93,30 @@
       </div>
     <% end %>
 
-    <div class="d-flex flex-row gap-2 flex-wrap">
-      <div style="max-width: 400px;">
-        <label for="formFile" class="form-label">Upload files</label>
-        <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
+    <div class="form__field">
+      <label for="formFile" class="form-label">Upload files</label>
+      <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
+    </div>
+
+    <div class="d-flex flex-column gap-2" data-controller="location">
+      <%= form.hidden_field :latitude,
+        id: "latitudeValue",
+        data: { location_target: "latitude"} %>
+      <%= form.hidden_field :longitude,
+        id: "longitudeValue",
+        data: { location_target: "longitude"} %>
+
+      <div class="class="form__field>
+        <label class="form-label">Current location</label>
+        <input data-location-target="address" id="addressValue"
+          value="<%= @post.address %>" type="text" name="selectedLocation"
+          class="form-control" placeholder="No location chosen" readonly>
       </div>
 
-      <div class="form__field d-flex flex-row gap-1 align-items-end">
-        <%= form.hidden_field :latitude, id: "latitudeValue" %>
-        <%= form.hidden_field :longitude, id: "longitudeValue" %>
-
-        <div class="d-flex flex-column">
-          <label class="form-label">Set location</label>
-          <div class="d-flex flex-row gap-1">
-            <input id="addressValue" value="<%= @post.address %>" type="text" name="selectedLocation"
-              class="form-control" placeholder="No location chosen" readonly>
-            <%= link_to "Set location",
-              search_geolocations_path(
-                latitude: post.latitude,
-                longitude: post.longitude,
-                address: post.address
-              ),
-              class: "btn btn-primary",
-              style: "height: 38px; width: 300px;",
-              data: { turbo_frame: "modal" },
-              type: "button" %>
-
-            <script>
-              window.addEventListener('location:selected', function(event) {
-                const latitudeField = document.getElementById('latitudeValue');
-                const longitudeField = document.getElementById('longitudeValue');
-                const addressField = document.getElementById('addressValue');
-
-                latitudeField.value = event.detail.latitude;
-                longitudeField.value = event.detail.longitude;
-                addressField.value = event.detail.address;
-              });
-            </script>
-          </div>
-        </div>
+      <div class="d-flex flex-column">
+        <label class="form-label">Change location</label>
+        <%= render partial: "geolocations/search",
+          locals: { latitude: post.latitude, longitude: post.longitude, address: post.address } %>
       </div>
     </div>
 
@@ -143,9 +128,9 @@
 
     <div class="d-flex justify-content-start gap-2" role="group">
       <%= form.submit class: "btn btn-success" %>
-      <%= link_to "Cancel", trip_url(@trip),
-          type:"button",
-          class: "btn btn-secondary w-3" %>
+      <%= link_to "Cancel", trip_url(@post.trip),
+        type: "button",
+        class: "btn btn-secondary w-3" %>
     </div>
 
     <% if post.errors.any? %>
