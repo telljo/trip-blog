@@ -1,11 +1,10 @@
 <%= form_with(id: "post_form", model: [@trip, @post], data: { turbo: false }) do |form| %>
-  <div class="form d-flex flex-column gap-2 pb-5">
+  <div class="form d-flex flex-column gap-2 pb-5" data-controller="location">
     <div class="form__field">
       <%= form.label :title, class: "form-label" %>
       <%= form.text_field :title,
         class: "form-control",
-        placeholder: "Add a title",
-        autofocus: true %>
+        placeholder: "Add a title" %>
     </div>
 
     <div class="form__field">
@@ -13,6 +12,7 @@
       <%= form.rich_text_area :body,
         placeholder: "Add a trip description",
         class: "form-control rounded-top-0",
+        style: "max-height: 400px; overflow-y: auto;",
         size: "20x3", required: true %>
     </div>
     <% if @post.attachments.attached? %>
@@ -93,28 +93,38 @@
       </div>
     <% end %>
 
-    <div class="form__field">
-      <label for="formFile" class="form-label">Upload files</label>
-      <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
-    </div>
-
-    <div class="d-flex flex-column gap-2" data-controller="location">
-      <%= form.hidden_field :latitude,
-        id: "latitudeValue",
-        data: { location_target: "latitude"} %>
-      <%= form.hidden_field :longitude,
-        id: "longitudeValue",
-        data: { location_target: "longitude"} %>
-
-      <div class="class="form__field>
-        <label class="form-label">Current location</label>
-        <input data-location-target="address" id="addressValue"
-          value="<%= @post.address %>" type="text" name="selectedLocation"
-          class="form-control" placeholder="No location chosen" readonly>
+    <div class="d-flex flex-wrap gap-3">
+      <div class="form__field" style="max-width: 400px;">
+        <label for="formFile" class="form-label">Upload files</label>
+        <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
       </div>
 
-      <div class="d-flex flex-column">
-        <label class="form-label">Change location</label>
+      <div class="d-flex flex-column gap-2" style="max-width: 700px;">
+        <%= form.hidden_field :latitude,
+          id: "latitudeValue",
+          data: { location_target: "latitude"} %>
+        <%= form.hidden_field :longitude,
+          id: "longitudeValue",
+          data: { location_target: "longitude"} %>
+
+        <div class="form__field">
+          <label for="formFile" class="form-label">Location</label>
+          <div class="input-group">
+            <button class="btn location-btn" id="btnGroupAddon" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="text-wrap: nowrap;">
+              Choose location
+            </button>
+            <input data-location-target="address" id="addressValue"
+                aria-describedby="btnGroupAddon" aria-label="Location group"
+                value="<%= @post.address %>" type="text" name="selectedLocation"
+                class="form-control" placeholder="No location chosen" readonly>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body d-flex flex-column">
+        <label class="form-label">Set location</label>
         <%= render partial: "geolocations/search",
           locals: { latitude: post.latitude, longitude: post.longitude, address: post.address } %>
       </div>
