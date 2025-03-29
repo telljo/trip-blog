@@ -168,6 +168,11 @@ export default class extends Controller {
         .addTo(this.map);
 
       this.mapMarkers.push(marker);
+
+      // Register the MapLibre GL click event
+      this.map.on('click', (event) => {
+        this.clickMap(event); // Pass the MapLibre GL event to clickMap
+      });
     });
   }
 
@@ -175,16 +180,25 @@ export default class extends Controller {
     console.error(`Geolocation error: ${error.message}`);
   }
 
-  chooseLocation(event) {
+  clickMap(event) {
+    if (!event.lngLat) {
+      console.error("Invalid event: Missing lngLat property");
+      return;
+    }
+    const coordinates = [event.lngLat.lng, event.lngLat.lat];
+    this.chooseLocation(event, coordinates);
+  }
+
+  chooseLocation(event, coordinates = null) {
     event.preventDefault();
-    event.stopPropagation();
-    const coords = event.target.value.split(',').map(parseFloat);
+    const coords = coordinates || event.target.value.split(',').map(parseFloat);
+
     this.longitudeTarget.value = coords[0];
     this.latitudeTarget.value = coords[1];
     this.addressTarget.value = event.target.textContent;
     this.searchResultsTarget.classList.add("visually-hidden");
     this.selectedAddressTarget.value = event.target.textContent;
-    this.updateMap(event.target.value.split(',').map(parseFloat));
+    this.updateMap(coords);
   }
 
   updateMap(coordinates) {
