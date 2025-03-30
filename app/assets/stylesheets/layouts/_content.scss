@@ -9,6 +9,19 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.location-btn {
+  background-color: #2B3035;
+  color: white;
+  border: 1px solid #495057;
+  &:hover {
+    background-color: #343A3F;
+  }
+}
+
+.form-label {
+  font-weight: 600;
+}
+
 .post-image {
   max-width: 400px;
   max-height: 400px;

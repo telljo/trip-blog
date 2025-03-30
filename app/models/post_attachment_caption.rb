@@ -4,5 +4,5 @@ class PostAttachmentCaption < ApplicationRecord
 
   validates :post, presence: true
   validates :attachment, presence: true
-  validates :text, presence: true, length: { maximum: 50 }
+  validates :text, presence: true, length: { maximum: 100 }
 end

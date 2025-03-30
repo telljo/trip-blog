@@ -3,7 +3,7 @@ require "base64"
 class PostsController < ApplicationController
   include PostNotifier
   before_action :set_post, only: %i[show edit update destroy]
-  before_action :set_trip, only: %i[show edit update destroy]
+  before_action :set_trip, only: %i[edit update destroy]
   before_action :validate_user, only: %i[edit update destroy]
 
   # GET /posts
@@ -55,11 +55,12 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    if @post.update(post_params)
-      flash[:notice] = "Post was successfully updated."
-      redirect_to @trip
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @post.update(post_params)
+        format.html { redirect_to @trip }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 

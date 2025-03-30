@@ -223,7 +223,7 @@
                 new_post_path(trip_id: @trip.id),
                 class: "btn btn-success",
                 style: "max-height: 2.5em;",
-                data: { turbo_frame: dom_id(Post.new) } %>
+                data: { turbo: false } %>
             <% end %>
           </div>
           <hr>
@@ -238,7 +238,7 @@
 
           <div class="d-flex flex-column gap-4">
             <%= turbo_frame_tag "posts" do %>
-              <% @posts.each do |post| %>
+              <% @posts.order(created_at: :desc).each do |post| %>
                 <%= render "posts/post", post: post %>
               <% end %>
 

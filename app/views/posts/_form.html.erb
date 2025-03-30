@@ -1,11 +1,10 @@
-<%= form_with(id: "post_form", model: [@trip, @post]) do |form| %>
-  <div class="form d-flex flex-column gap-2">
+<%= form_with(id: "post_form", model: [@trip, @post], data: { turbo: false }) do |form| %>
+  <div class="form d-flex flex-column gap-2 pb-5" data-controller="location">
     <div class="form__field">
       <%= form.label :title, class: "form-label" %>
       <%= form.text_field :title,
         class: "form-control",
-        placeholder: "Add a title",
-        autofocus: true %>
+        placeholder: "Add a title" %>
     </div>
 
     <div class="form__field">
@@ -13,6 +12,7 @@
       <%= form.rich_text_area :body,
         placeholder: "Add a trip description",
         class: "form-control rounded-top-0",
+        style: "max-height: 400px; overflow-y: auto;",
         size: "20x3", required: true %>
     </div>
     <% if @post.attachments.attached? %>
@@ -60,6 +60,7 @@
                           <%= caption_form.hidden_field :attachment_id, value: attachment.id %>
                           <%= caption_form.hidden_field :post_id, value: post.id %>
                           <%= caption_form.text_field :text,
+                            maxlength: 100,
                             class: "form-control",
                             placeholder: "Add a caption" %>
                         </div>
@@ -93,43 +94,30 @@
       </div>
     <% end %>
 
-    <div class="d-flex flex-row gap-2 flex-wrap">
-      <div style="max-width: 400px;">
+    <div class="d-flex flex-wrap gap-3">
+      <div class="form__field" style="max-width: 400px;">
         <label for="formFile" class="form-label">Upload files</label>
         <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
       </div>
 
-      <div class="form__field d-flex flex-row gap-1 align-items-end">
-        <%= form.hidden_field :latitude, id: "latitudeValue" %>
-        <%= form.hidden_field :longitude, id: "longitudeValue" %>
+      <div class="d-flex flex-column gap-2" style="max-width: 700px;">
+        <%= form.hidden_field :latitude,
+          id: "latitudeValue",
+          data: { location_target: "latitude"} %>
+        <%= form.hidden_field :longitude,
+          id: "longitudeValue",
+          data: { location_target: "longitude"} %>
 
-        <div class="d-flex flex-column">
-          <label class="form-label">Set location</label>
-          <div class="d-flex flex-row gap-1">
-            <input id="addressValue" value="<%= @post.address %>" type="text" name="selectedLocation"
-              class="form-control" placeholder="No location chosen" readonly>
-            <%= link_to "Set location",
-              search_geolocations_path(
-                latitude: post.latitude,
-                longitude: post.longitude,
-                address: post.address
-              ),
-              class: "btn btn-primary",
-              style: "height: 38px; width: 300px;",
-              data: { turbo_frame: "modal" },
-              type: "button" %>
-
-            <script>
-              window.addEventListener('location:selected', function(event) {
-                const latitudeField = document.getElementById('latitudeValue');
-                const longitudeField = document.getElementById('longitudeValue');
-                const addressField = document.getElementById('addressValue');
-
-                latitudeField.value = event.detail.latitude;
-                longitudeField.value = event.detail.longitude;
-                addressField.value = event.detail.address;
-              });
-            </script>
+        <div class="form__field">
+          <label for="formFile" class="form-label">Location</label>
+          <div class="input-group">
+            <button class="btn location-btn" id="btnGroupAddon" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="text-wrap: nowrap;">
+              Choose location
+            </button>
+            <input data-location-target="address" id="addressValue"
+                aria-describedby="btnGroupAddon" aria-label="Location group"
+                value="<%= @post.address %>" type="text" name="selectedLocation"
+                class="form-control" placeholder="No location chosen" readonly>
           </div>
           <div class="form__field">
             <%= form.label :travel_type, class: "form-label" %>
@@ -142,6 +130,14 @@
       </div>
     </div>
 
+    <div class="collapse" id="collapseExample">
+      <div class="card card-body d-flex flex-column">
+        <label class="form-label">Set location</label>
+        <%= render partial: "geolocations/search",
+          locals: { latitude: post.latitude, longitude: post.longitude, address: post.address } %>
+      </div>
+    </div>
+
     <% if @trip %>
       <%= form.hidden_field :trip_id, value: @trip.id %>
     <% else %>
@@ -150,9 +146,9 @@
 
     <div class="d-flex justify-content-start gap-2" role="group">
       <%= form.submit class: "btn btn-success" %>
-      <%= link_to "Cancel", trip_url(@trip),
-          type:"button",
-          class: "btn btn-secondary w-3" %>
+      <%= link_to "Cancel", trip_url(@post.trip),
+        type: "button",
+        class: "btn btn-secondary w-3" %>
     </div>
 
     <% if post.errors.any? %>

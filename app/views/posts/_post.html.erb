@@ -1,5 +1,5 @@
-<div class="post">
-  <%= turbo_frame_tag dom_id(post) do %>
+<%= turbo_frame_tag dom_id(post) do %>
+  <div class="post">
     <div data-controller="map" class="d-flex flex-column w-100">
       <% if post.city %>
       <div class="d-flex flex-row flex-wrap gap-1 my-2">
@@ -56,8 +56,8 @@
                 <li>
                   <%= link_to "Edit post",
                       edit_post_path(post),
-                      data: { turbo_frame: dom_id(post) },
-                      class: "dropdown-item" %>
+                      class: "dropdown-item",
+                      data: { turbo: false } %>
                 </li>
                 <li>
                   <%= button_to "Delete post",
@@ -184,5 +184,5 @@
         </div>
       <% end %>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>
