@@ -10,6 +10,7 @@ class UserPostLikesController < ApplicationController
         format.html do
           redirect_to @post.trip
         end
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(@post) }
       else
         format.html { render @post.trip, status: :unprocessable_entity }
       end
@@ -22,6 +23,9 @@ class UserPostLikesController < ApplicationController
     respond_to do |format|
       format.html do
         redirect_to @post.trip
+      end
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(@post)
       end
     end
   end
