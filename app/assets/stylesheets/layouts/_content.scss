@@ -45,15 +45,10 @@ $trip-map-mobile-height: 300px;
 }
 
 .carousel-inner {
-  height: 400px;
-  margin-bottom: 1em;
+  transition: height 0.5s ease;
+  height: fit-content;
   overflow: visible;
   clip-path: inset(0 0 -100% 0);
-
-
-  @media screen and (max-width: $breakpoint) {
-    height: 300px;
-  }
 }
 
 .trip {
@@ -242,7 +237,8 @@ $trip-map-mobile-height: 300px;
   }
 
   .carousel-indicators {
-    margin-top: 100px;
+    position: relative;
+    margin-bottom: 0;
     filter: invert(0) grayscale(100%) !important;
     button {
       background-color: white !important;

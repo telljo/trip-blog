@@ -78,7 +78,6 @@
               <% post.attachments.each_with_index do |attachment, index| %>
                 <div
                   class="carousel-item <%= 'active' if index == 0 %>"
-                  style="height: 100%;"
                 >
                   <div
                     class="position-absolute d-flex top-0 m-2 bg-light-subtle border rounded-circle align-items-center justify-content-center"
@@ -98,8 +97,8 @@
                       <% end %>
 
                       <% if attachment.caption? %>
-                        <div class="p-2">
-                          <p class="mb-0 text-wrap"><%= attachment.caption.text %></p>
+                        <div style="padding-top: 0.5em;">
+                          <p class="mb-0 text-wrap text-center"><%= attachment.caption.text %></p>
                         </div>
                       <% end %>
                     </div>
