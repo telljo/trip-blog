@@ -60,6 +60,7 @@
                           <%= caption_form.hidden_field :attachment_id, value: attachment.id %>
                           <%= caption_form.hidden_field :post_id, value: post.id %>
                           <%= caption_form.text_field :text,
+                            maxlength: 100,
                             class: "form-control",
                             placeholder: "Add a caption" %>
                         </div>
