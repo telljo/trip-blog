@@ -89,7 +89,7 @@ export default class extends Controller {
       const postBottom = postTop + post.offsetHeight;
 
       if (scrollPosition >= postTop && scrollPosition <= postBottom) {
-        const postId = post.firstElementChild.id.split('_')[1];
+        const postId = post.id.split('_')[1];
         if (this.currentPostId !== postId) {
           this.currentPostId = postId;
           currentPost = post;
