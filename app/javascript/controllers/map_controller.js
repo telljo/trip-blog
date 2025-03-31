@@ -215,10 +215,11 @@ export default class extends Controller {
   }
 
   getBearing(firstCoordinates, secondCoordinates) {
-    const lat1 = firstCoordinates[1];
-    const lon1 = firstCoordinates[0];
-    const lat2 = secondCoordinates[1];
-    const lon2 = secondCoordinates[0];
+    const toRadians = (degrees) => degrees * (Math.PI / 180);
+    const lat1 = toRadians(firstCoordinates[1]);
+    const lon1 = toRadians(firstCoordinates[0]);
+    const lat2 = toRadians(secondCoordinates[1]);
+    const lon2 = toRadians(secondCoordinates[0]);
 
     const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
     const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
@@ -226,6 +227,7 @@ export default class extends Controller {
     brng = brng * (180 / Math.PI);
     brng = (brng + 360) % 360;
 
+    console.log(brng);
     return brng;
   }
 }
