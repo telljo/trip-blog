@@ -16,7 +16,7 @@ export default class extends Controller {
     const points = JSON.parse(mapElement.dataset.points);
     this.boatImagePath = mapElement.dataset.boatImagePath;
     this.planeImagePath = mapElement.dataset.planeImagePath;
-    this.busImagePath = mapElement.dataset.busImagePath;
+    this.busImagePaths = [mapElement.dataset.busLeftImagePath,mapElement.dataset.busRightImagePath];
     this.trainImagePath = mapElement.dataset.trainImagePath;
 
     // Initialize coordinatesMap
@@ -54,19 +54,17 @@ export default class extends Controller {
   }
 
   async initaliseMapImages() {
-    this.map.loadImage(this.planeImagePath);
     const planeImage = await this.map.loadImage(this.planeImagePath);
     this.map.addImage('plane', planeImage.data);
 
-    this.map.loadImage(this.boatImagePath);
     const boatImage = await this.map.loadImage(this.boatImagePath);
     this.map.addImage('boat', boatImage.data);
 
-    this.map.loadImage(this.busImagePath);
-    const busImage = await this.map.loadImage(this.busImagePath);
-    this.map.addImage('bus', busImage.data);
+    const busImageLeft = await this.map.loadImage(this.busImagePaths[0]);
+    this.map.addImage('bus-left', busImageLeft.data);
+    const busImageRight = await this.map.loadImage(this.busImagePaths[1]);
+    this.map.addImage('bus-right', busImageRight.data);
 
-    this.map.loadImage(this.trainImagePath);
     const trainImage = await this.map.loadImage(this.trainImagePath);
     this.map.addImage('train', trainImage.data);
   }
@@ -155,17 +153,33 @@ export default class extends Controller {
         }
       });
 
+      this.map.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': 'route',
+        'layout': {},
+        'paint': {
+          'line-color': '#FFF',
+          'line-width': 2,
+          'line-dasharray': [2, 1]
+        }
+      });
+
        // Symbol for bus travel
        this.map.addLayer({
         'id': 'symbol-bus',
         'type': 'symbol',
         'source': 'route',
         'layout': {
-            'icon-image': 'bus',
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'bus-left',                  // Use flipped icon
+                'bus-right'                  // Otherwise, use normal icon
+            ],
             'symbol-placement': 'line',
             'symbol-spacing': 200,
-            'icon-size': 0.10,
-            'icon-rotate': ['-', ['get', 'bearing'], 90],
+            'icon-size': 0.2,
         },
         'filter': ['==', ['get', 'travelType'], 'bus']
       });
@@ -179,9 +193,8 @@ export default class extends Controller {
             'icon-image': 'plane',
             'symbol-placement': 'line',
             'symbol-spacing': 200,
-            'icon-size': 0.15,
-            'icon-rotate': ['-', ['get', 'bearing'], 90],
-        },
+            'icon-size': 0.2
+            },
         'filter': ['==', ['get', 'travelType'], 'plane']
       });
 
@@ -194,22 +207,9 @@ export default class extends Controller {
             'icon-image': 'boat',
             'symbol-placement': 'line',
             'symbol-spacing': 200,
-            'icon-size': 0.15,
-            'icon-rotate': ['-', ['get', 'bearing'], 180],
+            'icon-size': 0.2
         },
         'filter': ['==', ['get', 'travelType'], 'boat']
-      });
-
-      this.map.addLayer({
-        'id': 'route',
-        'type': 'line',
-        'source': 'route',
-        'layout': {},
-        'paint': {
-          'line-color': '#FFF',
-          'line-width': 2,
-          'line-dasharray': [2, 1]
-        }
       });
     });
   }
