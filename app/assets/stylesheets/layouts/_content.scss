@@ -22,9 +22,17 @@ $trip-map-mobile-height: 300px;
   font-weight: 600;
 }
 
+.carousel-control-prev, .carousel-control-next {
+  z-index: 201;
+  height: 150px;
+  align-self: center;
+}
+
 .post-image {
   max-width: 400px;
   max-height: 400px;
+  z-index: 200;
+  position: relative;
 
   @media screen and (max-width: $breakpoint) {
     max-width: 300px;
