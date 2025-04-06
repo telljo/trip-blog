@@ -51,89 +51,88 @@
               <i class="bi bi-three-dots"></i>
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-              <li>
-                <%= link_to "Edit post",
-                    edit_post_path(post),
-                    class: "dropdown-item",
-                    data: { turbo: false } %>
-              </li>
-              <li>
-                <%= button_to "Delete post",
-                    post, method: :delete,
-                    data: { turbo: "false" },
-                    form: { data: { 'turbo-confirm': 'Are you sure?' } },
-                    class: "dropdown-item dropdown-item--danger" %>
-              </li>
-            </ul>
-          </div>
-        <% end %>
-      </span>
-    </div>
-    <div data-controller="toggle-post" class="d-flex flex-column align-items-center border gap-1 p-2">
-      <% if post.attachments.attached? %>
-        <div id="carouselExampleIndicators-<%= post.id %>" class="carousel slide d-flex flex-column">
-          <div class="carousel-inner">
-            <% post.attachments.each_with_index do |attachment, index| %>
-              <div
-                class="carousel-item <%= 'active' if index == 0 %>"
-                style="height: 100%;"
-              >
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                <li>
+                  <%= link_to "Edit post",
+                      edit_post_path(post),
+                      class: "dropdown-item",
+                      data: { turbo: false } %>
+                </li>
+                <li>
+                  <%= button_to "Delete post",
+                      post, method: :delete,
+                      data: { turbo: "false" },
+                      form: { data: { 'turbo-confirm': 'Are you sure?' } },
+                      class: "dropdown-item dropdown-item--danger" %>
+                </li>
+              </ul>
+            </div>
+          <% end %>
+        </span>
+      </div>
+      <div data-controller="toggle-post" class="d-flex flex-column align-items-center border gap-1 p-2">
+        <% if post.attachments.attached? %>
+          <div id="carouselExampleIndicators-<%= post.id %>" class="carousel slide d-flex flex-column">
+            <div class="carousel-inner">
+              <% post.attachments.each_with_index do |attachment, index| %>
                 <div
-                  class="position-absolute d-flex top-0 m-2 bg-light-subtle border rounded-circle align-items-center justify-content-center"
-                  style="z-index: 1; height: 30px; width: 30px;"
+                  class="carousel-item <%= 'active' if index == 0 %>"
                 >
-                  <p class="mb-0"><%= index + 1 %></p>
-                </div>
-                <div class="d-flex justify-content-center" style="height: inherit;">
                   <div
-                    class="d-flex flex-column justify-content-center align-items-center"
-                    style="height: inherit; width: 400px;"
+                    class="position-absolute d-flex top-0 m-2 bg-light-subtle border rounded-circle align-items-center justify-content-center"
+                    style="z-index: 201; height: 30px; width: 30px;"
                   >
-                    <% if attachment.image? %>
-                      <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank", class: "h-4 w-4" %>
-                    <% else %>
-                      <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
-                    <% end %>
+                    <p class="mb-0"><%= index + 1 %></p>
+                  </div>
+                  <div class="d-flex justify-content-center" style="height: inherit;">
+                    <div
+                      class="d-flex flex-column justify-content-center align-items-center"
+                      style="height: inherit; width: 400px;"
+                    >
+                      <% if attachment.image? %>
+                        <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank" %>
+                      <% else %>
+                        <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
+                      <% end %>
 
-                    <% if attachment.caption? %>
-                      <div class="p-2">
-                        <p class="mb-0 text-wrap"><%= attachment.caption.text %></p>
-                      </div>
-                    <% end %>
+                      <% if attachment.caption? %>
+                        <div style="padding-top: 0.5em;">
+                          <p class="mb-0 text-wrap text-center"><%= attachment.caption.text %></p>
+                        </div>
+                      <% end %>
+                    </div>
                   </div>
                 </div>
-              </div>
-            <% end %>
-          </div>
-          <% if post.attachments.count > 1 %>
-            <div class="carousel-indicators">
-              <% post.attachments.each_with_index do |attachment, index| %>
-                <button type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
               <% end %>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          <% end %>
+            <% if post.attachments.count > 1 %>
+              <div class="carousel-indicators">
+                <% post.attachments.each_with_index do |attachment, index| %>
+                  <button type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>
+                <% end %>
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators-<%= post.id %>" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            <% end %>
+          </div>
+        <% end %>
+        <div data-toggle-post-target="postPreview" class="post-preview">
+          <%= post.body.to_plain_text.truncate(300) %>
         </div>
-      <% end %>
-      <div data-toggle-post-target="postPreview" class="post-preview">
-        <%= post.body.to_plain_text.truncate(300) %>
+        <div data-toggle-post-target="postBody" class="post-body visually-hidden">
+          <%= post.body %>
+        </div>
+        <% if post.body.to_plain_text.length > 300 %>
+          <button class="btn btn-link" data-toggle-post-target="postButton" data-action="toggle-post#toggle">Read More</button>
+        <% end %>
       </div>
-      <div data-toggle-post-target="postBody" class="post-body visually-hidden">
-        <%= post.body %>
-      </div>
-      <% if post.body.to_plain_text.length > 300 %>
-        <button class="btn btn-link" data-toggle-post-target="postButton" data-action="toggle-post#toggle">Read More</button>
-      <% end %>
     </div>
-  </div>
 
   <div class="d-flex flex-column border rounded-bottom-2 px-2 py-1 bg-light-subtle gap-2">
     <div class="d-flex flex-row justify-content-between align-items-center">

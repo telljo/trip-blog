@@ -22,9 +22,17 @@ $trip-map-mobile-height: 300px;
   font-weight: 600;
 }
 
+.carousel-control-prev, .carousel-control-next {
+  z-index: 201;
+  height: 150px;
+  align-self: center;
+}
+
 .post-image {
   max-width: 400px;
   max-height: 400px;
+  z-index: 200;
+  position: relative;
 
   @media screen and (max-width: $breakpoint) {
     max-width: 300px;
@@ -45,15 +53,14 @@ $trip-map-mobile-height: 300px;
 }
 
 .carousel-inner {
-  height: 400px;
-  margin-bottom: 1em;
+  transition: height 0.5s ease;
+  height: fit-content;
   overflow: visible;
   clip-path: inset(0 0 -100% 0);
+}
 
-
-  @media screen and (max-width: $breakpoint) {
-    height: 300px;
-  }
+.carousel-item {
+  min-height: fit-content;
 }
 
 .trip {
@@ -242,7 +249,8 @@ $trip-map-mobile-height: 300px;
   }
 
   .carousel-indicators {
-    margin-top: 100px;
+    position: relative;
+    margin-bottom: 0;
     filter: invert(0) grayscale(100%) !important;
     button {
       background-color: white !important;
