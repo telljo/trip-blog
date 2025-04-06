@@ -51,6 +51,10 @@ $trip-map-mobile-height: 300px;
   clip-path: inset(0 0 -100% 0);
 }
 
+.carousel-item {
+  min-height: fit-content;
+}
+
 .trip {
   max-width: 1200px;
 

@@ -91,7 +91,7 @@
                       style="height: inherit; width: 400px;"
                     >
                       <% if attachment.image? %>
-                        <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank", class: "h-4 w-4" %>
+                        <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image"), attachment, target: "_blank" %>
                       <% else %>
                         <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
                       <% end %>
