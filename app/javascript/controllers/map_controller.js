@@ -15,8 +15,8 @@ export default class extends Controller {
     mapElement.innerHTML = '';
     const points = JSON.parse(mapElement.dataset.points);
     this.boatImagePath = mapElement.dataset.boatImagePath;
-    this.planeImagePath = mapElement.dataset.planeImagePath;
-    this.busImagePaths = [mapElement.dataset.busLeftImagePath,mapElement.dataset.busRightImagePath];
+    this.planeImagePaths = [mapElement.dataset.planeLeftImagePath, mapElement.dataset.planeRightImagePath];
+    this.busImagePaths = [mapElement.dataset.busLeftImagePath, mapElement.dataset.busRightImagePath];
     this.trainImagePath = mapElement.dataset.trainImagePath;
 
     // Initialize coordinatesMap
@@ -64,6 +64,11 @@ export default class extends Controller {
     this.map.addImage('bus-left', busImageLeft.data);
     const busImageRight = await this.map.loadImage(this.busImagePaths[1]);
     this.map.addImage('bus-right', busImageRight.data);
+
+    const planeImageLeft = await this.map.loadImage(this.planeImagePaths[0]);
+    this.map.addImage('plane-left', planeImageLeft.data);
+    const planeImageRight = await this.map.loadImage(this.planeImagePaths[1]);
+    this.map.addImage('plane-right', planeImageRight.data);
 
     const trainImage = await this.map.loadImage(this.trainImagePath);
     this.map.addImage('train', trainImage.data);
@@ -174,12 +179,18 @@ export default class extends Controller {
             'icon-image': [
                 'case',
                 ['<', ['get', 'bearing'], 180], // If bearing < 180
-                'bus-left',                  // Use flipped icon
-                'bus-right'                  // Otherwise, use normal icon
+                'bus-right',                    // Otherwise, use normal icon
+                'bus-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
             'symbol-spacing': 200,
             'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
         },
         'filter': ['==', ['get', 'travelType'], 'bus']
       });
@@ -190,10 +201,21 @@ export default class extends Controller {
         'type': 'symbol',
         'source': 'route',
         'layout': {
-            'icon-image': 'plane',
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'plane-right',                    // Otherwise, use normal icon
+                'plane-left'                      // Use flipped icon
+            ],
             'symbol-placement': 'line',
             'symbol-spacing': 200,
-            'icon-size': 0.2
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
             },
         'filter': ['==', ['get', 'travelType'], 'plane']
       });
@@ -227,7 +249,6 @@ export default class extends Controller {
     brng = brng * (180 / Math.PI);
     brng = (brng + 360) % 360;
 
-    console.log(brng);
     return brng;
   }
 }
