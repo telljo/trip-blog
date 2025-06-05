@@ -1,7 +1,8 @@
 require "base64"
 
 class PostsController < ApplicationController
-  include PostNotifier
+  # Comment out the post notifications temporarily
+  # include PostNotifier
   before_action :set_post, only: %i[show edit update destroy]
   before_action :set_trip, only: %i[edit update destroy]
   before_action :validate_user, only: %i[edit update destroy]
