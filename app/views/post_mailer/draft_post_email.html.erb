@@ -1,0 +1,29 @@
+<html>
+  <div
+    style="display: table; background: #5e77da; color: #fff; text-align: center; align-items: center;
+      border-radius: 0.5em; font-size: 1em; padding: 1em;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      width: 95%; margin: 0 auto; align-items: center;"
+  >
+    <div>
+      <%= email_image_tag("desktop-logo.png") %>
+    </div>
+    <div style="max-width: 30em; margin: 0 auto;">
+      <h2 style="margin-bottom: 0.5em;">Hi <%= @user.username %></h2>
+      <p><%= @post.user.username %> has just published a draft post:</p>
+
+
+      <% if @post.preview_image %>
+        <div style="border: 2px solid; border-radius: 10px; padding: 1em; max-width: 310px; background: white; margin: auto;">
+          <%= image_tag(url_for(@post.preview_image), style: "max-width: 300px; max-height: 300px;") %>
+
+          <p><strong><%= link_to @post.title, url_for(controller: 'posts', action: 'show', id: @post.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+        </div>
+      <% else %>
+        <p><strong><%= link_to @post.title, url_for(controller: 'posts', action: 'show', id: @post.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+      <% end %>
+
+      <p style="margin: 0.5em 0; margin-top: 1em;">Check it out  and don’t forget to leave a comment and share your thoughts. They’d love to hear from you!</p>
+    </div>
+  </div>
+</html>

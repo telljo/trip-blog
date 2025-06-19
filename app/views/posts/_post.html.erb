@@ -1,16 +1,23 @@
 <%= turbo_frame_tag dom_id(post), class:"post" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
-    <div class="d-flex flex-row flex-wrap gap-1 my-2">
-      <h4 class="mb-0"><%= post.title %></h4>
+      <div class="d-flex flex-row flex-wrap gap-1 my-2">
+        <h4 class="mb-0"><%= post.title %>
 
-      <div class="d-flex flex-row gap-1" data-action="click->map#moveToMarker" data-turbo-frame="_top">
-        <i class="bi bi-geo-alt align-content-center"></i>
-        <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
+        <%= "(DRAFT)" if post.draft %>
+        </h4>
+
+        <div class="d-flex flex-row gap-1" data-action="click->map#moveToMarker" data-turbo-frame="_top">
+          <i class="bi bi-geo-alt align-content-center"></i>
+          <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
+        </div>
       </div>
-    </div>
     <% else %>
-      <h4 class="text__link my-2"><%= post.title %></h4>
+      <h4 class="text__link my-2">
+        <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
+        <%= post.title %>
+        <%= "📝" if post.draft %>
+      </h4>
     <% end %>
   </div>
   <div class="bg-body">
@@ -38,7 +45,7 @@
           data: { turbo_frame: "_top" }
         %>
         <span class="desktop-only">
-          created this post on <%= post.created_at&.strftime("%B %d, %Y") %>
+          <%= post.draft? ? "drafted" : "created" %> this post on <%= post.created_at&.strftime("%B %d, %Y") %>
         </span>
         <span class="mobile-only">
           <%= post.created_at&.strftime("%B %d, %Y") %>
