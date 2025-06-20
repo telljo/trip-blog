@@ -216,7 +216,15 @@
           class="d-flex flex-column w-100"
         >
           <div class="d-flex flex-row justify-content-between align-items-center mt-3">
-            <h3 class="mb-0">Posts</h3>
+            <span class="d-flex flex-row gap-1">
+              <h3 class="mb-0">Posts</h3>
+
+              <h7 style="margin: auto;">
+                <span class="badge bg-primary">
+                  <%= @trip.posts.count %>
+                </span>
+              </h7>
+            </span>
 
             <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
               <%= link_to "Create new post",

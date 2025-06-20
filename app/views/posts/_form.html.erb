@@ -45,7 +45,7 @@
                 <%= link_to remove_attachment_trip_post_path(trip_id: @trip, post_id: @post.id, id: attachment.id),
                   class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
                   style:"height: 40px; width: 40px; z-index: 200;",
-                  data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
+                  data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
                   <i class="bi bi-trash-fill"></i>
                 <% end %>
                 <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
@@ -74,7 +74,7 @@
                       <%= link_to remove_attachment_caption_post_post_attachment_caption_path(post_id: @post.id, attachment_id: attachment.id),
                         class:"btn btn-danger d-flex justify-content-center align-items-center mt-1 me-1",
                         style:"height: 40px; width: 40px; z-index: 200;",
-                        data: { turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
+                        data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
                         <i class="bi bi-trash-fill"></i>
                       <% end %>
                     </div>
