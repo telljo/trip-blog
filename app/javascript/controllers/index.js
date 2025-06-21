@@ -24,3 +24,6 @@ application.register("toggle-post", TogglePostController)
 
 import ToggleThemeController from "./toggle_theme_controller"
 application.register("toggle-theme", ToggleThemeController)
+
+import DropdownController from "./dropdown_controller"
+application.register("dropdown", DropdownController)

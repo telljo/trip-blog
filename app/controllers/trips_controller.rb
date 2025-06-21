@@ -9,7 +9,11 @@ class TripsController < ApplicationController
 
   # GET /trips/1
   def show
-    @pagy, @posts = pagy(@trip.posts.order(created_at: :desc), items: 5)
+    if params[:country].present?
+      @pagy, @posts = pagy(@trip.posts.where(country: params[:country]).order(created_at: :desc), items: 5)
+    else
+      @pagy, @posts = pagy(@trip.posts.order(created_at: :desc), items: 5)
+    end
     respond_to do |format|
       format.html
       format.turbo_stream

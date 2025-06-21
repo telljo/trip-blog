@@ -235,6 +235,28 @@
             <% end %>
           </div>
           <hr>
+          <%# FILTERING and SORTING %>
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-filter"></i>
+              Filters
+            </button>
+            <ul class="dropdown-menu">
+              <li class="dropdown-submenu" data-controller="dropdown">
+                <div class="btn-group dropend">
+                  <a class="dropdown-item dropdown-toggle" href="#">Country</a>
+                  <ul class="dropdown-menu">
+                    <% @trip.countries.each do | country| %>
+                      <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, country: country), data: { turbo_frame: "_top" } do %>
+                        <% country %>
+                      <% end %>
+                    <% end %>
+                  </ul>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <%#  %>
           <%= turbo_frame_tag Post.new do %>
             <% if @trip.posts.none? %>
               <div class="d-flex justify-content-center w-100">
@@ -246,7 +268,8 @@
 
           <div class="d-flex flex-column gap-4">
             <%= turbo_frame_tag "posts" do %>
-              <% @posts.order(created_at: :desc).each do |post| %>
+
+              <% @posts.each do |post| %>
                 <%= render "posts/post", post: post %>
               <% end %>
 

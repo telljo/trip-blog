@@ -9,6 +9,20 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.dropdown-submenu {
+  position: relative;
+  z-index: 1000;
+
+  .dropdown-menu {
+    position: absolute;
+    left: 10em;
+  }
+
+  .dropdown-item {
+    width: 100%;
+  }
+}
+
 .location-btn {
   background-color: #2B3035;
   color: white;
