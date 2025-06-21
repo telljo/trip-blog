@@ -240,7 +240,7 @@
                 <a class="dropdown-item dropdown-toggle" href="#">Country</a>
                 <ul class="dropdown-menu">
                   <% @trip.countries.each do | country| %>
-                    <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, filters: {country: country}), data: { turbo_frame: "_top" } do %>
+                    <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, filters: {country: country}), data: { turbo_frame: "_top" }, class: "dropdown-item" do %>
                       <% country %>
                     <% end %>
                   <% end %>
