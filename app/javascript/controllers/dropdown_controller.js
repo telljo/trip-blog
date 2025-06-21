@@ -13,11 +13,19 @@ export default class extends Controller {
         }
       });
 
+      let closeTimeout;
+
       submenu.addEventListener('mouseout', function () {
-        const dropdownMenu = submenu.querySelector('.dropdown-menu');
-        if (dropdownMenu) {
-          dropdownMenu.classList.remove('show');
-        }
+        closeTimeout = setTimeout(() => {
+          const dropdownMenu = submenu.querySelector('.dropdown-menu');
+          if (dropdownMenu) {
+            dropdownMenu.classList.remove('show');
+          }
+        }, 300);
+      });
+
+      submenu.addEventListener('mouseover', function () {
+        clearTimeout(closeTimeout);
       });
     });
   }

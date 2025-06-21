@@ -9,8 +9,8 @@ class TripsController < ApplicationController
 
   # GET /trips/1
   def show
-    if params[:country].present?
-      @pagy, @posts = pagy(@trip.posts.where(country: params[:country]).order(created_at: :desc), items: 5)
+    if filter_params[:country].present?
+      @pagy, @posts = pagy(@trip.posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
     else
       @pagy, @posts = pagy(@trip.posts.order(created_at: :desc), items: 5)
     end
@@ -74,5 +74,9 @@ class TripsController < ApplicationController
     params.require(:trip).permit(:name, :body, companions_attributes: [ :id, :user_id, :_destroy ]).tap do |whitelisted|
       whitelisted[:companions_attributes]&.reject! { |_, companion| companion[:user_id].blank? }
     end
+  end
+
+  def filter_params
+    params.fetch(:filters, {}).permit(:country)
   end
 end

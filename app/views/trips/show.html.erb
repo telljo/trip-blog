@@ -208,6 +208,52 @@
       </p>
     </div>
     <div class="trip-content">
+      <div class="d-flex flex-row justify-content-between align-items-center mt-3">
+        <span class="d-flex flex-row gap-1">
+          <h3 class="mb-0">Posts</h3>
+
+          <h7 style="margin: auto;">
+            <span class="badge bg-primary">
+              <%= @trip.posts.count %>
+            </span>
+          </h7>
+        </span>
+
+        <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
+          <%= link_to "Create new post",
+            new_post_path(trip_id: @trip.id),
+            class: "btn btn-success",
+            style: "max-height: 2.5em;",
+            data: { turbo: false } %>
+        <% end %>
+      </div>
+      <%# FILTERING and SORTING %>
+      <div class="d-flex flex-row gap-1 my-3" data-controller="filter">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-filter-target="filterButton" aria-expanded="false">
+            <i class="bi bi-filter"></i>
+            Filters
+          </button>
+          <ul class="dropdown-menu">
+            <li class="dropdown-submenu" data-controller="dropdown">
+              <div class="btn-group dropend" style="width: 100%;">
+                <a class="dropdown-item dropdown-toggle" href="#">Country</a>
+                <ul class="dropdown-menu">
+                  <% @trip.countries.each do | country| %>
+                    <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, filters: {country: country}), data: { turbo_frame: "_top" } do %>
+                      <% country %>
+                    <% end %>
+                  <% end %>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="d-flex flex-row gap-1" data-filter-target="filterContainer">
+        </div>
+      </div>
+      <%#  %>
+      <hr>
       <div
         class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1" id="<%= dom_id @trip %>"
         data-controller="map"
@@ -215,48 +261,6 @@
         <div
           class="d-flex flex-column w-100"
         >
-          <div class="d-flex flex-row justify-content-between align-items-center mt-3">
-            <span class="d-flex flex-row gap-1">
-              <h3 class="mb-0">Posts</h3>
-
-              <h7 style="margin: auto;">
-                <span class="badge bg-primary">
-                  <%= @trip.posts.count %>
-                </span>
-              </h7>
-            </span>
-
-            <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-              <%= link_to "Create new post",
-                new_post_path(trip_id: @trip.id),
-                class: "btn btn-success",
-                style: "max-height: 2.5em;",
-                data: { turbo: false } %>
-            <% end %>
-          </div>
-          <hr>
-          <%# FILTERING and SORTING %>
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-filter"></i>
-              Filters
-            </button>
-            <ul class="dropdown-menu">
-              <li class="dropdown-submenu" data-controller="dropdown">
-                <div class="btn-group dropend">
-                  <a class="dropdown-item dropdown-toggle" href="#">Country</a>
-                  <ul class="dropdown-menu">
-                    <% @trip.countries.each do | country| %>
-                      <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, country: country), data: { turbo_frame: "_top" } do %>
-                        <% country %>
-                      <% end %>
-                    <% end %>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <%#  %>
           <%= turbo_frame_tag Post.new do %>
             <% if @trip.posts.none? %>
               <div class="d-flex justify-content-center w-100">
