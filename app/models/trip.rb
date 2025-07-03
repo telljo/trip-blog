@@ -16,6 +16,10 @@ class Trip < ApplicationRecord
     followers.exists?(user: user)
   end
 
+  def countries
+    posts.with_location.pluck(:country).uniq.compact.sort
+  end
+
   private
 
   def broadcast_companions

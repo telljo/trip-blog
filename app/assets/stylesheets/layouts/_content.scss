@@ -9,6 +9,27 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.filter-item {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+  align-items: center;
+}
+
+.dropdown-submenu {
+  position: relative;
+  z-index: 1000;
+
+  .dropdown-menu {
+    position: absolute;
+    left: 10em;
+  }
+
+  .dropdown-item {
+    width: 100%;
+  }
+}
+
 .location-btn {
   background-color: #2B3035;
   color: white;

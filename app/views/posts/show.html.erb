@@ -1,1 +1,7 @@
-<%= render @post %>
+<div class="d-flex flex-column">
+  <%= link_to trip_path(@post.trip), class: "btn btn-primary", style:"width:9em; align-self: end;" do %>
+    <i class="bi bi-arrow-left"></i>
+    Back to trip
+  <% end %>
+  <%= render @post %>
+</div>

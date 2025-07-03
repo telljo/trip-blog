@@ -4,4 +4,8 @@ class PostMailerPreview < ActionMailer::Preview
   def new_post_email
     PostMailer.new_post_email(User.first, Post.first)
   end
+
+  def draft_post_email
+    PostMailer.draft_post_email(User.first, Post.first)
+  end
 end

@@ -107,6 +107,7 @@ class PostsController < ApplicationController
       :trip_id,
       :latitude,
       :longitude,
+      :draft,
       :travel_type,
       attachments: [],
       post_attachment_captions_attributes: [

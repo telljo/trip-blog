@@ -21,7 +21,7 @@ class Post < ApplicationRecord
       obj.street  = geo.street_address
       obj.city    = geo.city
       obj.state = geo.state
-      obj.country = geo.country_code
+      obj.country = geo.country
     else
       Rails.logger.debug "Geocoding results are empty for latitude: #{obj.latitude}, longitude: #{obj.longitude}"
     end

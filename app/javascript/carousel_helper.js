@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const carousel = document.querySelector('.carousel');
 
-  const inner = carousel.querySelector('.carousel-inner');
+  if (carousel) {
+    const inner = carousel.querySelector('.carousel-inner');
 
   // Function to update the height of the carousel
   const updateCarouselHeight = () => {
@@ -17,4 +18,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Update height on slide change
   carousel.addEventListener('slid.bs.carousel', updateCarouselHeight);
+  }
 });

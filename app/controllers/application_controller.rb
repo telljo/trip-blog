@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pagy::Backend
+  include Pagy::Frontend
   before_action :set_current_request_details
   before_action :authenticate
 
