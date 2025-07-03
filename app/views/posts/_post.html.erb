@@ -1,4 +1,4 @@
-<%= turbo_frame_tag dom_id(post), class:"post" do %>
+<%= turbo_frame_tag dom_id(post), class:"post", style:"max-width: 50em;" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
       <div class="d-flex flex-row flex-wrap gap-1 my-2">
