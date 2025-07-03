@@ -324,14 +324,6 @@
               <% @posts.each do |post| %>
                 <%= render "posts/post", post: post %>
               <% end %>
-
-              <% if @pagy.next.present? %>
-                <%= turbo_frame_tag :pagination, src: trip_path(page: @pagy.next, format: :turbo_stream), loading: :lazy do %>
-                  <div class="spinner-border text-primary mt-3 align-self-center" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                  </div>
-                <% end %>
-              <% end %>
             <% end %>
           </div>
         </div>
@@ -342,9 +334,13 @@
             style="max-height: 500px;"
             data-map-target="map"
             id="posts-map"
-            data-points='<%= raw generated_points(@trip) %>'>
+            data-points='<%= raw generated_points(@trip, @pagy) %>'>
           </div>
         <% end %>
+      </div>
+      <div class="d-flex w-100 justify-content-center my-5">
+        <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
+        <%== pagy_bootstrap_nav(@pagy, **vars) %>
       </div>
     </div>
   </div>

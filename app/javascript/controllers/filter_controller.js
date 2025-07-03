@@ -20,8 +20,14 @@ export default class extends Controller {
       if (this.filterContainerTarget) {
         filters.forEach(filter => {
           // Create a new div element for each filter
+          const filterElementId = `filter-${Object.keys(filter)[0]}`;
+          if (document.getElementById(filterElementId)) {
+            return; // Skip if the filter element already exists
+          }
           const filterElement = document.createElement('div');
           filterElement.classList.add('filter-item');
+          filterElement.id = filterElementId;
+
           const [key, value] = Object.entries(filter)[0];
           const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
           filterElement.textContent = `${capitalizedKey}: ${value}`;

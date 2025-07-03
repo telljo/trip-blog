@@ -4,7 +4,11 @@
       <div class="d-flex flex-row flex-wrap gap-1 my-2">
         <h4 class="my-2">
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
-          <%= post.title %>
+          <%= link_to post_path(post),
+            style:"width: max-content;",
+            data: { turbo_frame: "_top" } do %>
+            <%= post.title %>
+          <% end %>
           <%= "📝" if post.draft %>
         </h4>
 
@@ -16,7 +20,11 @@
     <% else %>
       <h4 class="text__link my-2">
         <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
-        <%= post.title %>
+        <%= link_to post_path(post),
+          style:"width: max-content;",
+          data: { turbo_frame: "_top" } do %>
+          <%= post.title %>
+        <% end %>
         <%= "📝" if post.draft %>
       </h4>
     <% end %>
