@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(post), class:"post", style:"max-width: 50em;" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
-      <div class="d-flex flex-column flex-wrap gap-1 my-2">
+      <div class="d-flex flex-column flex-wrap my-2">
         <h4 class="my-2">
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
           <%= link_to post_path(post),
@@ -15,6 +15,14 @@
         <div class="d-flex flex-row gap-1" data-action="click->map#moveToMarker" data-turbo-frame="_top">
           <i class="bi bi-geo-alt align-content-center"></i>
           <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
+          <% if post.travel_type %>
+            <div class="bg-light rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="<%= post.travel_type.humanize %>">
+              <img
+                class="img-fluid"
+                src="<%= asset_path(post.travel_type + "-left.png") %>"
+              />
+            </div>
+          <% end %>
         </div>
       </div>
     <% else %>
