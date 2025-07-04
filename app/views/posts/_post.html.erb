@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(post), class:"post", style:"max-width: 50em;" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
-      <div class="d-flex flex-row flex-wrap gap-1 my-2">
+      <div class="d-flex flex-column flex-wrap gap-1 my-2">
         <h4 class="my-2">
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
           <%= link_to post_path(post),

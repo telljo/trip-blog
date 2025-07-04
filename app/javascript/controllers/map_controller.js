@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import maplibregl from 'maplibre-gl';
+import { Map, FullscreenControl } from 'maplibre-gl';
+
 
 export default class extends Controller {
   static targets = ["map"];
@@ -13,11 +14,9 @@ export default class extends Controller {
     this.currentPostId = null;
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
+
+    // Potentially add caching with this??????
     const points = JSON.parse(mapElement.dataset.points);
-    this.boatImagePath = mapElement.dataset.boatImagePath;
-    this.planeImagePaths = [mapElement.dataset.planeLeftImagePath, mapElement.dataset.planeRightImagePath];
-    this.busImagePaths = [mapElement.dataset.busLeftImagePath, mapElement.dataset.busRightImagePath];
-    this.trainImagePath = mapElement.dataset.trainImagePath;
 
     // Initialize coordinatesMap
     this.coordinatesMap = points.reduce((acc, point) => {
@@ -33,6 +32,9 @@ export default class extends Controller {
       center: [firstPoint.longitude, firstPoint.latitude],
       zoom: 10
     });
+
+    this.map.addControl(new FullscreenControl({container: document.querySelector('body')}));
+
 
     this.initaliseMapImages();
 
@@ -54,24 +56,48 @@ export default class extends Controller {
   }
 
   async initaliseMapImages() {
-    const planeImage = await this.map.loadImage(this.planeImagePath);
-    this.map.addImage('plane', planeImage.data);
+    const images = JSON.parse(this.mapTarget.dataset.images);
+    // Load boat images
+    const boatImageLeft = await this.map.loadImage(images.boat.left);
+    this.map.addImage('boat-left', boatImageLeft.data);
+    const boatImageRight = await this.map.loadImage(images.boat.right);
+    this.map.addImage('boat-right', boatImageRight.data);
 
-    const boatImage = await this.map.loadImage(this.boatImagePath);
-    this.map.addImage('boat', boatImage.data);
-
-    const busImageLeft = await this.map.loadImage(this.busImagePaths[0]);
+    // Load bus images
+    const busImageLeft = await this.map.loadImage(images.bus.left);
     this.map.addImage('bus-left', busImageLeft.data);
-    const busImageRight = await this.map.loadImage(this.busImagePaths[1]);
+    const busImageRight = await this.map.loadImage(images.bus.right);
     this.map.addImage('bus-right', busImageRight.data);
 
-    const planeImageLeft = await this.map.loadImage(this.planeImagePaths[0]);
+    // Load plane images
+    const planeImageLeft = await this.map.loadImage(images.plane.left);
     this.map.addImage('plane-left', planeImageLeft.data);
-    const planeImageRight = await this.map.loadImage(this.planeImagePaths[1]);
+    const planeImageRight = await this.map.loadImage(images.plane.right);
     this.map.addImage('plane-right', planeImageRight.data);
 
-    const trainImage = await this.map.loadImage(this.trainImagePath);
-    this.map.addImage('train', trainImage.data);
+    // Load walk images
+    const walkImageLeft = await this.map.loadImage(images.walk.left);
+    this.map.addImage('walk-left', walkImageLeft.data);
+    const walkImageRight = await this.map.loadImage(images.walk.right);
+    this.map.addImage('walk-right', walkImageRight.data);
+
+    // Load motorbike images
+    const motorbikeImageLeft = await this.map.loadImage(images.motorbike.left);
+    this.map.addImage('motorbike-left', motorbikeImageLeft.data);
+    const motorbikeImageRight = await this.map.loadImage(images.motorbike.right);
+    this.map.addImage('motorbike-right', motorbikeImageRight.data);
+
+    // Load car images
+    const carImageLeft = await this.map.loadImage(images.car.left);
+    this.map.addImage('car-left', carImageLeft.data);
+    const carImageRight = await this.map.loadImage(images.car.right);
+    this.map.addImage('car-right', carImageRight.data);
+
+    // Load rickshaw images
+    const rickshawImageLeft = await this.map.loadImage(images.rickshaw.left);
+    this.map.addImage('rickshaw-left', rickshawImageLeft.data);
+    const rickshawImageRight = await this.map.loadImage(images.rickshaw.right);
+    this.map.addImage('rickshaw-right', rickshawImageRight.data);
   }
 
   handleScroll() {
@@ -124,20 +150,10 @@ export default class extends Controller {
   }
 
   addMapLayers(points) {
-    const pointData = points.reverse().map((point, index) => {
-      if (index == points.length - 1) {
-        return;
-      }
-      let nextPoint = points[index + 1];
-      return {
-        coordinates: [
-          [point.longitude, point.latitude], // Current point
-          [nextPoint.longitude, nextPoint.latitude] // Next point
-        ],
-        bearing: this.getBearing([point.longitude, point.latitude], [nextPoint.longitude, nextPoint.latitude]),
-        travelType: nextPoint.travelType // Use travelType of the second point
-      };
-    }).filter(Boolean);
+    // If cached point data exists, use it. Otherwise, process the points and cache the result
+    const cacheKey = `mapLayers_${JSON.stringify(points)}`;
+    const cachedPointData = localStorage.getItem(cacheKey);
+    const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
 
     this.map.on('load', () => {
       this.map.addSource('route', {
@@ -191,9 +207,9 @@ export default class extends Controller {
                 360,
                 180
             ]
-        },
-        'filter': ['==', ['get', 'travelType'], 'bus']
-      });
+          },
+          'filter': ['==', ['get', 'travelType'], 'bus']
+        });
 
       // Symbol for plane travel
       this.map.addLayer({
@@ -216,7 +232,7 @@ export default class extends Controller {
                 360,
                 180
             ]
-            },
+          },
         'filter': ['==', ['get', 'travelType'], 'plane']
       });
 
@@ -226,14 +242,145 @@ export default class extends Controller {
         'type': 'symbol',
         'source': 'route',
         'layout': {
-            'icon-image': 'boat',
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'boat-right',                    // Otherwise, use normal icon
+                'boat-left'                      // Use flipped icon
+            ],
             'symbol-placement': 'line',
             'symbol-spacing': 200,
-            'icon-size': 0.2
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
         },
         'filter': ['==', ['get', 'travelType'], 'boat']
       });
+
+      // Symbol for walk travel
+      this.map.addLayer({
+        'id': 'symbol-walk',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'walk-right',                    // Otherwise, use normal icon
+                'walk-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'walk']
+      });
+
+      // Symbol for car travel
+      this.map.addLayer({
+        'id': 'symbol-car',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'car-right',                    // Otherwise, use normal icon
+                'car-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'car']
+      });
+
+      // Symbol for motorbike travel
+      this.map.addLayer({
+        'id': 'symbol-motorbike',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'motorbike-right',                    // Otherwise, use normal icon
+                'motorbike-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'motorbike']
+      });
+
+      // Symbol for rickshaw travel
+      this.map.addLayer({
+        'id': 'symbol-rickshaw',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'rickshaw-right',                    // Otherwise, use normal icon
+                'rickshaw-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 200,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'rickshaw']
+      });
     });
+  }
+
+  processPointData(points, cacheKey) {
+    const data = points.reverse().map((point, index) => {
+      if (index == points.length - 1) {
+        return;
+      }
+      let nextPoint = points[index + 1];
+      return {
+        coordinates: [
+          [point.longitude, point.latitude], // Current point
+          [nextPoint.longitude, nextPoint.latitude] // Next point
+        ],
+        bearing: this.getBearing([point.longitude, point.latitude], [nextPoint.longitude, nextPoint.latitude]),
+        travelType: nextPoint.travelType // Use travelType of the second point
+      };
+    }).filter(Boolean);
+
+    localStorage.setItem(cacheKey, JSON.stringify(data));
+    return data;
   }
 
   getBearing(firstCoordinates, secondCoordinates) {

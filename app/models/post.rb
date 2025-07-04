@@ -3,7 +3,7 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :comments, class_name: "PostComment", dependent: :destroy
   has_many :likes, class_name: "UserPostLike", dependent: :destroy
-  enum :travel_type, [ :train, :bus, :car, :rickshaw, :motorbike, :boat, :plane, :bicycle, :foot ]
+  enum :travel_type, [ :train, :bus, :car, :rickshaw, :motorbike, :boat, :plane, :walk ]
   validates :title, presence: true
   validates :body, presence: true
 
