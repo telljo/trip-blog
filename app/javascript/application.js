@@ -3,9 +3,14 @@ import "@hotwired/turbo-rails"
 import "./controllers"
 import * as ActiveStorage from "@rails/activestorage";
 ActiveStorage.start();
-import * as bootstrap from "bootstrap"
 
 import "trix"
 import "@rails/actiontext"
 import "./direct_uploads"
 import "./carousel_helper"
+
+
+import 'bootstrap';
+import * as bootstrap from 'bootstrap';
+
+window.bootstrap = bootstrap;

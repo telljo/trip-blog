@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ["map"];
 
   connect() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
     if(!this.hasMapTarget) {
@@ -77,11 +77,11 @@ export default class extends Controller {
     const planeImageRight = await this.map.loadImage(images.plane.right);
     this.map.addImage('plane-right', planeImageRight.data);
 
-    // Load walk images
-    const walkImageLeft = await this.map.loadImage(images.walk.left);
-    this.map.addImage('walk-left', walkImageLeft.data);
-    const walkImageRight = await this.map.loadImage(images.walk.right);
-    this.map.addImage('walk-right', walkImageRight.data);
+    // Load walkinging images
+    const walkingImageLeft = await this.map.loadImage(images.walking.left);
+    this.map.addImage('walking-left', walkingImageLeft.data);
+    const walkingImageRight = await this.map.loadImage(images.walking.right);
+    this.map.addImage('walking-right', walkingImageRight.data);
 
     // Load motorbike images
     const motorbikeImageLeft = await this.map.loadImage(images.motorbike.left);
@@ -263,17 +263,17 @@ export default class extends Controller {
         'filter': ['==', ['get', 'travelType'], 'boat']
       });
 
-      // Symbol for walk travel
+      // Symbol for walking travel
       this.map.addLayer({
-        'id': 'symbol-walk',
+        'id': 'symbol-walking',
         'type': 'symbol',
         'source': 'route',
         'layout': {
             'icon-image': [
                 'case',
                 ['<', ['get', 'bearing'], 180], // If bearing < 180
-                'walk-right',                    // Otherwise, use normal icon
-                'walk-left'                      // Use flipped icon
+                'walking-right',                    // Otherwise, use normal icon
+                'walking-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
             'symbol-spacing': 200,
@@ -285,7 +285,7 @@ export default class extends Controller {
                 180
             ]
         },
-        'filter': ['==', ['get', 'travelType'], 'walk']
+        'filter': ['==', ['get', 'travelType'], 'walking']
       });
 
       // Symbol for car travel
