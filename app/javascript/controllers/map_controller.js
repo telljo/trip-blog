@@ -77,7 +77,7 @@ export default class extends Controller {
     const planeImageRight = await this.map.loadImage(images.plane.right);
     this.map.addImage('plane-right', planeImageRight.data);
 
-    // Load walkinging images
+    // Load walking images
     const walkingImageLeft = await this.map.loadImage(images.walking.left);
     this.map.addImage('walking-left', walkingImageLeft.data);
     const walkingImageRight = await this.map.loadImage(images.walking.right);
@@ -100,6 +100,12 @@ export default class extends Controller {
     this.map.addImage('rickshaw-left', rickshawImageLeft.data);
     const rickshawImageRight = await this.map.loadImage(images.rickshaw.right);
     this.map.addImage('rickshaw-right', rickshawImageRight.data);
+
+    // Load train images
+    const trainImageLeft = await this.map.loadImage(images.train.left);
+    this.map.addImage('train-left', trainImageLeft.data);
+    const trainImageRight = await this.map.loadImage(images.train.right);
+    this.map.addImage('train-right', trainImageRight.data);
   }
 
   handleScroll() {
@@ -201,7 +207,7 @@ export default class extends Controller {
                 'bus-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -226,7 +232,7 @@ export default class extends Controller {
                 'plane-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -251,7 +257,7 @@ export default class extends Controller {
                 'boat-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -276,7 +282,7 @@ export default class extends Controller {
                 'walking-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -301,7 +307,7 @@ export default class extends Controller {
                 'car-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -326,7 +332,7 @@ export default class extends Controller {
                 'motorbike-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -351,7 +357,7 @@ export default class extends Controller {
                 'rickshaw-left'                      // Use flipped icon
             ],
             'symbol-placement': 'line',
-            'symbol-spacing': 200,
+            'symbol-spacing': 100,
             'icon-size': 0.2,
             'icon-rotate': [
               'case',
@@ -361,6 +367,31 @@ export default class extends Controller {
             ]
         },
         'filter': ['==', ['get', 'travelType'], 'rickshaw']
+      });
+
+      // Symbol for train travel
+      this.map.addLayer({
+        'id': 'symbol-train',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'train-right',                    // Otherwise, use normal icon
+                'train-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 100,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'train']
       });
     });
   }
