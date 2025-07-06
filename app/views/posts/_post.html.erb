@@ -18,7 +18,7 @@
             <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
           </span>
           <% if post.travel_type %>
-            <div class="bg-light-subtle bg-gradient rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Travelled by <%= post.travel_type %>">
+            <div class="bg-light bg-gradient rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Travelled by <%= post.travel_type %>">
               <img
                 class="img-fluid"
                 src="<%= asset_path(post.travel_type + "-left.png") %>"

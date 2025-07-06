@@ -2,10 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="dropdpown"
 export default class extends Controller {
-  static targets = ["filterContainer", "filterButton"];
+  static targets = ["filterContainerDesktop", "filterContainerMobile", "filterButton"];
   connect() {
-    const urlParams = new URLSearchParams(window.location.search);
     const filters = [];
+    const urlParams = new URLSearchParams(window.location.search);
 
     urlParams.forEach((value, key) => {
       if (key.startsWith("filters[")) {
@@ -14,10 +14,26 @@ export default class extends Controller {
       }
     });
 
+    let filterContainer = null;
+
+    if (window.innerWidth <= 768) {
+      if (this.hasFilterContainerMobileTarget) {
+        filterContainer = this.filterContainerMobileTarget;
+      }
+    } else {
+      if (this.hasFilterContainerDesktopTarget) {
+        filterContainer = this.filterContainerDesktopTarget;
+      }
+    }
+
+    this.doFiltering(filters, urlParams, filterContainer);
+  }
+
+  doFiltering(filters, urlParams, filterContainer) {
     if (filters.length > 0) {
       this.filterButtonTarget.classList.add('bg-primary');
 
-      if (this.filterContainerTarget) {
+      if (filterContainer) {
         filters.forEach(filter => {
           // Create a new div element for each filter
           const filterElementId = `filter-${Object.keys(filter)[0]}`;
@@ -46,14 +62,14 @@ export default class extends Controller {
 
           // Append the close button to the filter element
           filterElement.appendChild(closeButton);
-          this.filterContainerTarget.appendChild(filterElement);
+          filterContainer.appendChild(filterElement);
         });
       }
     }
     else {
       this.filterButtonTarget.classList.remove('bg-primary');
-      if (this.filterContainerTarget) {
-        this.filterContainerTarget.innerHTML = ''; // Clear the filter container
+      if (filterContainer) {
+        filterContainer.innerHTML = ''; // Clear the filter container
       }
     }
   }
