@@ -54,9 +54,9 @@ export default class extends Controller {
           closeButton.classList.add('btn-close');
           closeButton.type = 'button';
           closeButton.onclick = () => {
-            // Remove the filter from the URL and reload the page
+            // Remove the filter from the URL and perform a Turbo reload
             urlParams.delete(`filters[${key}]`);
-            window.location.search = urlParams.toString();
+            Turbo.visit(`${window.location.pathname}?${urlParams.toString()}`);
           };
           closeButton.setAttribute('aria-label', 'Close');
 

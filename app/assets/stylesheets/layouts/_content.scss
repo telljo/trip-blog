@@ -9,6 +9,10 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
+.dropend .dropdown-toggle::after {
+  height: 0.5em;
+}
+
 .filter-item {
   display: flex;
   flex-direction: row;
