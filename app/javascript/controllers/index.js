@@ -19,8 +19,8 @@ application.register("modal", ModalController)
 import PostRepliesController from "./post_replies_controller"
 application.register("post-replies", PostRepliesController)
 
-import TogglePostController from "./toggle_post_controller"
-application.register("toggle-post", TogglePostController)
+import ToggleContentController from "./toggle_content_controller"
+application.register("toggle-content", ToggleContentController)
 
 import ToggleThemeController from "./toggle_theme_controller"
 application.register("toggle-theme", ToggleThemeController)

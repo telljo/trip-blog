@@ -96,7 +96,7 @@
           <% end %>
         </span>
       </div>
-      <div data-controller="toggle-post" class="d-flex flex-column align-items-center border gap-1 p-2">
+      <div data-controller="toggle-content" class="d-flex flex-column align-items-center border gap-1 p-2">
         <% if post.attachments.attached? %>
           <div id="carouselExampleIndicators-<%= post.id %>" class="carousel slide d-flex flex-column">
             <div class="carousel-inner">
@@ -148,14 +148,14 @@
             <% end %>
           </div>
         <% end %>
-        <div data-toggle-post-target="postPreview" class="post-preview">
+        <div data-toggle-content-target="contentPreview" class="post-preview">
           <%= post.body.to_plain_text.truncate(300) %>
         </div>
-        <div data-toggle-post-target="postBody" class="post-body visually-hidden">
+        <div data-toggle-content-target="contentBody" class="post-body visually-hidden">
           <%= post.body %>
         </div>
         <% if post.body.to_plain_text.length > 300 %>
-          <button class="btn btn-link" data-toggle-post-target="postButton" data-action="toggle-post#toggle">Read More</button>
+          <button class="btn btn-link" data-toggle-content-target="contentButton" data-action="toggle-content#toggle">Read More</button>
         <% end %>
       </div>
     </div>
