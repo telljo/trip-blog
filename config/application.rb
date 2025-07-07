@@ -29,5 +29,8 @@ module TripBlog
     }
 
     config.solid_queue.preserve_finished_jobs = false
+
+    # Enable compression
+    config.middleware.use Rack::Deflater
   end
 end

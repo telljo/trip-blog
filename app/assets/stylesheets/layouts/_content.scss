@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
 $primary: #3454D1;
 $primary-content: #F9F9F9;
 $primary-medium: #E3EAF4;
@@ -12,8 +10,22 @@ $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
 body {
-  // font-family: "Poppins", sans-serif;
   overscroll-behavior: none;
+}
+
+.home-container {
+  width: 50%;
+
+  @media screen and (max-width: $breakpoint) {
+    width: 80%;
+  }
+}
+.home-text {
+  font-size: 1.6em;
+
+  @media screen and (max-width: $breakpoint) {
+    font-size: 1.2em;
+  }
 }
 
 .dropend .dropdown-toggle::after {
