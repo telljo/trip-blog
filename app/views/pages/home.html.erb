@@ -1,0 +1,20 @@
+<% content_for :title, "Discover travel adventures · Footprints" %>
+
+<div class="d-flex flex-column" style="height: calc(100vh - 80px); margin-top: -3em; background-image: url('<%= image_path('hero-image.png') %>'
+     ); background-size: cover; background-position: left;">
+  <div class="d-flex flex-row gap-2 pb-4 position-absolute w-100 justify-content-center" style="margin-top: 180px;">
+    <div class="d-flex flex-column gap-1 w-50 align-items-center">
+      <div class="desktop-only">
+        <%= image_tag("logo-text.svg", width: "600", height: "100") %>
+      </div>
+      <div class="mobile-only">
+        <%= image_tag("logo-text.svg", width: "300", height: "50") %>
+      </div>
+      <p class="fs-3 text-align-center text-center text-light">Discover inspiring travel stories and stunning visuals that spark your next adventure.</p>
+
+      <%= link_to "View trips", trips_url,
+        type: "button",
+        class:"btn btn-lg btn-outline-light" %>
+    </div>
+  </div>
+</div>

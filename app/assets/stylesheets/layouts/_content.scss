@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 $primary: #3454D1;
 $primary-content: #F9F9F9;
 $primary-medium: #E3EAF4;
@@ -8,6 +10,11 @@ $breakpoint: 999px;
 $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
+
+body {
+  // font-family: "Poppins", sans-serif;
+  overscroll-behavior: none;
+}
 
 .dropend .dropdown-toggle::after {
   height: 0.5em;

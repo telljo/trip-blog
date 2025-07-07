@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(@trip) do %>
   <% content_for :title, "#{@trip.name} · Footprints" %>
   <div
-    class="d-flex flex-column gap-1 trip"
+    class="container d-flex flex-column gap-1 trip"
   >
     <div class="d-flex flex-row gap-2">
       <span class="d-flex flex-row gap-2 flex-wrap w-100">

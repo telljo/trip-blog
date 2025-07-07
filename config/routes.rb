@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     resource :email_verification, only: [ :show, :create ]
     resource :password_reset,     only: [ :new, :edit, :create, :update ]
   end
-  root "trips#index"
+  root "pages#home"
   resources :trips do
     resources :posts do
       member do

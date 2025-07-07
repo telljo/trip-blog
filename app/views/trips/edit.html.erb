@@ -1,3 +1,5 @@
 <%= turbo_frame_tag dom_id(@trip) do %>
-  <%= render "form", trip: @trip %>
+  <div class="container">
+    <%= render "form", trip: @trip %>
+  </div>
 <% end %>
