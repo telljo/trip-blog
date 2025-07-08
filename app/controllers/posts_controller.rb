@@ -2,6 +2,7 @@ require "base64"
 
 class PostsController < ApplicationController
   include PostNotifier
+  skip_before_action :authenticate, only: %i[index show]
   before_action :set_post, only: %i[show edit update destroy]
   before_action :set_trip, only: %i[edit update destroy]
   before_action :validate_user, only: %i[edit update destroy]
