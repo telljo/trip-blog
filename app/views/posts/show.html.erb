@@ -1,11 +1,11 @@
 <div class="container align-items-center d-flex flex-column" style="max-width: 50em;">
-  <div data-controller="share" class="d-flex flex-row gap-1 w-100 justify-content-end">
+  <div data-controller="clipboard" class="d-flex flex-row gap-1 w-100 justify-content-end">
     <button
-      class="btn btn-primary"
-      data-share-target="shareButton"
-      data-action="click->share#sharePost"
-      data-post='<%= raw post_data(@post) %>'>
-      Share post
+      data-bs-trigger="manual" data-bs-placement="top" data-bs-title="Copied"
+      data-action="clipboard#copyCurrentUrl"
+      data-clipboard-target="button"
+      class="btn btn-primary">
+      <i class="bi bi-copy"></i> Share post
     </button>
     <%= link_to trip_path(@post.trip), class: "btn btn-secondary", style:"width:9em;" do %>
       <i class="bi bi-arrow-left"></i>

@@ -4,6 +4,9 @@
 
 import { application } from "./application"
 
+import ClipboardController from "./clipboard_controller"
+application.register("clipboard", ClipboardController)
+
 import CropController from "./crop_controller"
 application.register("crop", CropController)
 
@@ -24,9 +27,6 @@ application.register("modal", ModalController)
 
 import PostRepliesController from "./post_replies_controller"
 application.register("post-replies", PostRepliesController)
-
-import ShareController from "./share_controller"
-application.register("share", ShareController)
 
 import ToggleContentController from "./toggle_content_controller"
 application.register("toggle-content", ToggleContentController)

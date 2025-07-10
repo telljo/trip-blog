@@ -42,13 +42,6 @@ class Post < ApplicationRecord
     image.variant(resize_to_limit: [ 1000, 1000 ]).processed
   end
 
-  def share_image_variant
-    image = attachments.find(&:image?)
-    return unless image
-
-    image.variant(resize_to_fill: [ 1200, 630 ]).processed
-  end
-
   def address
     [ street, city, state, country ].compact.join(", ")
   end

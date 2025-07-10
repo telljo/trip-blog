@@ -48,7 +48,7 @@ Rails.application.configure do
 
   # config.action_controller.forgery_protection_origin_check = false
   # config.hosts << "localhost:3000"
-  # config.hosts << "tq40jwcv-3000.inc1.devtunnels.ms"
+  # config.hosts << "wht4h8rs-3000.inc1.devtunnels.ms"
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
