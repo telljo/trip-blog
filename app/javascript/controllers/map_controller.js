@@ -17,7 +17,6 @@ export default class extends Controller {
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
 
-    // Potentially add caching with this??????
     const points = JSON.parse(mapElement.dataset.points);
 
     // Initialize coordinatesMap

@@ -10,6 +10,14 @@ module PostsHelper
     end
   end
 
+  def post_data(post)
+    {
+      postId: post.id,
+      title: post.title,
+      image: post.preview_image
+    }.to_json
+  end
+
   private
 
     # Helper method to calculate the page of the post

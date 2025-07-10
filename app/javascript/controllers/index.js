@@ -7,6 +7,12 @@ import { application } from "./application"
 import CropController from "./crop_controller"
 application.register("crop", CropController)
 
+import DropdownController from "./dropdown_controller"
+application.register("dropdown", DropdownController)
+
+import FilterController from "./filter_controller"
+application.register("filter", FilterController)
+
 import LocationController from "./location_controller"
 application.register("location", LocationController)
 
@@ -19,14 +25,11 @@ application.register("modal", ModalController)
 import PostRepliesController from "./post_replies_controller"
 application.register("post-replies", PostRepliesController)
 
+import ShareController from "./share_controller"
+application.register("share", ShareController)
+
 import ToggleContentController from "./toggle_content_controller"
 application.register("toggle-content", ToggleContentController)
 
 import ToggleThemeController from "./toggle_theme_controller"
 application.register("toggle-theme", ToggleThemeController)
-
-import DropdownController from "./dropdown_controller"
-application.register("dropdown", DropdownController)
-
-import FilterController from "./filter_controller"
-application.register("filter", FilterController)
