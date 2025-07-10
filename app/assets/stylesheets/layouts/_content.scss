@@ -13,6 +13,18 @@ body {
   overscroll-behavior: none;
 }
 
+.home-page {
+  height: calc(100vh - 80px);
+  margin-top: -3em;
+  background-image: url("hero-image-wide.webp");
+  background-size: cover;
+  background-position: left;
+
+  @media screen and (max-width: $breakpoint) {
+    background-image: url("hero-image.webp");
+  }
+}
+
 .home-container {
   width: 50%;
 
