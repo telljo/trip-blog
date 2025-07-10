@@ -14,7 +14,7 @@ module PostsHelper
     {
       postId: post.id,
       title: post.title,
-      image: post.preview_image
+      image: post.share_image_variant
     }.to_json
   end
 

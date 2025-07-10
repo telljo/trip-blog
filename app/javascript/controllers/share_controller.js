@@ -8,8 +8,11 @@ export default class extends Controller {
   }
 
   async sharePost() {
+
     const shareButtonElement = this.shareButtonTarget;
-    shareButtonElement.innerHTML = '';
+    const originalButtonContent = shareButtonElement.innerHTML;
+    shareButtonElement.innerHTML = 'Sharing...';
+    shareButtonElement.disabled = true;
     const post = JSON.parse(shareButtonElement.dataset.post);
 
     const blobImage = post.image.blob;
@@ -26,7 +29,11 @@ export default class extends Controller {
       url: document.location.origin,
     }
     if (navigator.canShare && navigator.canShare(shareData)) {
-      await navigator.share(shareData)
+      await navigator.share(shareData).catch((error) => {
+      }).finally(() => {
+        shareButtonElement.innerHTML = originalButtonContent;
+        shareButtonElement.disabled = false;
+      });
     }
   }
 }

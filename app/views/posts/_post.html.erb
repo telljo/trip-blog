@@ -12,7 +12,7 @@
           <%= "📝" if post.draft %>
         </h4>
 
-        <div class="d-flex flex-row justify-content-between" data-action="click->map#moveToMarker" data-turbo-frame="_top">
+        <div class="d-flex flex-row justify-content-between" data-turbo-frame="_top">
           <span class="d-flex flex-row gap-1">
             <i class="bi bi-geo-alt align-content-center"></i>
             <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
