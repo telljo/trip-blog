@@ -10,6 +10,9 @@ class Trip < ApplicationRecord
   after_update_commit :broadcast_companions
   has_rich_text :body
 
+  has_many :administrators, -> { joins(:trip_companions) }
+  has_many :visible_posts, -> { where(hidden: false) }, class_name: "Post"
+
   broadcasts_refreshes
 
   def followed_by?(user)

@@ -86,9 +86,9 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
                       <li>
                         <%= link_to "Edit trip",
-                            edit_trip_path(@trip),
-                            data: { turbo_frame: dom_id(@trip) },
-                            class: "dropdown-item" %>
+                          edit_trip_path(@trip),
+                          data: { turbo: false },
+                          class: "dropdown-item" %>
                       </li>
                       <li>
                         <%= button_to "Delete trip",
@@ -215,7 +215,7 @@
 
             <h7 style="margin: auto;">
               <span class="badge bg-primary">
-                <%= @trip.posts.count %>
+                <%= @trip.visible_posts.count %>
               </span>
             </h7>
           </span>
@@ -263,7 +263,7 @@
           class="d-flex flex-column w-100"
         >
           <%= turbo_frame_tag Post.new do %>
-            <% if @trip.posts.none? %>
+            <% if @trip.visible_posts.none? %>
               <div class="d-flex justify-content-center w-100">
                 <%= render "posts/empty_state", locals: { trip: @trip } %>
               </div>
@@ -276,7 +276,7 @@
 
                 <h7 style="margin: auto;">
                   <span class="badge bg-primary">
-                    <%= @trip.posts.count %>
+                    <%= @trip.visible_posts.count %>
                   </span>
                 </h7>
               </span>
@@ -328,7 +328,7 @@
           </div>
         </div>
 
-        <% if @trip.posts.with_location.any? %>
+        <% if @trip.visible_posts.with_location.any? %>
           <div
             class="border rounded-2 bg-white shadow-sm trip-map"
             data-map-target="map"

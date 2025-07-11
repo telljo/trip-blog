@@ -10,9 +10,9 @@ class TripsController < ApplicationController
   # GET /trips/1
   def show
     if filter_params[:country].present?
-      @pagy, @posts = pagy(@trip.posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(@trip.visible_posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
     else
-      @pagy, @posts = pagy(@trip.posts.order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(@trip.visible_posts.order(created_at: :desc), items: 5)
     end
     respond_to do |format|
       format.html
@@ -24,16 +24,19 @@ class TripsController < ApplicationController
   def new
     @trip = Trip.new
     @trip.companions.build
+    @trip.user = Current.user
+    authorize @trip
   end
 
   # GET /trips/1/edit
   def edit
+    authorize @trip
     @trip.companions.build if @trip.companions.empty?
   end
 
   # POST /trips
   def create
-    @trip = Trip.new(trip_params.merge(user: Current.user))
+    @trip = Trip.new(trip_params)
 
     respond_to do |format|
       if @trip.save
@@ -51,6 +54,7 @@ class TripsController < ApplicationController
 
   # PATCH/PUT /trips/1
   def update
+    authorize @trip
     if @trip.update(trip_params)
       flash[:notice] = "Trip was successfully updated."
       redirect_to trips_url(@trip)

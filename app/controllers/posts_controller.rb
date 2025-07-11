@@ -11,7 +11,7 @@ class PostsController < ApplicationController
   def index
     if params[:trip_id]
       @trip = Trip.find(params[:trip_id])
-      @pagy, @posts = pagy_countless(@trip.posts.order(:id), items: 5)
+      @pagy, @posts = pagy_countless(@trip.visible_posts.order(:id), items: 5)
     else
       @pagy, @posts = pagy_countless(Post.all.order(:id), items: 5)
     end
@@ -25,10 +25,12 @@ class PostsController < ApplicationController
   def new
     @trip = Trip.find(params[:trip_id])
     @post = @trip.posts.new
+    authorize @post
   end
 
   # GET /posts/1/edit
   def edit
+    authorize @post
   end
 
   # POST /posts
@@ -56,6 +58,8 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
+    authorize @post
+
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to @trip }
@@ -67,6 +71,7 @@ class PostsController < ApplicationController
 
   # DELETE /posts/1
   def destroy
+    authorize @post
     @post.destroy
 
     respond_to do |format|
@@ -109,6 +114,7 @@ class PostsController < ApplicationController
       :latitude,
       :longitude,
       :draft,
+      :hidden,
       :travel_type,
       attachments: [],
       post_attachment_captions_attributes: [

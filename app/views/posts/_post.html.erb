@@ -71,7 +71,7 @@
         </span>
       </p>
       <span data-controller="clipboard" class="d-flex flex-row gap-1">
-        <% if Current.user == post.user %>
+        <% if Current.user == post.user || post.trip.users.include?(Current.user)%>
           <div data-bs-trigger="manual" data-bs-placement="top" data-bs-title="Copied" class="dropdown" data-clipboard-target="tooltip">
             <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Post">
               <i class="bi bi-three-dots"></i>

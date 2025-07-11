@@ -15,7 +15,7 @@ module PostsHelper
     # Helper method to calculate the page of the post
     def pagy_get_page_of(post, pagy)
       items_per_page = pagy.vars[:items]
-      post_index = post.trip.posts.order(id: :desc).pluck(:id).index(post.id) + 1
+      post_index = post.trip.visible_posts.order(id: :desc).pluck(:id).index(post.id) + 1
       (post_index.to_f / items_per_page).ceil
     end
 end
