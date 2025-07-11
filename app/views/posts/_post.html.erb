@@ -70,14 +70,22 @@
           <%= post.created_at&.strftime("%B %d, %Y") %>
         </span>
       </p>
-      <span class="d-flex flex-row gap-1">
+      <span data-controller="clipboard" class="d-flex flex-row gap-1">
         <% if Current.user == post.user %>
-          <div class="dropdown">
+          <div data-bs-trigger="manual" data-bs-placement="top" data-bs-title="Copied" class="dropdown" data-clipboard-target="tooltip">
             <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit Post">
               <i class="bi bi-three-dots"></i>
             </button>
 
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
+                <li>
+                  <button
+                    data-action="clipboard#copy"
+                    data-clipboard-copy-value="<%= "#{request.base_url}/posts/#{post.id}" %>"
+                    class="dropdown-item">
+                    Share post
+                  </button>
+                </li>
                 <li>
                   <%= link_to "Edit post",
                       edit_post_path(post),

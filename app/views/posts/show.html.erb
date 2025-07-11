@@ -1,12 +1,5 @@
 <div class="container align-items-center d-flex flex-column" style="max-width: 50em;">
-  <div data-controller="clipboard" class="d-flex flex-row gap-1 w-100 justify-content-end">
-    <button
-      data-bs-trigger="manual" data-bs-placement="top" data-bs-title="Copied"
-      data-action="clipboard#copyCurrentUrl"
-      data-clipboard-target="button"
-      class="btn btn-primary">
-      <i class="bi bi-copy"></i> Share post
-    </button>
+  <div class="d-flex flex-row gap-1 w-100 justify-content-end">
     <%= link_to trip_path(@post.trip), class: "btn btn-secondary", style:"width:9em;" do %>
       <i class="bi bi-arrow-left"></i>
       Back to trip
