@@ -9,6 +9,9 @@
             data: { turbo_frame: "_top" } do %>
             <%= post.title %>
           <% end %>
+          <% if post.hidden %>
+            <span class="badge text-bg-warning ms-2">Hidden</span>
+          <% end %>
           <%= "📝" if post.draft %>
         </h4>
 

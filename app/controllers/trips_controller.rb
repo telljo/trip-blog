@@ -9,10 +9,11 @@ class TripsController < ApplicationController
 
   # GET /trips/1
   def show
+    posts = (Current.user == @trip.user || @trip.users.include?(Current.user)) ? @trip.posts : @trip.visible_posts
     if filter_params[:country].present?
-      @pagy, @posts = pagy(@trip.visible_posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
     else
-      @pagy, @posts = pagy(@trip.visible_posts.order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(posts.order(created_at: :desc), items: 5)
     end
     respond_to do |format|
       format.html
