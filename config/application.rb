@@ -28,6 +28,8 @@ module TripBlog
       "Referrer-Policy" => "strict-origin-when-cross-origin"
     }
 
+    config.active_record.schema_format = :sql
+
     config.solid_queue.preserve_finished_jobs = false
 
     # Enable compression

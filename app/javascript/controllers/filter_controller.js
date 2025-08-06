@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="dropdpown"
 export default class extends Controller {
-  static targets = ["filterContainerDesktop", "filterContainerMobile", "filterButton"];
+  static targets = ["filterContainerDesktop", "filterContainerMobile", "filterButton", "searchInput"];
   connect() {
     const filters = [];
     const urlParams = new URLSearchParams(window.location.search);
@@ -48,6 +48,11 @@ export default class extends Controller {
           const capitalizedKey = key.charAt(0).toUpperCase() + key.slice(1);
           filterElement.textContent = `${capitalizedKey}: ${value}`;
           filterElement.classList.add('badge', 'bg-secondary');
+
+          // Additional functionality for search filter
+          if(capitalizedKey == "Query") {
+            this.searchInputTarget.value = value;
+          }
 
           // Create close button
           const closeButton = document.createElement('button');

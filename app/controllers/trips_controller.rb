@@ -11,7 +11,14 @@ class TripsController < ApplicationController
   def show
     posts = (Current.user == @trip.user || @trip.users.include?(Current.user)) ? @trip.posts : @trip.visible_posts
     if filter_params[:country].present?
-      @pagy, @posts = pagy(posts.where(country: filter_params[:country]).order(created_at: :desc), items: 5)
+      posts = posts.where(country: filter_params[:country])
+      if filter_params[:query].present?
+        @pagy, @posts = pagy(posts.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), items: 5)
+      else
+        @pagy, @posts = pagy(posts.order(created_at: :desc), items: 5)
+      end
+    elsif filter_params[:query].present?
+      @pagy, @posts = pagy(Post.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), items: 5)
     else
       @pagy, @posts = pagy(posts.order(created_at: :desc), items: 5)
     end
@@ -83,6 +90,6 @@ class TripsController < ApplicationController
   end
 
   def filter_params
-    params.fetch(:filters, {}).permit(:country)
+    params.fetch(:filters, {}).permit(:country, :query)
   end
 end

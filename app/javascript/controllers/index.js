@@ -28,6 +28,9 @@ application.register("modal", ModalController)
 import PostRepliesController from "./post_replies_controller"
 application.register("post-replies", PostRepliesController)
 
+import SearchController from "./search_controller"
+application.register("search", SearchController)
+
 import ToggleContentController from "./toggle_content_controller"
 application.register("toggle-content", ToggleContentController)
 

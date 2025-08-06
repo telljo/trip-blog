@@ -9,8 +9,12 @@ $trip-map-width: 600px;
 $trip-map-height: 500px;
 $trip-map-mobile-height: 300px;
 
-body {
-  overscroll-behavior: none;
+.search-filters {
+  width: 50%;
+
+  @media screen and (max-width: $breakpoint) {
+    width: 100%;
+  }
 }
 
 .home-page {

@@ -1,0 +1,45 @@
+<div
+  class=" search-filters d-flex flex-row my-2 gap-2"
+>
+  <%= form_for :filters,
+    url: trip_path,
+    method: :get,
+    data: { controller: "search", turbo_action: "advance"},
+    html: { class: "search__form w-100" } do |form| %>
+      <%= form.text_field :query,
+            placeholder: "Search",
+            class: "form-control",
+            value: params[:query],
+            autofocus: true,
+            data: {
+              search_target: "searchInput",
+              filter_target: "searchInput",
+              action: "input->search#search"
+            }
+      %>
+      <%= form.label :query, "Search", class: "visually-hidden" %>
+  <% end %>
+  <div class="d-flex flex-row gap-1">
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-filter-target="filterButton" aria-expanded="false">
+        <i class="bi bi-filter"></i>
+        Filters
+      </button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-submenu" data-controller="dropdown">
+          <ul class="list-unstyled m-0">
+            <% @trip.countries.each do |country| %>
+              <li>
+                <% filters = params[:filters]&.to_unsafe_h || {} %>
+                <%= link_to trip_path(id: @trip.id, filters: filters.merge(country: country)), data: { turbo_frame: "_top" }, class: "dropdown-item" do %>
+                  <%= country %>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+

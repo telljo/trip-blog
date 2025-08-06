@@ -229,29 +229,9 @@
           <% end %>
         </div>
         <%# FILTERING and SORTING DESKTOP %>
-        <div class="d-flex flex-row gap-1 my-3" data-controller="filter">
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-filter-target="filterButton" aria-expanded="false">
-              <i class="bi bi-filter"></i>
-              Filters
-            </button>
-            <ul class="dropdown-menu">
-              <li class="dropdown-submenu" data-controller="dropdown">
-                <div class="btn-group dropend" style="width: 100%;">
-                  <button class="dropdown-item dropdown-toggle justify-content-between d-inline-flex align-items-center" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" data-action="click->dropdown#toggleFilters">Country</button>
-                  <ul class="dropdown-menu">
-                    <% @trip.countries.each do | country| %>
-                      <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, filters: {country: country}), data: { turbo_frame: "_top" }, class: "dropdown-item" do %>
-                        <% country %>
-                      <% end %>
-                    <% end %>
-                  </ul>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="d-flex flex-row gap-1" data-filter-target="filterContainerDesktop">
-          </div>
+        <div class="d-flex flex-wrap gap-1" data-controller="filter">
+          <%= render partial: "trips/search_and_filter" %>
+          <div class="d-flex flex-row gap-1 p-2" data-filter-target="filterContainerDesktop"></div>
         </div>
         <hr>
       </div>
@@ -270,7 +250,7 @@
             <% end %>
           <% end %>
           <div class="mobile-only">
-            <div class="d-flex flex-row justify-content-between align-items-center mt-3">
+            <div class="d-flex flex-row justify-content-between align-items-center my-3">
               <span class="d-flex flex-row gap-1">
                 <h3 class="mb-0">Posts</h3>
 
@@ -290,29 +270,9 @@
               <% end %>
             </div>
             <%# FILTERING and SORTING MOBILE %>
-            <div class="d-flex flex-row gap-1 my-3" data-controller="filter">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" data-filter-target="filterButton" aria-expanded="false">
-                  <i class="bi bi-filter"></i>
-                  Filters
-                </button>
-                <ul class="dropdown-menu">
-                  <li class="dropdown-submenu" data-controller="dropdown">
-                    <div class="btn-group dropend" style="width: 100%;">
-                      <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="true" aria-expanded="false" data-action="click->dropdown#toggleFilters">Country</button>
-                      <ul class="dropdown-menu">
-                        <% @trip.countries.each do | country| %>
-                          <%= link_to url_for(controller: 'trips', action: 'show', id: @trip.id, filters: {country: country}), data: { turbo_frame: "_top" }, class: "dropdown-item" do %>
-                            <% country %>
-                          <% end %>
-                        <% end %>
-                      </ul>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class="d-flex flex-row gap-1" data-filter-target="filterContainerMobile">
-              </div>
+            <div class="d-flex flex-wrap gap-1" data-controller="filter">
+              <%= render partial: "trips/search_and_filter" %>
+              <div class="d-flex flex-row gap-1" data-filter-target="filterContainerMobile"></div>
             </div>
             <hr>
           </div>
@@ -323,6 +283,11 @@
 
               <% @posts.each do |post| %>
                 <%= render "posts/post", post: post %>
+              <% end %>
+              <% if @posts.none? %>
+                <div class="d-flex justify-content-center w-100">
+                  <%= render "posts/empty_state", locals: { trip: @trip } %>
+                </div>
               <% end %>
             <% end %>
           </div>

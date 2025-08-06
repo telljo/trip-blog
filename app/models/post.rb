@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include Post::FullTextSearch
+
   belongs_to :trip
   belongs_to :user
   has_many :comments, class_name: "PostComment", dependent: :destroy
