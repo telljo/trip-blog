@@ -6,6 +6,10 @@
     method: :get,
     data: { controller: "search", turbo_action: "advance"},
     html: { class: "search__form w-100" } do |form| %>
+      <% filters = (params[:filters]&.to_unsafe_h || {}).reject { |key, value| key == "query" } %>
+      <% filters.each do |key, value| %>
+        <%= form.hidden_field "#{key}", value: value %>
+      <% end %>
       <%= form.text_field :query,
             placeholder: "Search",
             class: "form-control",

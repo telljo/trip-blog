@@ -235,6 +235,10 @@
         </div>
         <hr>
       </div>
+      <div class="d-flex w-100 justify-content-center">
+        <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
+        <%== pagy_bootstrap_nav(@pagy, **vars) %>
+      </div>
       <div
         class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1" id="<%= dom_id @trip %>"
         data-controller="map"
