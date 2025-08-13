@@ -31,15 +31,17 @@
         </div>
       </div>
     <% else %>
-      <h4 class="text__link mb-0 mt-2">
-        <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
-        <%= link_to post_path(post),
-          style:"width: max-content;",
-          data: { turbo_frame: "_top" } do %>
-          <%= post.title %>
-        <% end %>
-        <%= "📝" if post.draft %>
-      </h4>
+      <div class="d-flex flex-column flex-wrap my-2">
+        <h4 class="text__link mb-0 mt-2">
+          <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
+          <%= link_to post_path(post),
+            style:"width: max-content;",
+            data: { turbo_frame: "_top" } do %>
+            <%= post.title %>
+          <% end %>
+          <%= "📝" if post.draft %>
+        </h4>
+      </div>
     <% end %>
   </div>
   <div class="bg-body">
