@@ -308,7 +308,7 @@
             class="border rounded-2 bg-white shadow-sm trip-map"
             data-map-target="map"
             id="posts-map"
-            data-points='<%= raw generated_points(@trip, @pagy) %>'
+            data-points="<%= generated_points(@trip, @pagy) %>"
             data-images='<%= raw({
               bus: { left: asset_path("bus-left.png"), right: asset_path("bus-right.png") },
               boat: { left: asset_path("boat-left.png"), right: asset_path("boat-right.png") },
@@ -316,6 +316,7 @@
               walking: { left: asset_path("walking-left.png"), right: asset_path("walking-right.png") },
               rickshaw: { left: asset_path("rickshaw-left.png"), right: asset_path("rickshaw-right.png") },
               car: { left: asset_path("car-left.png"), right: asset_path("car-right.png") },
+              nina: { left: asset_path("nina-left.png"), right: asset_path("nina-right.png") },
               motorbike: { left: asset_path("motorbike-left.png"), right: asset_path("motorbike-right.png") },
               train: { left: asset_path("train-left.png"), right: asset_path("train-right.png") }
             }.to_json) %>'

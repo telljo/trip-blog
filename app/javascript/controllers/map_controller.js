@@ -94,6 +94,12 @@ export default class extends Controller {
     const carImageRight = await this.map.loadImage(images.car.right);
     this.map.addImage('car-right', carImageRight.data);
 
+    // Load nina images
+    const ninaImageLeft = await this.map.loadImage(images.nina.left);
+    this.map.addImage('nina-left', ninaImageLeft.data);
+    const ninaImageRight = await this.map.loadImage(images.nina.right);
+    this.map.addImage('nina-right', ninaImageRight.data);
+
     // Load rickshaw images
     const rickshawImageLeft = await this.map.loadImage(images.rickshaw.left);
     this.map.addImage('rickshaw-left', rickshawImageLeft.data);
@@ -316,6 +322,31 @@ export default class extends Controller {
             ]
         },
         'filter': ['==', ['get', 'travelType'], 'car']
+      });
+
+      // Symbol for nina travel
+      this.map.addLayer({
+        'id': 'symbol-nina',
+        'type': 'symbol',
+        'source': 'route',
+        'layout': {
+            'icon-image': [
+                'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                'nina-right',                    // Otherwise, use normal icon
+                'nina-left'                      // Use flipped icon
+            ],
+            'symbol-placement': 'line',
+            'symbol-spacing': 100,
+            'icon-size': 0.2,
+            'icon-rotate': [
+              'case',
+                ['<', ['get', 'bearing'], 180], // If bearing < 180
+                360,
+                180
+            ]
+        },
+        'filter': ['==', ['get', 'travelType'], 'nina']
       });
 
       // Symbol for motorbike travel
