@@ -1,5 +1,5 @@
 <%= form_with(id: "post_form", model: [@trip, @post], data: { turbo: false }) do |form| %>
-  <div class="form d-flex flex-column gap-2 pb-5" data-controller="location">
+  <div class="form d-flex flex-column gap-2 pb-5">
     <div class="d-flex flex-row gap-1 justify-content-between">
       <div class="form__field" style="width: 80%;">
         <%= form.label :title, class: "form-label" %>
@@ -105,47 +105,59 @@
       </div>
     <% end %>
 
-    <div class="d-flex flex-wrap gap-3">
+    <div class="d-flex flex-column flex-wrap gap-2">
       <div class="form__field" style="max-width: 400px;">
         <label for="formFile" class="form-label">Upload files</label>
         <%= form.file_field :attachments, multiple: true, direct_upload: true, accept: '.png,.jpeg,.jpg,.mp4,.avi,.mov', class: "form-control", id:"formFile" %>
       </div>
 
-      <div class="d-flex flex-column gap-2" style="max-width: 700px;">
-        <%= form.hidden_field :latitude,
-          id: "latitudeValue",
-          data: { location_target: "latitude"} %>
-        <%= form.hidden_field :longitude,
-          id: "longitudeValue",
-          data: { location_target: "longitude"} %>
+      <div class="d-flex flex-column gap-2" style="max-width: 800px;">
+        <label for="formFile" class="form-label">Locations</label>
+        <%= form.fields_for :post_locations do |location_form| %>
+          <div class="bg-light-subtle border rounded p-2"
+            data-controller="location"
+            data-location-lng-value="<%= location_form.object&.longitude %>"
+            data-location-lat-value="<%= location_form.object&.latitude %>"
+            data-location-address-value="<%= location_form.object&.short_address %>">
 
+            <%= location_form.hidden_field :latitude, data: { location_target: "latitude" } %>
+            <%= location_form.hidden_field :longitude, data: { location_target: "longitude" } %>
+
+            <div class="form__field d-flex flex-column gap-2">
+              <p><%= location_form.object.persisted? ? ("Location " + (location_form.index + 1).to_s) : "New Location" %></p>
+              <div class="input-group">
+                <button class="btn location-btn" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="<%= "#location_#{location_form.index}" %>"
+                        aria-expanded="false"
+                        aria-controls="<%= "#location_#{location_form.index}" %>"
+                        style="text-wrap: nowrap;">
+                  <%= location_form.object.persisted? ? "Update" : "Choose" %> location
+                </button>
+                <input data-location-target="address"
+                      aria-describedby="btnGroupAddon"
+                      aria-label="Location group"
+                      value="<%= location_form.object&.short_address %>"
+                      type="text"
+                      class="form-control"
+                      placeholder="No location chosen"
+                      readonly>
+              </div>
+
+              <div class="collapse" id="<%= "location_#{location_form.index}" %>">
+                <div class="card card-body d-flex flex-column">
+                  <label class="form-label">Set location</label>
+                  <%= render partial: "geolocations/search" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Button to add new location fields dynamically -->
         <div class="form__field">
-          <label for="formFile" class="form-label">Location</label>
-          <div class="input-group">
-            <button class="btn location-btn" id="btnGroupAddon" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" style="text-wrap: nowrap;">
-              Choose location
-            </button>
-            <input data-location-target="address" id="addressValue"
-                aria-describedby="btnGroupAddon" aria-label="Location group"
-                value="<%= @post.address %>" type="text" name="selectedLocation"
-                class="form-control" placeholder="No location chosen" readonly>
-          </div>
-          <div class="form__field">
-            <%= form.label :travel_type, class: "form-label" %>
-            <%= form.select :travel_type,
-              options_for_select(Post.travel_types.keys.map { |key| [key.humanize, key] }, post.travel_type),
-              { prompt: "Add a travel type" },
-              class: "form-control" %>
-          </div>
+          <button type="button" class="btn btn-secondary" id="add-location-button">Add Location</button>
         </div>
-      </div>
-    </div>
-
-    <div class="collapse" id="collapseExample">
-      <div class="card card-body d-flex flex-column">
-        <label class="form-label">Set location</label>
-        <%= render partial: "geolocations/search",
-          locals: { latitude: post.latitude, longitude: post.longitude, address: post.address } %>
       </div>
     </div>
 

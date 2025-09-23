@@ -1,6 +1,4 @@
 <div
-  data-location-lng-value="<%= @current_longitude %>"
-  data-location-lat-value="<%= @current_latitude %>"
   class="modal-body d-flex flex-column gap-2"
 >
   <input type="text"
@@ -31,9 +29,6 @@
 
   <div class="d-flex flex-row gap-1">
     <input data-location-target="selectedAddress" type="text" name="selectedLocation"
-      class="form-control" readonly value="<%=
-        @current_address ? @current_address : "No location chosen"
-      %>">
-    <button type="button" class="btn btn-primary" data-action="click->location#selectLocation click->modal#close">Update</button>
+      class="form-control" readonly value="No location chosen">
   </div>
 </div>

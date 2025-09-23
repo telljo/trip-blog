@@ -25,12 +25,14 @@ class PostsController < ApplicationController
   def new
     @trip = Trip.find(params[:trip_id])
     @post = @trip.posts.new
+    @post.post_locations.build # Build at least one location
     authorize @post
   end
 
   # GET /posts/1/edit
   def edit
     authorize @post
+    @post.post_locations.build # Ensures at least one blank form
   end
 
   # POST /posts
@@ -58,6 +60,7 @@ class PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
+    ap params
     authorize @post
 
     respond_to do |format|
@@ -111,8 +114,6 @@ class PostsController < ApplicationController
     params.require(:post).permit(
       :title, :body,
       :trip_id,
-      :latitude,
-      :longitude,
       :draft,
       :hidden,
       :travel_type,
@@ -123,7 +124,13 @@ class PostsController < ApplicationController
         :post_id,
         :text,
         :_destroy
-      ]
+      ],
+      post_locations_attributes: [
+        :id,
+        :post_id,
+        :latitude,
+        :longitude
+    ]
     )
   end
 end

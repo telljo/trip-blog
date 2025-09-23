@@ -14,23 +14,18 @@ class Post < ApplicationRecord
   has_many :post_attachment_captions, dependent: :destroy
   accepts_nested_attributes_for :post_attachment_captions, reject_if: proc { |attributes| attributes["text"].blank? }, allow_destroy: true
 
+  has_many :post_locations, dependent: :destroy
+  accepts_nested_attributes_for :post_locations, reject_if: proc { |attributes| attributes["latitude"].blank? || attributes["longitude"].blank? }, allow_destroy: true
+
   before_destroy :purge_attachments
 
   broadcasts_refreshes_to :trip
 
-  reverse_geocoded_by :latitude, :longitude do |obj, results|
-    if geo = results.first
-      obj.street  = geo.street_address
-      obj.city    = geo.city
-      obj.state = geo.state
-      obj.country = geo.country
-    else
-      Rails.logger.debug "Geocoding results are empty for latitude: #{obj.latitude}, longitude: #{obj.longitude}"
-    end
-  end
-  after_validation :reverse_geocode
+  scope :with_location, -> { joins(:post_locations).where.not(post_locations: { latitude: nil, longitude: nil }) }
 
-  scope :with_location, -> { where.not(latitude: nil, longitude: nil) }
+  def final_location
+    post_locations.order(created_at: :desc).first
+  end
 
   def preview_image
     attachment = attachments.find(&:image?)
@@ -42,14 +37,6 @@ class Post < ApplicationRecord
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
     image.variant(resize_to_limit: [ 1000, 1000 ]).processed
-  end
-
-  def address
-    [ street, city, state, country ].compact.join(", ")
-  end
-
-  def short_address
-    [ city, state, country ].compact.join(", ")
   end
 
   def liked_by?(user)

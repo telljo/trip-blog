@@ -3,6 +3,7 @@ class Trip < ApplicationRecord
   validates :name, presence: true
   validates :body, presence: true
   has_many :posts, dependent: :destroy
+  has_many :post_locations, through: :posts
   has_many :companions, class_name: "TripCompanion", dependent: :destroy
   has_many :followers, class_name: "TripFollower", dependent: :destroy
   has_many :users, through: :companions

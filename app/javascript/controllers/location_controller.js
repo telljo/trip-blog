@@ -1,10 +1,14 @@
-import { Controller } from "@hotwired/stimulus"
+import { add, Controller } from "@hotwired/stimulus"
 import maplibregl from 'maplibre-gl';
 
 // Connects to data-controller="location"
 export default class extends Controller {
   static targets = ["map", "latitude", "longitude", "address", "selectedLocation", "selectedAddress", "searchQuery", "searchResults"];
-  static values = { lng: Number, lat: Number };
+  static values = {
+    lng: Number,
+    lat: Number,
+    address: String
+  };
   static debounceTimeout = null;
 
   connect() {
@@ -14,9 +18,11 @@ export default class extends Controller {
 
     const longitude = this.lngValue;
     const latitude = this.latValue;
+    const address = this.addressValue;
 
     if (longitude && latitude) {
       this.initializeMap(longitude, latitude);
+      this.selectedAddressTarget.value = address || '';
     } else {
       this.findLocation();
     }
@@ -195,9 +201,9 @@ export default class extends Controller {
 
     this.longitudeTarget.value = coords[0];
     this.latitudeTarget.value = coords[1];
-    this.addressTarget.value = event.target.textContent;
+    this.addressTarget.value = this.addressTarget.value = coords.join(", ");
     this.searchResultsTarget.classList.add("visually-hidden");
-    this.selectedAddressTarget.value = event.target.textContent;
+    this.selectedAddressTarget.value = this.addressTarget.value = coords.join(", ");
     this.updateMap(coords);
   }
 
@@ -222,26 +228,5 @@ export default class extends Controller {
 
     this.mapMarkers.push(marker);
     this.selectedCoordinates = coordinates;
-  }
-
-  selectLocation() {
-    if (this.selectedCoordinates === null) {
-      console.error("No location selected");
-      return;
-    }
-    this.dispatch("selected", {
-      detail: {
-        longitude: this.selectedCoordinates[0],
-        latitude: this.selectedCoordinates[1],
-        address: this.selectedAddressTarget.value
-      }
-    });
-    // const customEvent = new CustomEvent('location:selected', {
-    //   detail: {
-    //     longitude: this.selectedCoordinates[0],
-    //     latitude: this.selectedCoordinates[1],
-    //     address: this.selectedAddressTarget.value
-    //   }
-    // });
   }
 }

@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(post), class:"post", style:"max-width: 50em;" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
-    <% if post.city %>
+    <% if post.post_locations %>
       <div class="d-flex flex-column flex-wrap my-2">
         <h4 class="mb-0 mt-2">
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
@@ -18,7 +18,7 @@
         <div class="d-flex flex-row justify-content-between" data-turbo-frame="_top">
           <span class="d-flex flex-row gap-1">
             <i class="bi bi-geo-alt align-content-center"></i>
-            <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
+            <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.final_location.short_address %></p>
           </span>
           <% if post.travel_type %>
             <div class="bg-light bg-gradient rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Travelled by <%= post.travel_type %>">
