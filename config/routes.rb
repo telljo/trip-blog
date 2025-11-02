@@ -29,6 +29,11 @@ Rails.application.routes.draw do
         delete :remove_attachment_caption
       end
     end
+    resources :post_locations, only: [ :create, :edit, :update ] do
+      member do
+        delete :remove_post_location
+      end
+    end
   end
   resources :post_comment_replies, only: [ :destroy ]
   resources :post_attachment_captions, only: [ :destroy ]

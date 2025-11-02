@@ -91,6 +91,19 @@ FOREIGN KEY ("post_id")
 );
 CREATE INDEX "index_post_attachment_captions_on_attachment_id" ON "post_attachment_captions" ("attachment_id") /*application='TripBlog'*/;
 CREATE INDEX "index_post_attachment_captions_on_post_id" ON "post_attachment_captions" ("post_id") /*application='TripBlog'*/;
+CREATE TABLE IF NOT EXISTS "post_locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "latitude" float, "longitude" float, "street" varchar, "city" varchar, "state" varchar, "country" varchar, "travel_type" integer DEFAULT NULL, "post_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_84f52fd3d1"
+FOREIGN KEY ("post_id")
+  REFERENCES "posts" ("id")
+);
+CREATE INDEX "index_post_locations_on_post_id" ON "post_locations" ("post_id") /*application='TripBlog'*/;
+CREATE TABLE IF NOT EXISTS "posts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "body" text, "trip_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_id" integer, "draft" boolean DEFAULT 0 NOT NULL, "notified_at" datetime(6), "hidden" boolean DEFAULT 0 NOT NULL, CONSTRAINT "fk_rails_35843b2bd6"
+FOREIGN KEY ("trip_id")
+  REFERENCES "trips" ("id")
+);
+CREATE INDEX "index_posts_on_trip_id" ON "posts" ("trip_id") /*application='TripBlog'*/;
+CREATE INDEX "index_posts_on_draft" ON "posts" ("draft") /*application='TripBlog'*/;
+CREATE INDEX "index_posts_on_notified_at" ON "posts" ("notified_at") /*application='TripBlog'*/;
+CREATE INDEX "index_posts_on_hidden" ON "posts" ("hidden") /*application='TripBlog'*/;
 CREATE VIRTUAL TABLE post_fts USING fts5(
   title,
   body,
@@ -104,20 +117,53 @@ CREATE TABLE IF NOT EXISTS 'post_fts_data'(id INTEGER PRIMARY KEY, block BLOB);
 CREATE TABLE IF NOT EXISTS 'post_fts_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS 'post_fts_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
 CREATE TABLE IF NOT EXISTS 'post_fts_config'(k PRIMARY KEY, v) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "post_locations" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "latitude" float, "longitude" float, "street" varchar, "city" varchar, "state" varchar, "country" varchar, "post_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, CONSTRAINT "fk_rails_84f52fd3d1"
-FOREIGN KEY ("post_id")
-  REFERENCES "posts" ("id")
-);
-CREATE INDEX "index_post_locations_on_post_id" ON "post_locations" ("post_id") /*application='TripBlog'*/;
-CREATE TABLE IF NOT EXISTS "posts" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "title" varchar, "body" text, "trip_id" integer NOT NULL, "created_at" datetime(6) NOT NULL, "updated_at" datetime(6) NOT NULL, "user_id" integer, "draft" boolean DEFAULT 0 NOT NULL, "notified_at" datetime(6), "travel_type" integer, "hidden" boolean DEFAULT 0 NOT NULL, CONSTRAINT "fk_rails_35843b2bd6"
-FOREIGN KEY ("trip_id")
-  REFERENCES "trips" ("id")
-);
-CREATE INDEX "index_posts_on_trip_id" ON "posts" ("trip_id") /*application='TripBlog'*/;
-CREATE INDEX "index_posts_on_draft" ON "posts" ("draft") /*application='TripBlog'*/;
-CREATE INDEX "index_posts_on_notified_at" ON "posts" ("notified_at") /*application='TripBlog'*/;
-CREATE INDEX "index_posts_on_hidden" ON "posts" ("hidden") /*application='TripBlog'*/;
+CREATE TRIGGER post_fts_insert AFTER INSERT ON post_locations
+BEGIN
+  INSERT INTO post_fts (rowid, title, body, country, city)
+  SELECT
+    posts.id,
+    posts.title,
+    (SELECT body FROM action_text_rich_texts
+     WHERE record_type='Post' AND record_id=posts.id LIMIT 1),
+    COALESCE(NEW.country, ''),
+    COALESCE(NEW.city, '')
+  FROM posts
+  WHERE posts.id = NEW.post_id;
+END;
+CREATE TRIGGER post_fts_update AFTER UPDATE ON post_locations
+BEGIN
+  -- remove the old entry
+  INSERT INTO post_fts(post_fts, rowid, title, body, country, city)
+  SELECT 'delete', posts.id, posts.title,
+         (SELECT body FROM action_text_rich_texts
+          WHERE record_type='Post' AND record_id=posts.id LIMIT 1),
+         COALESCE(OLD.country, ''), COALESCE(OLD.city, '')
+  FROM posts
+  WHERE posts.id = OLD.post_id;
+
+  -- insert the new entry
+  INSERT INTO post_fts (rowid, title, body, country, city)
+  SELECT posts.id,
+         posts.title,
+         (SELECT body FROM action_text_rich_texts
+          WHERE record_type='Post' AND record_id=posts.id LIMIT 1),
+         COALESCE(NEW.country, ''),
+         COALESCE(NEW.city, '')
+  FROM posts
+  WHERE posts.id = NEW.post_id;
+END;
+CREATE TRIGGER post_fts_delete AFTER DELETE ON post_locations
+BEGIN
+  INSERT INTO post_fts (post_fts, rowid, title, body, country, city)
+  SELECT 'delete', posts.id, posts.title,
+         (SELECT body FROM action_text_rich_texts
+          WHERE record_type='Post' AND record_id=posts.id LIMIT 1),
+         COALESCE(OLD.country, ''), COALESCE(OLD.city, '')
+  FROM posts
+  WHERE posts.id = OLD.post_id;
+END;
 INSERT INTO "schema_migrations" (version) VALUES
+('20251102133803'),
 ('20250923080750'),
 ('20250923080444'),
 ('20250711162259'),

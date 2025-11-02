@@ -10,7 +10,8 @@ class MigratePostLocations < ActiveRecord::Migration[8.0]
           street: post.street,
           city: post.city,
           state: post.state,
-          country: post.country
+          country: post.country,
+          travel_type: post.travel_type
         )
       end
     end
@@ -22,6 +23,7 @@ class MigratePostLocations < ActiveRecord::Migration[8.0]
     remove_column :posts, :city
     remove_column :posts, :state
     remove_column :posts, :country
+    remove_column :posts, :travel_type
   end
 
   def down
@@ -32,6 +34,7 @@ class MigratePostLocations < ActiveRecord::Migration[8.0]
     add_column :posts, :city, :string
     add_column :posts, :state, :string
     add_column :posts, :country, :string
+    add_column :posts, :travel_type, :integer, default: nil
 
     # Restore location data from locations table
     PostLocation.find_each do |location|
@@ -44,7 +47,8 @@ class MigratePostLocations < ActiveRecord::Migration[8.0]
         street: location.street,
         city: location.city,
         state: location.state,
-        country: location.country
+        country: location.country,
+        travel_type: location.travel_type
       )
     end
   end

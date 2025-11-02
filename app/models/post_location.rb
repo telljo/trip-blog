@@ -1,5 +1,6 @@
 class PostLocation < ApplicationRecord
   belongs_to :post
+  enum :travel_type, [ :train, :bus, :car, :rickshaw, :motorbike, :boat, :plane, :walking, :nina ]
 
   reverse_geocoded_by :latitude, :longitude do |obj, results|
     if geo = results.first

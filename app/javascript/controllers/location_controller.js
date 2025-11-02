@@ -187,23 +187,24 @@ export default class extends Controller {
   }
 
   clickMap(event) {
+    event.preventDefault();
     if (!event.lngLat) {
       console.error("Invalid event: Missing lngLat property");
       return;
     }
     const coordinates = [event.lngLat.lng, event.lngLat.lat];
-    this.chooseLocation(event, coordinates);
+    this.chooseLocation(event, coordinates, null);
   }
 
-  chooseLocation(event, coordinates = null) {
+  chooseLocation(event, coordinates = null, address = null) {
     event.preventDefault();
     const coords = coordinates || event.target.value.split(',').map(parseFloat);
 
     this.longitudeTarget.value = coords[0];
     this.latitudeTarget.value = coords[1];
-    this.addressTarget.value = this.addressTarget.value = coords.join(", ");
+    this.addressTarget.value = address ? address : this.addressTarget.value = coords.join(", ");
     this.searchResultsTarget.classList.add("visually-hidden");
-    this.selectedAddressTarget.value = this.addressTarget.value = coords.join(", ");
+    this.selectedAddressTarget.value = address ? address : this.addressTarget.value = coords.join(", ");
     this.updateMap(coords);
   }
 
@@ -228,5 +229,12 @@ export default class extends Controller {
 
     this.mapMarkers.push(marker);
     this.selectedCoordinates = coordinates;
+  }
+
+  cancelUpdate(event) {
+    if (this.lngValue && this.latValue) {
+      const coordinates = [this.lngValue, this.latValue];
+      this.chooseLocation(event, coordinates, this.addressValue);
+    }
   }
 }

@@ -7,6 +7,7 @@ class CreatePostLocations < ActiveRecord::Migration[8.0]
       t.string :city
       t.string :state
       t.string :country
+      t.integer :travel_type, default: nil
       t.references :post, null: false, foreign_key: true
 
       t.timestamps

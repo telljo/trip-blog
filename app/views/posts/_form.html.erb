@@ -123,18 +123,17 @@
             <%= location_form.hidden_field :latitude, data: { location_target: "latitude" } %>
             <%= location_form.hidden_field :longitude, data: { location_target: "longitude" } %>
 
-            <div class="form__field d-flex flex-column gap-2">
-              <p><%= location_form.object.persisted? ? ("Location " + (location_form.index + 1).to_s) : "New Location" %></p>
-              <div class="input-group">
-                <button class="btn location-btn" type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="<%= "#location_#{location_form.index}" %>"
-                        aria-expanded="false"
-                        aria-controls="<%= "#location_#{location_form.index}" %>"
-                        style="text-wrap: nowrap;">
-                  <%= location_form.object.persisted? ? "Update" : "Choose" %> location
-                </button>
-                <input data-location-target="address"
+            <div class="d-flex flex-column gap-2 w-100 btn align-items-start">
+              <div class="d-flex flex-column gap-2 w-100 btn align-items-start p-0"
+                data-bs-toggle="collapse"
+                data-bs-target="<%= "#location_#{location_form.index}" %>"
+                aria-expanded="false"
+                aria-controls="<%= "#location_#{location_form.index}" %>"
+              >
+                <p class="m-0"><%= location_form.object.persisted? ? (location_form.index + 1).ordinalize + " Location" : "New Location" %></p>
+                <div class="d-flex flex-row gap-1 w-100">
+                  <div class="input-group">
+                    <input data-location-target="address"
                       aria-describedby="btnGroupAddon"
                       aria-label="Location group"
                       value="<%= location_form.object&.short_address %>"
@@ -142,22 +141,35 @@
                       class="form-control"
                       placeholder="No location chosen"
                       readonly>
+                    <button class="btn location-btn" type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target="<%= "#location_#{location_form.index}" %>"
+                      aria-expanded="false"
+                      aria-controls="<%= "#location_#{location_form.index}" %>"
+                      style="text-wrap: nowrap;">
+                      <%= location_form.object.persisted? ? "Update" : "Choose" %> location
+                    </button>
+                  </div>
+                  <% if location_form.object.persisted? %>
+                    <%= link_to remove_post_location_post_post_location_path(post_id: @post.id, id: location_form.object.id),
+                      class:"btn btn-danger d-flex justify-content-center align-items-center mt-1 me-1",
+                      style:"height: 40px; width: 40px; z-index: 200;",
+                      data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
+                      <i class="bi bi-trash-fill"></i>
+                    <% end %>
+                  <% end %>
+                </div>
               </div>
 
-              <div class="collapse" id="<%= "location_#{location_form.index}" %>">
+              <div class="collapse w-100" id="<%= "location_#{location_form.index}" %>">
                 <div class="card card-body d-flex flex-column">
-                  <label class="form-label">Set location</label>
+                  <label class="form-label">Choose location</label>
                   <%= render partial: "geolocations/search" %>
                 </div>
               </div>
             </div>
           </div>
         <% end %>
-
-        <!-- Button to add new location fields dynamically -->
-        <div class="form__field">
-          <button type="button" class="btn btn-secondary" id="add-location-button">Add Location</button>
-        </div>
       </div>
     </div>
 

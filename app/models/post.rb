@@ -5,7 +5,6 @@ class Post < ApplicationRecord
   belongs_to :user
   has_many :comments, class_name: "PostComment", dependent: :destroy
   has_many :likes, class_name: "UserPostLike", dependent: :destroy
-  enum :travel_type, [ :train, :bus, :car, :rickshaw, :motorbike, :boat, :plane, :walking, :nina ]
   validates :title, presence: true
   validates :body, presence: true
 
@@ -21,7 +20,11 @@ class Post < ApplicationRecord
 
   broadcasts_refreshes_to :trip
 
-  scope :with_location, -> { joins(:post_locations).where.not(post_locations: { latitude: nil, longitude: nil }) }
+  scope :with_location, -> { joins(:post_locations).where.not(post_locations: { latitude: nil, longitude: nil }).distinct }
+
+  def travel_types
+    post_locations.pluck(:travel_type).compact.uniq
+  end
 
   def final_location
     post_locations.order(created_at: :desc).first

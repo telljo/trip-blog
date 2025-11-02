@@ -19,35 +19,41 @@ export default class extends Controller {
 
     const points = JSON.parse(mapElement.dataset.points);
 
-    // Initialize coordinatesMap
     this.coordinatesMap = points.reduce((acc, point) => {
-      acc[point.postId] = [point.longitude, point.latitude];
+      acc[point.postId] = point.locations
+        .map((location) => ({
+          postLocationId: location.postLocationId,
+          longitude: location.longitude,
+          latitude: location.latitude
+        }))
+        .sort((a, b) => a.postLocationId - b.postLocationId);
       return acc;
     }, {});
 
     const firstPoint = points[0];
+    const firstPointLastLocation = firstPoint.locations[firstPoint.locations.length - 1];
 
     this.map = new maplibregl.Map({
       container: mapElement,
       style: 'https://api.maptiler.com/maps/hybrid/style.json?key=YceGCelRYIEShW1l58mK',
-      center: [firstPoint.longitude, firstPoint.latitude],
+      center: [firstPointLastLocation.longitude, firstPointLastLocation.latitude],
       zoom: 10
     });
 
     this.map.addControl(new FullscreenControl({container: document.querySelector('body')}));
-
-
     this.initaliseMapImages();
 
     points.forEach(point => {
-      new maplibregl.Marker()
-        .setLngLat([point.longitude, point.latitude])
+      point.locations.forEach(location => {
+        new maplibregl.Marker()
+        .setLngLat([location.longitude, location.latitude])
         .setPopup(new maplibregl.Popup({
           closeButton: false,
           closeOnClick: true,
           closeOnMove: true
          }).setHTML(point.tooltip))
         .addTo(this.map);
+      });
     });
 
     this.addMapLayers(points);
@@ -137,7 +143,8 @@ export default class extends Controller {
     }
 
     if (currentPost && this.coordinatesMap[this.currentPostId]) {
-      const [longitude, latitude] = this.coordinatesMap[this.currentPostId];
+      const postLocations = this.coordinatesMap[this.currentPostId];
+      const [longitude, latitude] = postLocations[postLocations.length - 1].coordinates;
       this.map.flyTo({
         center: [longitude, latitude],
         zoom: 10,
@@ -166,7 +173,9 @@ export default class extends Controller {
     // If cached point data exists, use it. Otherwise, process the points and cache the result
     const cacheKey = `mapLayers_${JSON.stringify(points)}`;
     const cachedPointData = localStorage.getItem(cacheKey);
-    const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
+    // const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
+    const pointData = this.processPointData(points, cacheKey);
+    console.log('Point Data:', pointData);
 
     this.map.on('load', () => {
       this.map.addSource('route', {
@@ -427,18 +436,35 @@ export default class extends Controller {
   }
 
   processPointData(points, cacheKey) {
-    const data = points.reverse().map((point, index) => {
-      if (index == points.length - 1) {
-        return;
-      }
-      let nextPoint = points[index + 1];
+    if (!points || points.length < 2) return [];
+
+    // Reverse if you need chronological order
+    const orderedPoints = [...points].reverse();
+
+    const data = orderedPoints.map((point, index) => {
+      // Skip last point since it has no "next point"
+      if (index === orderedPoints.length - 1) return null;
+
+      const nextPoint = orderedPoints[index + 1];
+      const currentLocations = point.locations;
+      const nextLocations = nextPoint.locations;
+
+      // Use the last location of current post and first location of next post
+      const lastLoc = currentLocations[currentLocations.length - 1];
+      const firstNextLoc = nextLocations[0];
+
+      if (!lastLoc || !firstNextLoc) return null;
+
       return {
         coordinates: [
-          [point.longitude, point.latitude], // Current point
-          [nextPoint.longitude, nextPoint.latitude] // Next point
+          [lastLoc.longitude, lastLoc.latitude], // Current point
+          [firstNextLoc.longitude, firstNextLoc.latitude] // Next point
         ],
-        bearing: this.getBearing([point.longitude, point.latitude], [nextPoint.longitude, nextPoint.latitude]),
-        travelType: nextPoint.travelType // Use travelType of the second point
+        bearing: this.getBearing(
+          [lastLoc.longitude, lastLoc.latitude],
+          [firstNextLoc.longitude, firstNextLoc.latitude]
+        ),
+        travelType: nextPoint.travelType // Travel type is associated with the next point
       };
     }).filter(Boolean);
 
