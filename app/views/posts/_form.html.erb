@@ -165,6 +165,14 @@
                 <div class="card card-body d-flex flex-column">
                   <label class="form-label">Choose location</label>
                   <%= render partial: "geolocations/search" %>
+                  <div class="form__field mt-2">
+                  <%= location_form.label :travel_type, class: "form-label text-align-left" %>
+                  <%= location_form.select :travel_type,
+                    options_for_select(PostLocation.travel_types.keys.map { |key| [key.humanize, key] }, location_form.object.travel_type),
+                    { prompt: "Add a travel type" },
+                    class: "form-control",
+                    style: "min-width: 10em;" %>
+                </div>
                 </div>
               </div>
             </div>

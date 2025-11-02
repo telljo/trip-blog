@@ -30,6 +30,8 @@ export default class extends Controller {
       return acc;
     }, {});
 
+    console.log(this.coordinatesMap);
+
     const firstPoint = points[0];
     const firstPointLastLocation = firstPoint.locations[firstPoint.locations.length - 1];
 
@@ -174,6 +176,7 @@ export default class extends Controller {
     const cacheKey = `mapLayers_${JSON.stringify(points)}`;
     const cachedPointData = localStorage.getItem(cacheKey);
     // const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
+    console.log('Points:', points);
     const pointData = this.processPointData(points, cacheKey);
     console.log('Point Data:', pointData);
 
@@ -440,10 +443,10 @@ export default class extends Controller {
 
     // Reverse if you need chronological order
     const orderedPoints = [...points].reverse();
-
     const data = orderedPoints.map((point, index) => {
+
       // Skip last point since it has no "next point"
-      if (index === orderedPoints.length - 1) return null;
+    if (index === orderedPoints.length - 1) return null;
 
       const nextPoint = orderedPoints[index + 1];
       const currentLocations = point.locations;
@@ -452,6 +455,8 @@ export default class extends Controller {
       // Use the last location of current post and first location of next post
       const lastLoc = currentLocations[currentLocations.length - 1];
       const firstNextLoc = nextLocations[0];
+
+      console.log(lastLoc);
 
       if (!lastLoc || !firstNextLoc) return null;
 
@@ -464,7 +469,7 @@ export default class extends Controller {
           [lastLoc.longitude, lastLoc.latitude],
           [firstNextLoc.longitude, firstNextLoc.latitude]
         ),
-        travelType: nextPoint.travelType // Travel type is associated with the next point
+        travelType: firstNextLoc.travelType // Travel type is associated with the next point
       };
     }).filter(Boolean);
 

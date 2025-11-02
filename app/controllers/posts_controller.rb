@@ -116,7 +116,6 @@ class PostsController < ApplicationController
       :trip_id,
       :draft,
       :hidden,
-      :travel_type,
       attachments: [],
       post_attachment_captions_attributes: [
         :id,
@@ -129,7 +128,8 @@ class PostsController < ApplicationController
         :id,
         :post_id,
         :latitude,
-        :longitude
+        :longitude,
+        :travel_type
     ]
     )
   end
