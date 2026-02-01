@@ -14,6 +14,7 @@ export default class extends Controller {
     this.coordinatesMap = {};
     this.map = null;
     this.currentPostId = null;
+    this.prevCurrentPost = null;
     const mapElement = this.mapTarget;
     mapElement.innerHTML = '';
 
@@ -29,8 +30,6 @@ export default class extends Controller {
         .sort((a, b) => a.postLocationId - b.postLocationId);
       return acc;
     }, {});
-
-    console.log(this.coordinatesMap);
 
     const firstPoint = points[0];
     const firstPointLastLocation = firstPoint.locations[firstPoint.locations.length - 1];
@@ -123,35 +122,58 @@ export default class extends Controller {
 
   handleScroll() {
     const scrollPosition = window.scrollY + window.innerHeight / 2;
-    let currentPost = null;
     this.posts = document.querySelectorAll('.post');
+    if (this.posts.length === 0) return;
 
-    if(this.posts.length > 0 && this.currentPostId === null) {
-      this.currentPostId = this.posts[0].firstElementChild.id.split('_')[1];
+    let currentPost = null;
+
+    if(this.posts.length > 0 && !this.currentPostId) {
+      this.currentPostId = this.posts[0].id.split('_')[1];
+      this.prevCurrentPost = this.posts[0];
     }
 
+    // Find the post currently centered on screen
     for (const post of this.posts) {
       const postTop = post.offsetTop;
       const postBottom = postTop + post.offsetHeight;
 
       if (scrollPosition >= postTop && scrollPosition <= postBottom) {
         const postId = post.id.split('_')[1];
-        if (this.currentPostId !== postId) {
+        currentPost = post;
+
+        if (currentPost !== this.prevCurrentPost) {
           this.currentPostId = postId;
-          currentPost = post;
+          this.prevCurrentPost = currentPost;
           break;
         }
+        currentPost = null;
       }
     }
 
-    if (currentPost && this.coordinatesMap[this.currentPostId]) {
-      const postLocations = this.coordinatesMap[this.currentPostId];
-      const [longitude, latitude] = postLocations[postLocations.length - 1].coordinates;
-      this.map.flyTo({
-        center: [longitude, latitude],
-        zoom: 10,
-        essential: true
-      });
+    // If we have a current post with coordinates
+    if (currentPost && this.currentPostId) {
+      const postLocations = this.coordinatesMap[this.currentPostId].reverse();
+      if (!postLocations || postLocations.length === 0) return;
+
+      const postTop = currentPost.offsetTop;
+      const postBottom = postTop + currentPost.offsetHeight;
+      const postScrollY = scrollPosition - postTop;
+      const postHeight = postBottom - postTop;
+
+      // Determine progress (0 to 1) through the post
+      const progress = Math.min(Math.max(postScrollY / postHeight, 0), 1);
+
+      // Convert progress to index of post location
+      const index = Math.floor(progress * (postLocations.length - 1));
+      const loc = postLocations[index];
+
+      if (loc && loc.longitude && loc.latitude) {
+        this.map.flyTo({
+          center: [loc.longitude, loc.latitude],
+          zoom: 10,
+          essential: true
+        });
+      }
     }
   }
 
@@ -175,10 +197,7 @@ export default class extends Controller {
     // If cached point data exists, use it. Otherwise, process the points and cache the result
     const cacheKey = `mapLayers_${JSON.stringify(points)}`;
     const cachedPointData = localStorage.getItem(cacheKey);
-    // const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
-    console.log('Points:', points);
-    const pointData = this.processPointData(points, cacheKey);
-    console.log('Point Data:', pointData);
+    const pointData = cachedPointData ? JSON.parse(cachedPointData) : this.processPointData(points, cacheKey);
 
     this.map.on('load', () => {
       this.map.addSource('route', {
@@ -441,37 +460,51 @@ export default class extends Controller {
   processPointData(points, cacheKey) {
     if (!points || points.length < 2) return [];
 
-    // Reverse if you need chronological order
-    const orderedPoints = [...points].reverse();
-    const data = orderedPoints.map((point, index) => {
+    const ordered = [...points].reverse();
+    const data = [];
 
-      // Skip last point since it has no "next point"
-    if (index === orderedPoints.length - 1) return null;
+    for (let i = 0; i < ordered.length; i++) {
+      const curr = ordered[i];
+      const currLocs = Array.isArray(curr.locations) ? curr.locations : [];
 
-      const nextPoint = orderedPoints[index + 1];
-      const currentLocations = point.locations;
-      const nextLocations = nextPoint.locations;
+      // 1) Intra-post segments: every consecutive pair inside the same post
+      for (let j = 0; j < currLocs.length - 1; j++) {
+        const a = currLocs[j];
+        const b = currLocs[j + 1];
+        if (!a || !b) continue;
 
-      // Use the last location of current post and first location of next post
-      const lastLoc = currentLocations[currentLocations.length - 1];
-      const firstNextLoc = nextLocations[0];
+        const from = [a.longitude, a.latitude];
+        const to   = [b.longitude, b.latitude];
 
-      console.log(lastLoc);
+        data.push({
+          coordinates: [from, to],
+          bearing: this.getBearing(from, to),
+          // If travel type belongs to the "arrival" location, use b.travelType.
+          travelType: b?.travelType ?? a?.travelType ?? null,
+        });
+      }
 
-      if (!lastLoc || !firstNextLoc) return null;
+      // 2) Inter-post segment: last of current → first of next
+      if (i < ordered.length - 1) {
+        const next = ordered[i + 1];
+        const nextLocs = Array.isArray(next.locations) ? next.locations : [];
 
-      return {
-        coordinates: [
-          [lastLoc.longitude, lastLoc.latitude], // Current point
-          [firstNextLoc.longitude, firstNextLoc.latitude] // Next point
-        ],
-        bearing: this.getBearing(
-          [lastLoc.longitude, lastLoc.latitude],
-          [firstNextLoc.longitude, firstNextLoc.latitude]
-        ),
-        travelType: firstNextLoc.travelType // Travel type is associated with the next point
-      };
-    }).filter(Boolean);
+        const lastCurr = currLocs[currLocs.length - 1];
+        const firstNext = nextLocs[0];
+
+        if (lastCurr && firstNext) {
+          const from = [lastCurr.longitude, lastCurr.latitude];
+          const to   = [firstNext.longitude, firstNext.latitude];
+
+          data.push({
+            coordinates: [from, to],
+            bearing: this.getBearing(from, to),
+            // Travel type associated with the next point/arrival, per your original code
+            travelType: firstNext?.travelType ?? null,
+          });
+        }
+      }
+    }
 
     localStorage.setItem(cacheKey, JSON.stringify(data));
     return data;
