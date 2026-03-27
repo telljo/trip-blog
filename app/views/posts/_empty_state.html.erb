@@ -1,7 +1,37 @@
-<div
-  class="container-md d-flex flex-column justify-content-center text-center p-4 mt-2"
->
-  <p class="text-body-secondary mb-0">
-    There are no posts that match your search.
-  </p>
+<%
+  filtered = params.dig(:filters, :query).present? || params.dig(:filters, :country).present?
+  can_create_post = Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip)
+%>
+
+<div class="w-100 py-4">
+  <div class="card border-0 mx-auto" style="max-width: 38rem;">
+    <div class="card-body text-center p-4 p-md-5">
+      <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-subtle text-primary mb-3" style="width: 4rem; height: 4rem;">
+        <i class="bi bi-journal-richtext fs-3"></i>
+      </div>
+
+      <% if filtered %>
+        <h4 class="card-title mb-2">No posts match your search</h4>
+        <p class="text-body-secondary mb-4">
+          Try a different search term or clear the current filters to see all posts for this trip.
+        </p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+          <%= link_to "Clear filters", trip_path(@trip), class: "btn btn-outline-secondary", data: { turbo_frame: "_top" } %>
+          <% if can_create_post %>
+            <%= link_to "Create new post", new_post_path(trip_id: @trip.id), class: "btn btn-success", data: { turbo: false } %>
+          <% end %>
+        </div>
+      <% else %>
+        <h4 class="card-title mb-2">No posts yet</h4>
+        <p class="text-body-secondary mb-4">
+          <%= can_create_post ? "This trip does not have any posts yet. Start the story with the first post." : "This trip does not have any posts yet." %>
+        </p>
+        <% if can_create_post %>
+          <div class="d-flex justify-content-center">
+            <%= link_to "Create first post", new_post_path(trip_id: @trip.id), class: "btn btn-success", data: { turbo: false } %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>

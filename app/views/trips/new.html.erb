@@ -1,3 +1,12 @@
-<%= turbo_frame_tag @trip do %>
+<div class="container d-flex flex-column gap-1">
+  <div class="d-flex flex-row justify-content-between">
+    <h2 class="my-0">New trip</h2>
+
+    <%= link_to trips_path, class: "btn btn-primary" do %>
+      <i class="bi bi-arrow-left"></i>
+      Back to trips
+    <% end %>
+  </div>
+  <hr>
   <%= render "form", trip: @trip %>
-<% end %>
+</div>

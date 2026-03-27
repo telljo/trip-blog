@@ -20,6 +20,8 @@ class Trip < ApplicationRecord
   end
 
   def countries
+    return unless posts.any?
+
     posts.with_location.pluck(:country).uniq.compact.sort
   end
 
