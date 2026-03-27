@@ -235,10 +235,12 @@
         </div>
         <hr>
 
-        <div class="d-flex w-100 justify-content-center">
-          <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-          <%== pagy_bootstrap_nav(@pagy, **vars) %>
-        </div>
+        <% if @pagy.pages > 1 %>
+          <div class="d-flex w-100 justify-content-center">
+            <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
+            <%== pagy_bootstrap_nav(@pagy, **vars) %>
+          </div>
+        <% end %>
       </div>
       <div
         class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1" id="<%= dom_id @trip %>"
@@ -247,13 +249,7 @@
         <div
           class="d-flex flex-column w-100"
         >
-          <%= turbo_frame_tag Post.new do %>
-            <% if @trip.visible_posts.none? %>
-              <div class="d-flex justify-content-center w-100">
-                <%= render "posts/empty_state", locals: { trip: @trip } %>
-              </div>
-            <% end %>
-          <% end %>
+          <%= turbo_frame_tag Post.new %>
           <div class="mobile-only">
             <div class="d-flex flex-row justify-content-between align-items-center my-3">
               <span class="d-flex flex-row gap-1">
@@ -281,10 +277,12 @@
             </div>
             <hr>
 
-            <div class="d-flex w-100 justify-content-center">
-              <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-              <%== pagy_bootstrap_nav(@pagy, **vars) %>
-            </div>
+            <% if @pagy.pages > 1 %>
+              <div class="d-flex w-100 justify-content-center">
+                <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
+                <%== pagy_bootstrap_nav(@pagy, **vars) %>
+              </div>
+            <% end %>
           </div>
           <%= turbo_stream_from @trip %>
 
@@ -324,10 +322,12 @@
           </div>
         <% end %>
       </div>
-      <div class="d-flex w-100 justify-content-center my-5">
-        <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-        <%== pagy_bootstrap_nav(@pagy, **vars) %>
-      </div>
+      <% if @pagy.pages > 1 %>
+        <div class="d-flex w-100 justify-content-center my-5">
+          <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
+          <%== pagy_bootstrap_nav(@pagy, **vars) %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>

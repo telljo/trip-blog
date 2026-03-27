@@ -25,6 +25,9 @@ application.register("map", MapController)
 import ModalController from "./modal_controller"
 application.register("modal", ModalController)
 
+import NoticeController from "./notice_controller"
+application.register("notice", NoticeController)
+
 import PostRepliesController from "./post_replies_controller"
 application.register("post-replies", PostRepliesController)
 
