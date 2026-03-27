@@ -1,3 +1,0 @@
-<%= turbo_stream.prepend "trips", partial: "trips/trip", locals: { trip: @trip, has_link_header: true } %>
-<%= Turbo::StreamsChannel.broadcast_refresh_to "trips"%>
-<%= turbo_stream.update Trip.new, "" %>

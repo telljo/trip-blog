@@ -8,7 +8,7 @@
       <%= link_to "Create new trip",
                   new_trip_path,
                   class: "btn btn-success",
-                  data: { turbo_frame: dom_id(Trip.new) } %>
+                  data: { turbo: false } %>
 
     <% else %>
       <%= link_to "Sign up to create a trip",
@@ -18,12 +18,10 @@
     <% end %>
   </div>
 
-  <%= turbo_frame_tag Trip.new do %>
-    <% if @trips.none? %>
-      <%= render partial: "trips/empty_state", locals: {
-        message: "There are no trips yet."
-      } %>
-      <% end %>
+  <% if @trips.none? %>
+    <%= render partial: "trips/empty_state", locals: {
+      message: "There are no trips yet."
+    } %>
   <% end %>
 
   <%= turbo_stream_from @trips if @trips.any? %>
