@@ -34,7 +34,7 @@
     "anymatch/picomatch": "2.3.2",
     "chokidar/**/picomatch": "2.3.2",
     "micromatch/picomatch": "2.3.2",
-    "postcss-cli/**/yaml": "2.8.3",
+    "postcss-cli/**/yaml": "2.9.0",
     "maplibre-gl/**/protocol-buffers-schema": "3.6.1"
   },
   "packageManager": "yarn@1.22.22"
