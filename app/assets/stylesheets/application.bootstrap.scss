@@ -1,9 +1,11 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@use "sass:meta";
 
-@import "trix/dist/trix";
+@use "bootstrap/scss/bootstrap";
+@use "bootstrap-icons/font/bootstrap-icons";
+
+@include meta.load-css("trix/dist/trix");
 
 // Custom styles
-@import "layouts/content";
-@import "layouts/direct-uploads";
-@import "components/trix";
+@include meta.load-css("layouts/content");
+@include meta.load-css("layouts/direct-uploads");
+@include meta.load-css("components/trix");
