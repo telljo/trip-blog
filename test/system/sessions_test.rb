@@ -8,6 +8,7 @@ class SessionsTest < ApplicationSystemTestCase
   test "visiting the index" do
     sign_in_as @user
 
+    visit edit_user_url(username: @user.username)
     click_on "Devices & Sessions"
     assert_selector "h1", text: "Sessions"
   end
@@ -24,6 +25,7 @@ class SessionsTest < ApplicationSystemTestCase
   test "signing out" do
     sign_in_as @user
 
+    find("[aria-label='Account menu']").click
     click_on "Log out"
     assert_text "That session has been logged out"
   end

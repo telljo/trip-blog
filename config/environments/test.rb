@@ -51,4 +51,8 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # These system tests do not assert Action Cable broadcast delivery. Avoid
+  # waiting for every post stream subscription during ordinary page visits.
+  config.turbo.test_connect_after_actions = []
 end

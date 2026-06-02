@@ -3,6 +3,7 @@ require "application_system_test_case"
 class PasswordsTest < ApplicationSystemTestCase
   setup do
     @user = sign_in_as(users(:lazaro_nixon))
+    visit edit_user_url(username: @user.username)
   end
 
   test "updating the password" do
