@@ -173,6 +173,47 @@ $trip-map-mobile-height: 300px;
   }
 }
 
+.profile-picture-picker {
+  display: grid;
+  grid-template-columns: minmax(18rem, 26rem) minmax(16rem, 1fr);
+  gap: 1rem;
+  align-items: end;
+
+  @media screen and (max-width: $breakpoint) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-picture-picker__preview {
+  width: min(100%, 26rem);
+}
+
+.profile-picture-picker__image {
+  display: block;
+  width: 14rem;
+  height: 14rem;
+  object-fit: cover;
+}
+
+.profile-picture-picker__controls {
+  width: 100%;
+  align-self: end;
+}
+
+.profile-picture-picker cropper-canvas {
+  display: block;
+  width: min(100%, 26rem);
+  height: 20rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  overflow: hidden;
+
+  @media screen and (max-width: $breakpoint) {
+    width: min(100%, 24rem);
+    height: min(76vw, 22rem);
+  }
+}
+
 .search-results {
   padding: 1em;
   position: absolute;
