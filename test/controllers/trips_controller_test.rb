@@ -3,6 +3,7 @@ require "test_helper"
 class TripsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @trip = trips(:one)
+    @user = users(:lazaro_nixon)
   end
 
   test "should get index" do
@@ -11,13 +12,17 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get new" do
+    sign_in_as @user
+
     get new_trip_url
     assert_response :success
   end
 
   test "should create trip" do
+    sign_in_as @user
+
     assert_difference("Trip.count") do
-      post trips_url, params: { trip: {} }
+      post trips_url, params: { trip: { name: "New trip", body: "New trip body" } }
     end
 
     assert_redirected_to trip_url(Trip.last)
@@ -29,16 +34,22 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit" do
+    sign_in_as @user
+
     get edit_trip_url(@trip)
     assert_response :success
   end
 
   test "should update trip" do
-    patch trip_url(@trip), params: { trip: {} }
+    sign_in_as @user
+
+    patch trip_url(@trip), params: { trip: { name: "Updated trip" } }
     assert_redirected_to trip_url(@trip)
   end
 
   test "should destroy trip" do
+    sign_in_as @user
+
     assert_difference("Trip.count", -1) do
       delete trip_url(@trip)
     end

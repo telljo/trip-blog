@@ -13,14 +13,14 @@ class TripsController < ApplicationController
     if filter_params[:country].present?
       posts = posts.where(country: filter_params[:country])
       if filter_params[:query].present?
-        @pagy, @posts = pagy(posts.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), items: 5)
+        @pagy, @posts = pagy(:offset, posts.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), limit: 5)
       else
-        @pagy, @posts = pagy(posts.order(created_at: :desc), items: 5)
+        @pagy, @posts = pagy(:offset, posts.order(created_at: :desc), limit: 5)
       end
     elsif filter_params[:query].present?
-      @pagy, @posts = pagy(Post.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(:offset, Post.full_text_search(input: filter_params[:query], trip: @trip, posts: posts).order(created_at: :desc), limit: 5)
     else
-      @pagy, @posts = pagy(posts.order(created_at: :desc), items: 5)
+      @pagy, @posts = pagy(:offset, posts.order(created_at: :desc), limit: 5)
     end
     respond_to do |format|
       format.html
@@ -61,7 +61,7 @@ class TripsController < ApplicationController
     authorize @trip
     if @trip.update(trip_params)
       flash[:notice] = "Trip was successfully updated."
-      redirect_to trips_url(@trip)
+      redirect_to @trip
     else
       render :edit, status: :unprocessable_entity
     end

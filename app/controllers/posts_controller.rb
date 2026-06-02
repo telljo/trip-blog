@@ -11,9 +11,9 @@ class PostsController < ApplicationController
   def index
     if params[:trip_id]
       @trip = Trip.find(params[:trip_id])
-      @pagy, @posts = pagy_countless(@trip.visible_posts.order(:id), items: 5)
+      @pagy, @posts = pagy(:countless, @trip.visible_posts.order(:id), limit: 5)
     else
-      @pagy, @posts = pagy_countless(Post.all.order(:id), items: 5)
+      @pagy, @posts = pagy(:countless, Post.all.order(:id), limit: 5)
     end
   end
 

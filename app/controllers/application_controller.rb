@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
-  include Pagy::Backend
-  include Pagy::Frontend
+  include Pagy::Method
   before_action :set_current_request_details
   before_action :authenticate
 

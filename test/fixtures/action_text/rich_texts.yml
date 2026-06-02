@@ -2,3 +2,22 @@
 #   record: name_of_fixture (ClassOfFixture)
 #   name: content
 #   body: <p>In a <i>million</i> stars!</p>
+trip_one_body:
+  record: one (Trip)
+  name: body
+  body: <p>Trip one body</p>
+
+trip_two_body:
+  record: two (Trip)
+  name: body
+  body: <p>Trip two body</p>
+
+post_one_body:
+  record: one (Post)
+  name: body
+  body: <p>Post one body</p>
+
+post_two_body:
+  record: two (Post)
+  name: body
+  body: <p>Post two body</p>
