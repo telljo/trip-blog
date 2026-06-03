@@ -1,4 +1,4 @@
-<h1>Posts for <%= @trip.title %></h1>
+<h1><%= @trip ? "Posts for #{@trip.name}" : "Posts" %></h1>
 
 <%= turbo_frame_tag "posts" do %>
   <%= render @posts %>

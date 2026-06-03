@@ -237,8 +237,8 @@
 
         <% if @pagy.pages > 1 %>
           <div class="d-flex w-100 justify-content-center">
-            <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-            <%== pagy_bootstrap_nav(@pagy, **vars) %>
+            <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
+            <%== @pagy.series_nav(:bootstrap, **vars) %>
           </div>
         <% end %>
       </div>
@@ -279,8 +279,8 @@
 
             <% if @pagy.pages > 1 %>
               <div class="d-flex w-100 justify-content-center">
-                <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-                <%== pagy_bootstrap_nav(@pagy, **vars) %>
+                <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
+                <%== @pagy.series_nav(:bootstrap, **vars) %>
               </div>
             <% end %>
           </div>
@@ -324,8 +324,8 @@
       </div>
       <% if @pagy.pages > 1 %>
         <div class="d-flex w-100 justify-content-center my-5">
-          <% vars = { link_extra: 'data-turbo-frame="posts"' } %>
-          <%== pagy_bootstrap_nav(@pagy, **vars) %>
+          <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
+          <%== @pagy.series_nav(:bootstrap, **vars) %>
         </div>
       <% end %>
     </div>
