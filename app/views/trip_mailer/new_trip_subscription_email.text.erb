@@ -1,0 +1,9 @@
+Hello <%= @follower.username %>,
+
+<%= @creator.username %>, whose trips you already follow, has created a new trip: <%= @trip.name %>.
+
+You have been automatically subscribed to updates for this trip.
+
+View the trip: <%= trip_url(@trip) %>
+
+If you do not want to receive updates, open the trip and select Unfollow.

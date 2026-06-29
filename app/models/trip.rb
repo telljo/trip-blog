@@ -7,6 +7,7 @@ class Trip < ApplicationRecord
   has_many :followers, class_name: "TripFollower", dependent: :destroy
   has_many :users, through: :companions
   accepts_nested_attributes_for :companions, allow_destroy: true
+  after_create_commit :propagate_followers
   after_update_commit :broadcast_companions
   has_rich_text :body
 
@@ -26,6 +27,10 @@ class Trip < ApplicationRecord
   end
 
   private
+
+  def propagate_followers
+    TripFollowerPropagator.new(self).call
+  end
 
   def broadcast_companions
     companions.each do |companion|
