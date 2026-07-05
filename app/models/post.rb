@@ -12,7 +12,9 @@ class Post < ApplicationRecord
   validates :body, presence: true
 
   has_rich_text :body
-  has_many_attached :attachments
+  has_many_attached :attachments do |attachable|
+    attachable.variant :display, resize_to_limit: [ 1000, 1000 ]
+  end
   has_many :post_attachment_captions, dependent: :destroy
   accepts_nested_attributes_for :post_attachment_captions, reject_if: proc { |attributes| attributes["text"].blank? }, allow_destroy: true
 
@@ -43,7 +45,7 @@ class Post < ApplicationRecord
   def image_as_thumbnail(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
-    image.variant(resize_to_limit: [ 1000, 1000 ]).processed
+    image.variant(:display)
   end
 
   def address

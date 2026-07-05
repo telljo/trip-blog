@@ -10,6 +10,9 @@ application.register("clipboard", ClipboardController)
 import CropController from "./crop_controller"
 application.register("crop", CropController)
 
+import DirectUploadsController from "./direct_uploads_controller"
+application.register("direct-uploads", DirectUploadsController)
+
 import DropdownController from "./dropdown_controller"
 application.register("dropdown", DropdownController)
 

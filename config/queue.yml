@@ -4,7 +4,10 @@ default: &default
       batch_size: 500
   workers:
     - queues: "*"
-      threads: 3
+      # Image analysis and transformations are CPU and memory intensive. Keep
+      # all jobs serial on the current single-machine deployment so they cannot
+      # overwhelm the web process.
+      threads: 1
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 0.1
 

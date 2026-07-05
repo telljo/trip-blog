@@ -32,6 +32,9 @@ module TripBlog
 
     config.solid_queue.preserve_finished_jobs = false
 
+    config.active_storage.queues.analysis = :images
+    config.active_storage.queues.transform = :images
+
     # Enable compression
     config.middleware.use Rack::Deflater
   end

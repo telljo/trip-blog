@@ -1,22 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const carousel = document.querySelector('.carousel');
+const initializedCarousels = new WeakSet()
 
-  if (carousel) {
-    const inner = carousel.querySelector('.carousel-inner');
+const initializeCarousel = carousel => {
+  if (initializedCarousels.has(carousel)) return
 
-  // Function to update the height of the carousel
-  const updateCarouselHeight = () => {
-    const activeItem = inner.querySelector('.carousel-item.active');
-    if (activeItem) {
-      const activeHeight = activeItem.offsetHeight;
-      inner.style.height = `${activeHeight}px`;
-    }
-  };
+  const inner = carousel.querySelector(".carousel-inner")
+  if (!inner) return
 
-  // Add a transition effect to the carousel-inner
-  inner.style.transition = 'height 0.25s ease';
+  initializedCarousels.add(carousel)
 
-  // Update height on slide change
-  carousel.addEventListener('slid.bs.carousel', updateCarouselHeight);
+  const updateHeight = () => {
+    requestAnimationFrame(() => {
+      const activeItem = inner.querySelector(".carousel-item.active")
+      if (!activeItem) return
+
+      const activeHeight = activeItem.offsetHeight
+      if (activeHeight > 0) inner.style.height = `${activeHeight}px`
+    })
   }
-});
+
+  carousel.addEventListener("slid.bs.carousel", updateHeight)
+
+  carousel.querySelectorAll("img").forEach(image => {
+    image.addEventListener("load", updateHeight)
+    if (image.complete) updateHeight()
+  })
+
+  carousel.querySelectorAll("video").forEach(video => {
+    video.addEventListener("loadedmetadata", updateHeight)
+  })
+
+  updateHeight()
+}
+
+const initializeCarousels = () => {
+  document.querySelectorAll(".carousel").forEach(initializeCarousel)
+}
+
+document.addEventListener("turbo:load", initializeCarousels)
+document.addEventListener("turbo:frame-load", initializeCarousels)
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeCarousels)
+} else {
+  initializeCarousels()
+}

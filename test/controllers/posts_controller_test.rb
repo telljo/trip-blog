@@ -17,6 +17,8 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
 
     get new_trip_post_url(@trip)
     assert_response :success
+    assert_select "form[data-controller='direct-uploads'][data-direct-uploads-concurrency-value='3']"
+    assert_select "input[type='file'][data-action='change->direct-uploads#upload'][data-direct-upload-url]"
   end
 
   test "should create post" do
