@@ -12,13 +12,11 @@ class Post < ApplicationRecord
   validates :body, presence: true
 
   has_rich_text :body
-  has_many_attached :attachments do |attachable|
+  has_many_attached :attachments, dependent: :purge_later do |attachable|
     attachable.variant :display, resize_to_limit: [ 1000, 1000 ]
   end
   has_many :post_attachment_captions, dependent: :destroy
   accepts_nested_attributes_for :post_attachment_captions, reject_if: proc { |attributes| attributes["text"].blank? }, allow_destroy: true
-
-  before_destroy :purge_attachments
 
   broadcasts_refreshes_to :trip
 
@@ -58,11 +56,5 @@ class Post < ApplicationRecord
 
   def liked_by?(user)
     likes.exists?(user: user)
-  end
-
-  private
-
-  def purge_attachments
-    attachments.purge_later
   end
 end

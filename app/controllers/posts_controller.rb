@@ -3,8 +3,8 @@ require "base64"
 class PostsController < ApplicationController
   include PostNotifier
   skip_before_action :authenticate, only: %i[index show]
-  before_action :set_post, only: %i[show edit update destroy]
-  before_action :set_trip, only: %i[edit update destroy]
+  before_action :set_post, only: %i[show edit update destroy remove_attachment]
+  before_action :set_trip, only: %i[edit update destroy remove_attachment]
   before_action :validate_user, only: %i[edit update destroy]
 
   # GET /posts
@@ -81,12 +81,13 @@ class PostsController < ApplicationController
   end
 
   def remove_attachment
-    @attachment = ActiveStorage::Attachment.find(params[:id])
+    authorize @post, :update?
+    attachment = @post.attachments_attachments.find(params.expect(:attachment_id))
 
-    @attachment.variant_records.destroy_all
-    @attachment.purge_later
+    attachment.caption&.destroy!
+    attachment.purge_later
 
-    redirect_to edit_post_url(@attachment.record)
+    redirect_to edit_post_url(@post)
   end
 
   private
