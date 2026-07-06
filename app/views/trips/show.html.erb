@@ -1,297 +1,176 @@
 <%= turbo_frame_tag dom_id(@trip) do %>
   <% content_for :title, "#{@trip.name} · Footprints" %>
-  <div
-    class="container d-flex flex-column gap-1 trip"
-  >
-    <div class="d-flex flex-row gap-2">
-      <span class="d-flex flex-row gap-2 flex-wrap w-100">
-        <h2 class="mb-0"><%= @trip.name %></h2>
-        <div class="desktop-only" style="width: 100%;">
-          <div class="d-flex flex-row w-100 justify-content-between">
-            <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
-              <% if @trip.user.profile_picture.attached? %>
-                <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-              <% else %>
-                <i
-                  class="bi bi-person-circle"
-                  style="font-size: 1.3em; color: white;"
-                ></i>
-              <% end %>
-              <%=
-                link_to @trip.user.username,
-                url_for(
-                  controller: '/users',
-                  action: 'show',
-                  username: @trip.user.username
-                ),
-                class: "text__link",
-                data: { turbo_frame: "_top" }
-              %>
-              started this trip on <%= @trip.created_at&.strftime("%B %d, %Y") %>
-            </p>
-            <div class="d-flex flex-row justify-content-between px-2"">
-              <span class="d-flex flex-row gap-1">
-                <% if @trip.companions.any? %>
-                  <div class="dropdown">
-                    <button class="btn px-1" id="bd-companions" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="View trip companions">
-                      <i class="bi bi-people"></i>
-                    </button>
 
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-                      <% @trip.companions.each do |companion| %>
-                        <li>
-                          <%= link_to url_for(controller: '/users', action: 'show', username: companion.user.username), class: "dropdown-item d-flex align-items-center gap-2", data: { turbo_frame: "_top" } do %>
-                            <% if companion.user.profile_picture.attached? %>
-                              <%= image_tag companion.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-                            <% else %>
-                              <i class="bi bi-person-circle" style="font-size: 1.3em; color: white;"></i>
-                            <% end %>
-                            <%= companion.user.username %>
-                          <% end %>
-                        </li>
-                      <% end %>
-                    </ul>
-                  </div>
-                <% end %>
+  <main class="container-fluid trip">
+    <header class="trip-header">
+      <div class="trip-header__top">
+        <div class="trip-header__intro">
+          <h1 class="trip-title"><%= @trip.name %></h1>
 
-                <% if Current.user %>
-                  <% if @trip.followed_by?(Current.user) %>
-                    <%= button_to trip_trip_follower_path(@trip.id, @trip.followers.find_by(user: Current.user).id),
-                      class:"btn btn-danger align-items-center gap-2",
-                      style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
-                      data: { turbo_confirm: "By unfollowing this trip you will no longer receive emails when new posts are added." },
-                      method: :delete do %>
-                      <i class="bi bi-envelope-x-fill"></i>
-                      Unfollow
-                    <% end %>
-                  <% else %>
-                    <%= button_to trip_trip_followers_path(trip_id: @trip.id),
-                      style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
-                      data: { turbo_confirm: "By following this trip you will receive emails when new posts are added." },
-                      class: "btn btn-primary align-items-center gap-2" do %>
-                      <i class="bi bi-envelope-plus-fill"></i>
-                      Follow
-                    <% end %>
-                  <% end %>
-                <% else %>
-                  <p class="text-body-secondary align-content-center mb-1" style="text-wrap: nowrap;"><%= link_to "Log in", new_session_path, data: { turbo_frame: "_top" } %> to follow</p>
-                <% end %>
-
-                <% if Current.user == @trip.user %>
-                  <div class="dropdown">
-                    <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
-                      <i class="bi bi-three-dots"></i>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-                      <li>
-                        <%= link_to "Edit trip",
-                          edit_trip_path(@trip),
-                          data: { turbo: false },
-                          class: "dropdown-item" %>
-                      </li>
-                      <li>
-                        <%= button_to "Delete trip",
-                            @trip, method: :delete,
-                            data: { turbo: "false" },
-                            form: { data: { 'turbo-confirm': 'Are you sure?' } },
-                            class: "dropdown-item dropdown-item--danger" %>
-                      </li>
-                    </ul>
-                  </div>
-                <% end %>
-              </span>
-            </div>
-          </div>
-        </div>
-      </span>
-    </div>
-    <%= @trip.body %>
-    <div class="mobile-only">
-      <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
-        <div class="d-flex flex-row w-100 justify-content-between">
-          <p class="d-flex m-0 align-items-center gap-1 text-body-secondary my-2">
+          <p class="trip-byline text-body-secondary">
             <% if @trip.user.profile_picture.attached? %>
-              <%= image_tag @trip.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+              <%= image_tag @trip.user.image_as_thumbnail,
+                class: "rounded-circle trip-byline__avatar",
+                alt: "" %>
             <% else %>
-              <i
-                class="bi bi-person-circle"
-                style="font-size: 1.3em; color: white;"
-              ></i>
+              <i class="bi bi-person-circle trip-byline__avatar-placeholder" aria-hidden="true"></i>
             <% end %>
-            <%=
-              link_to @trip.user.username,
-              url_for(
-                controller: '/users',
-                action: 'show',
-                username: @trip.user.username
-              ),
+
+            <%= link_to @trip.user.username,
+              user_path(username: @trip.user.username),
               class: "text__link",
-              data: { turbo_frame: "_top" }
-            %>
-            <%= @trip.created_at&.strftime("%B %d, %Y") %>
+              data: { turbo_frame: "_top" } %>
+            <span class="desktop-only">started this trip on</span>
+            <time datetime="<%= @trip.created_at&.to_date&.iso8601 %>">
+              <%= @trip.created_at&.strftime("%B %d, %Y") %>
+            </time>
           </p>
-          <div class="d-flex flex-row justify-content-between px-2"">
-            <span class="d-flex flex-row gap-1">
-              <% if @trip.companions.any? %>
-                <div class="dropdown">
-                  <button class="btn px-1" id="bd-companions" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="View trip companions">
-                    <i class="bi bi-people"></i>
-                  </button>
+        </div>
 
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-                    <% @trip.companions.each do |companion| %>
-                      <li>
-                        <%= link_to url_for(controller: '/users', action: 'show', username: companion.user.username), class: "dropdown-item d-flex align-items-center gap-2", data: { turbo_frame: "_top" } do %>
-                          <% if companion.user.profile_picture.attached? %>
-                            <%= image_tag companion.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
-                          <% else %>
-                            <i class="bi bi-person-circle" style="font-size: 1.3em; color: white;"></i>
-                          <% end %>
-                          <%= companion.user.username %>
-                        <% end %>
-                      </li>
+        <div class="trip-header__actions">
+          <% if @trip.companions.any? %>
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-secondary trip-icon-button"
+                id="trip-companions"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-label="View trip companions"
+              >
+                <i class="bi bi-people" aria-hidden="true"></i>
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="trip-companions">
+                <% @trip.companions.each do |companion| %>
+                  <li>
+                    <%= link_to user_path(username: companion.user.username),
+                      class: "dropdown-item d-flex align-items-center gap-2",
+                      data: { turbo_frame: "_top" } do %>
+                      <% if companion.user.profile_picture.attached? %>
+                        <%= image_tag companion.user.image_as_thumbnail,
+                          class: "rounded-circle trip-byline__avatar",
+                          alt: "" %>
+                      <% else %>
+                        <i class="bi bi-person-circle trip-byline__avatar-placeholder" aria-hidden="true"></i>
+                      <% end %>
+                      <%= companion.user.username %>
                     <% end %>
-                  </ul>
-                </div>
-              <% end %>
-
-              <% if Current.user %>
-                <% if @trip.followed_by?(Current.user) %>
-                  <%= button_to trip_trip_follower_path(@trip.id, @trip.followers.find_by(user: Current.user).id),
-                    class:"btn btn-danger align-items-center gap-2",
-                    style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
-                    data: { turbo_confirm: "By unfollowing this trip you will no longer receive emails when new posts are added." },
-                    method: :delete do %>
-                    <i class="bi bi-envelope-x-fill"></i>
-                    Unfollow
-                  <% end %>
-                <% else %>
-                  <%= button_to trip_trip_followers_path(trip_id: @trip.id),
-                    style:"text-wrap: nowrap; display: flex; flex-wrap: nowrap;",
-                    data: { turbo_confirm: "By following this trip you will receive emails when new posts are added." },
-                    class: "btn btn-primary align-items-center gap-2" do %>
-                    <i class="bi bi-envelope-plus-fill"></i>
-                    Follow
-                  <% end %>
+                  </li>
                 <% end %>
-              <% else %>
-                <p class="text-body-secondary align-content-center mb-1" style="text-wrap: nowrap;"><%= link_to "Log in", new_session_path, data: { turbo_frame: "_top" } %> to follow</p>
-              <% end %>
+              </ul>
+            </div>
+          <% end %>
 
-              <% if Current.user == @trip.user %>
-                <div class="dropdown">
-                  <button class="btn px-1" id="bd-edit" type="button" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Edit trip">
-                    <i class="bi bi-three-dots"></i>
-                  </button>
-
-                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bd-theme-text">
-                    <li>
-                      <%= link_to "Edit trip",
-                          edit_trip_path(@trip),
-                          data: { turbo_frame: dom_id(@trip) },
-                          class: "dropdown-item" %>
-                    </li>
-                    <li>
-                      <%= button_to "Delete trip",
-                          @trip, method: :delete,
-                          data: { turbo: "false" },
-                          form: { data: { 'turbo-confirm': 'Are you sure?' } },
-                          class: "dropdown-item dropdown-item--danger" %>
-                    </li>
-                  </ul>
-                </div>
+          <% if Current.user %>
+            <% if @trip.followed_by?(Current.user) %>
+              <%= button_to trip_trip_follower_path(@trip.id, @trip.followers.find_by(user: Current.user).id),
+                class: "btn btn-outline-danger d-flex align-items-center gap-2",
+                data: { turbo_confirm: "By unfollowing this trip you will no longer receive emails when new posts are added." },
+                method: :delete do %>
+                <i class="bi bi-envelope-x-fill" aria-hidden="true"></i>
+                Unfollow
               <% end %>
+            <% else %>
+              <%= button_to trip_trip_followers_path(trip_id: @trip.id),
+                class: "btn btn-primary d-flex align-items-center gap-2",
+                data: { turbo_confirm: "By following this trip you will receive emails when new posts are added." } do %>
+                <i class="bi bi-envelope-plus-fill" aria-hidden="true"></i>
+                Follow
+              <% end %>
+            <% end %>
+          <% else %>
+            <p class="trip-follow-prompt text-body-secondary">
+              <%= link_to "Log in", new_session_path, data: { turbo_frame: "_top" } %> to follow
+            </p>
+          <% end %>
+
+          <% if Current.user == @trip.user %>
+            <div class="dropdown">
+              <button
+                class="btn btn-outline-secondary trip-icon-button"
+                id="trip-actions"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-label="Edit trip"
+              >
+                <i class="bi bi-three-dots" aria-hidden="true"></i>
+              </button>
+
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="trip-actions">
+                <li>
+                  <%= link_to "Edit trip",
+                    edit_trip_path(@trip),
+                    data: { turbo: false },
+                    class: "dropdown-item" %>
+                </li>
+                <li>
+                  <%= button_to "Delete trip",
+                    @trip,
+                    method: :delete,
+                    data: { turbo: "false" },
+                    form: { data: { "turbo-confirm": "Are you sure?" } },
+                    class: "dropdown-item dropdown-item--danger" %>
+                </li>
+              </ul>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="trip-description">
+        <%= @trip.body %>
+      </div>
+    </header>
+
+    <section class="trip-content" aria-labelledby="trip-posts-heading">
+      <div class="trip-toolbar">
+        <div class="trip-toolbar__top">
+          <div class="d-flex align-items-center gap-2">
+            <h2 class="mb-0" id="trip-posts-heading">Posts</h2>
+            <span class="badge rounded-pill bg-primary" aria-label="<%= pluralize(@trip.visible_posts.count, "post") %>">
+              <%= @trip.visible_posts.count %>
             </span>
           </div>
-        </div>
-      </p>
-    </div>
-    <div class="trip-content">
-      <div class="desktop-only">
-        <div class="d-flex flex-row justify-content-between align-items-center mt-3">
-          <span class="d-flex flex-row gap-1">
-            <h3 class="mb-0">Posts</h3>
-
-            <h7 style="margin: auto;">
-              <span class="badge bg-primary">
-                <%= @trip.visible_posts.count %>
-              </span>
-            </h7>
-          </span>
 
           <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
             <%= link_to "Create new post",
               new_post_path(trip_id: @trip.id),
               class: "btn btn-success",
-              style: "max-height: 2.5em;",
               data: { turbo: false } %>
           <% end %>
         </div>
-        <%# FILTERING and SORTING DESKTOP %>
-        <div class="d-flex flex-wrap gap-1" data-controller="filter">
+
+        <div class="trip-toolbar__filters" data-controller="filter">
           <%= render partial: "trips/search_and_filter" %>
-          <div class="d-flex flex-row gap-1 p-2" data-filter-target="filterContainerDesktop"></div>
+          <div
+            class="d-flex flex-wrap align-items-center gap-2"
+            data-filter-target="filterContainerDesktop filterContainerMobile"
+          ></div>
         </div>
-        <hr>
 
         <% if @pagy.pages > 1 %>
-          <div class="d-flex w-100 justify-content-center">
+          <nav class="d-flex w-100 justify-content-center" aria-label="Posts pagination">
             <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
             <%== @pagy.series_nav(:bootstrap, **vars) %>
-          </div>
+          </nav>
         <% end %>
       </div>
-      <div
-        class="d-flex flex-column-reverse flex-lg-row gap-4 mb-1" id="<%= dom_id @trip %>"
-        data-controller="map"
-      >
-        <div
-          class="d-flex flex-column w-100"
-        >
+
+      <div class="trip-feed-layout" data-controller="map">
+        <div class="trip-posts">
           <%= turbo_frame_tag Post.new %>
-          <div class="mobile-only">
-            <div class="d-flex flex-row justify-content-between align-items-center my-3">
-              <span class="d-flex flex-row gap-1">
-                <h3 class="mb-0">Posts</h3>
-
-                <h7 style="margin: auto;">
-                  <span class="badge bg-primary">
-                    <%= @trip.visible_posts.count %>
-                  </span>
-                </h7>
-              </span>
-
-              <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-                <%= link_to "Create new post",
-                  new_post_path(trip_id: @trip.id),
-                  class: "btn btn-success",
-                  style: "max-height: 2.5em;",
-                  data: { turbo: false } %>
-              <% end %>
-            </div>
-            <%# FILTERING and SORTING MOBILE %>
-            <div class="d-flex flex-wrap gap-1" data-controller="filter">
-              <%= render partial: "trips/search_and_filter" %>
-              <div class="d-flex flex-row gap-1" data-filter-target="filterContainerMobile"></div>
-            </div>
-            <hr>
-
-            <% if @pagy.pages > 1 %>
-              <div class="d-flex w-100 justify-content-center">
-                <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
-                <%== @pagy.series_nav(:bootstrap, **vars) %>
-              </div>
-            <% end %>
-          </div>
           <%= turbo_stream_from @trip %>
 
           <div class="d-flex flex-column gap-4">
             <%= turbo_frame_tag "posts" do %>
-
               <% @posts.each do |post| %>
                 <%= render "posts/post", post: post %>
               <% end %>
+
               <% if @posts.none? %>
                 <div class="d-flex justify-content-center w-100">
                   <%= render "posts/empty_state", locals: { trip: @trip } %>
@@ -303,7 +182,7 @@
 
         <% if @trip.visible_posts.with_location.any? %>
           <div
-            class="border rounded-2 bg-white shadow-sm trip-map"
+            class="rounded-3 bg-white shadow-sm trip-map"
             data-map-target="map"
             id="posts-map"
             data-points="<%= generated_points(@trip, @pagy) %>"
@@ -318,16 +197,16 @@
               motorbike: { left: asset_path("motorbike-left.png"), right: asset_path("motorbike-right.png") },
               train: { left: asset_path("train-left.png"), right: asset_path("train-right.png") }
             }.to_json) %>'
-          >
-          </div>
+          ></div>
         <% end %>
       </div>
+
       <% if @pagy.pages > 1 %>
-        <div class="d-flex w-100 justify-content-center my-5">
+        <nav class="d-flex w-100 justify-content-center my-5" aria-label="Posts pagination">
           <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
           <%== @pagy.series_nav(:bootstrap, **vars) %>
-        </div>
+        </nav>
       <% end %>
-    </div>
-  </div>
+    </section>
+  </main>
 <% end %>

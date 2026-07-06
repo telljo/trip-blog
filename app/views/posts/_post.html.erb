@@ -1,4 +1,4 @@
-<%= turbo_frame_tag dom_id(post), class:"post", style:"max-width: 50em;" do %>
+<%= turbo_frame_tag dom_id(post), class: "post" do %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
       <div class="d-flex flex-column flex-wrap my-2">
@@ -125,13 +125,13 @@
                   </div>
                   <div class="d-flex justify-content-center" style="height: inherit;">
                     <div
-                      class="d-flex flex-column justify-content-center align-items-center"
-                      style="height: inherit; width: 400px;"
+                      class="d-flex flex-column justify-content-center align-items-center post-media"
+                      style="height: inherit;"
                     >
                       <% if attachment.image? %>
                         <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image", loading: index.zero? ? "eager" : "lazy"), attachment, target: "_blank" %>
                       <% else %>
-                        <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
+                        <%= video_tag url_for(attachment), controls: true, class: "post-video" %>
                       <% end %>
 
                       <% if attachment.caption? %>
