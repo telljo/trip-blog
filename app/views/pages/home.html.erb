@@ -1,17 +1,115 @@
-<% content_for :title, "Footprints · Discover travel adventures" %>
-<div class="d-flex flex-column home-page">
-  <div class="d-flex flex-row gap-2 pb-4 position-absolute w-100 justify-content-center" style="margin-top: 220px;">
-    <div class="d-flex flex-column gap-1 align-items-center home-container">
-      <div class="desktop-only">
-        <%= image_tag("logo-text.svg", width: "600", height: "100") %>
+<% content_for :title, "Footprints · Share your journey" %>
+
+<main class="home-page">
+  <section class="home-hero" aria-labelledby="home-hero-title">
+    <div class="home-hero__content">
+      <p class="home-eyebrow">A travel journal for everyone you care about</p>
+      <h1 class="home-hero__title" id="home-hero-title">Share your trip as it unfolds.</h1>
+      <p class="home-hero__lede">
+        Create a trip, post updates from the road, and let friends and family follow along from one simple place.
+      </p>
+      <p class="home-hero__support text-body-secondary">
+        Footprints keeps the photos, places, and little stories of your journey together making it easy to share now and lovely to revisit later.
+      </p>
+
+      <div class="home-hero__actions">
+        <% if Current.user %>
+          <%= link_to new_trip_path,
+            class: "btn btn-primary btn-lg d-inline-flex align-items-center gap-2",
+            data: { turbo: false } do %>
+            Create a trip
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          <% end %>
+        <% else %>
+          <%= link_to sign_up_path,
+            class: "btn btn-primary btn-lg d-inline-flex align-items-center gap-2" do %>
+            Sign up to start
+            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+          <% end %>
+        <% end %>
+
+        <%= link_to "Explore trips", trips_path, class: "btn btn-outline-secondary btn-lg" %>
       </div>
-      <div class="mobile-only">
-        <%= image_tag("logo-text.svg", width: "300", height: "50") %>
-      </div>
-      <p class="text-align-center text-center text-light home-text">Discover inspiring travel stories and stunning visuals that spark your next adventure.</p>
-      <%= link_to "View trips", trips_url,
-        type: "button",
-        class:"btn btn-lg btn-light" %>
+
+      <% unless Current.user %>
+        <p class="home-hero__login text-body-secondary">
+          Already sharing a journey?
+          <%= link_to "Log in", new_session_path %>
+        </p>
+      <% end %>
     </div>
-  </div>
-</div>
+
+    <div class="home-hero__visual">
+      <picture>
+        <source
+          media="(max-width: 820px)"
+          srcset="<%= asset_path("new-hero-image.webp") %>"
+        >
+        <%= image_tag "new-hero-image-wide.webp",
+          class: "home-hero__image",
+          alt: "A traveler overlooking rice terraces, a winding railway, and a tuk-tuk in a mountain valley",
+          fetchpriority: "high" %>
+      </picture>
+    </div>
+  </section>
+
+  <section class="home-steps" aria-labelledby="home-steps-title">
+    <div class="home-section-heading">
+      <p class="home-eyebrow">How Footprints works</p>
+      <h2 id="home-steps-title">From first update to favorite memory.</h2>
+      <p class="text-body-secondary">
+        A simple home for the journey—without turning travel into another job.
+      </p>
+    </div>
+
+    <div class="home-steps__grid">
+      <article class="home-step">
+        <div class="home-step__icon">
+          <i class="bi bi-map" aria-hidden="true"></i>
+        </div>
+        <h3>Create a trip</h3>
+        <p>Give your journey a home before you leave or start one whenever inspiration strikes.</p>
+      </article>
+
+      <article class="home-step">
+        <div class="home-step__icon">
+          <i class="bi bi-camera" aria-hidden="true"></i>
+        </div>
+        <h3>Post from the road</h3>
+        <p>Add quick stories, photos, and places as you go—long-form travel writing optional.</p>
+      </article>
+
+      <article class="home-step">
+        <div class="home-step__icon">
+          <i class="bi bi-people" aria-hidden="true"></i>
+        </div>
+        <h3>Bring people along</h3>
+        <p>Friends and family can follow your trip and receive new updates without chasing a group chat.</p>
+      </article>
+
+      <article class="home-step">
+        <div class="home-step__icon">
+          <i class="bi bi-journal-richtext" aria-hidden="true"></i>
+        </div>
+        <h3>Keep the whole story</h3>
+        <p>Your route, memories, and moments stay together as a personal journal to return to.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-final-cta" aria-labelledby="home-final-cta-title">
+    <div>
+      <p class="home-final-cta__eyebrow">Your next story starts here</p>
+      <h2 id="home-final-cta-title">Take the people you love along for the ride.</h2>
+    </div>
+
+    <div class="home-final-cta__actions">
+      <% if Current.user %>
+        <%= link_to "Create your trip", new_trip_path, class: "btn btn-light btn-lg", data: { turbo: false } %>
+      <% else %>
+        <%= link_to "Create your account", sign_up_path, class: "btn btn-light btn-lg" %>
+      <% end %>
+      <%= link_to "Explore", trips_path, class: "btn btn-outline-light btn-lg" %>
+    </div>
+  </section>
+</main>

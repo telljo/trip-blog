@@ -23,33 +23,6 @@ $trip-map-mobile-height: 300px;
   }
 }
 
-.home-page {
-  height: calc(100vh - 80px);
-  margin-top: -3em;
-  background-image: url("hero-image-wide.webp");
-  background-size: cover;
-  background-position: left;
-
-  @media screen and (max-width: $breakpoint) {
-    background-image: url("hero-image.webp");
-  }
-}
-
-.home-container {
-  width: 50%;
-
-  @media screen and (max-width: $breakpoint) {
-    width: 80%;
-  }
-}
-.home-text {
-  font-size: 1.6em;
-
-  @media screen and (max-width: $breakpoint) {
-    font-size: 1.2em;
-  }
-}
-
 .dropend .dropdown-toggle::after {
   height: 0.5em;
 }
@@ -505,7 +478,7 @@ $trip-map-mobile-height: 300px;
 [data-bs-theme="dark"] {
   .navbar {
     box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15),inset 0 -1px 0 rgba(255,255,255,0.15);
-    background: $primary;
+    background: linear-gradient(-125deg, var(--bs-primary), #203a9a);
   }
 
   trix-toolbar {
