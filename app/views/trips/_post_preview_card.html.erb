@@ -1,0 +1,35 @@
+<%= link_to post_path(post),
+  class: "post-preview-card",
+  data: { turbo_frame: "_top" },
+  aria: { label: "Read #{post.title}" } do %>
+  <div class="post-preview-card__media">
+    <% if post.preview_image.present? %>
+      <%= image_tag post.preview_image,
+        class: "post-preview-card__image",
+        alt: "",
+        loading: "lazy" %>
+    <% else %>
+      <div class="post-preview-card__placeholder" aria-hidden="true">
+        <i class="bi bi-journal-richtext"></i>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="post-preview-card__body">
+    <div class="post-preview-card__meta text-body-secondary">
+      <% if post.short_address.present? %>
+        <span>
+          <i class="bi bi-geo-alt" aria-hidden="true"></i>
+          <%= post.short_address %>
+        </span>
+      <% else %>
+        <time datetime="<%= post.created_at&.to_date&.iso8601 %>">
+          <%= post.created_at&.strftime("%b %d, %Y") %>
+        </time>
+      <% end %>
+    </div>
+
+    <h4 class="post-preview-card__title"><%= post.title %></h4>
+    <p class="post-preview-card__excerpt"><%= post.body.to_plain_text.truncate(100) %></p>
+  </div>
+<% end %>

@@ -8,7 +8,8 @@ class TripsTest < ApplicationSystemTestCase
 
   test "visiting the index" do
     visit trips_url
-    assert_selector "h2", text: "Trips"
+    assert_selector "h1", text: "Trips"
+    assert_selector ".trip-preview-card", minimum: 2
   end
 
   test "should create trip" do

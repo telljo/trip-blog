@@ -4,7 +4,27 @@ class TripsController < ApplicationController
 
   # GET /trips
   def index
-    @trips = Trip.all
+    @trips = Trip
+      .includes(
+        :rich_text_body,
+        user: { profile_picture_attachment: :blob },
+        companions: { user: { profile_picture_attachment: :blob } }
+      )
+      .order(created_at: :desc)
+      .load
+
+    @trip_preview_posts = @trips.index_with do |trip|
+      trip.visible_posts
+        .includes(:rich_text_body, attachments_attachments: :blob)
+        .order(created_at: :desc)
+        .limit(3)
+        .load
+    end
+
+    @trip_post_counts = Post
+      .where(trip_id: @trips.map(&:id), hidden: false)
+      .group(:trip_id)
+      .count
   end
 
   # GET /trips/1

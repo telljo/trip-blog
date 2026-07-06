@@ -1,20 +1,26 @@
 <% content_for :title, "Trips · Footprints" %>
-<div class="container d-flex flex-column pb-4" style="max-width: 70em;">
-  <div class="d-flex align-items-center justify-content-between">
-    <h2>Trips</h2>
-    <% if Current.user %>
-      <%= link_to "Create new trip",
-                  new_trip_path,
-                  class: "btn btn-success",
-                  data: { turbo: false } %>
 
+<main class="trips-index">
+  <header class="trips-index__header">
+    <div>
+      <h1 class="trips-index__title">Trips</h1>
+      <p class="trips-index__lede text-body-secondary">
+        Follow the latest stories, places, and moments from every journey.
+      </p>
+    </div>
+
+    <% if Current.user %>
+      <%= link_to "Create a trip",
+        new_trip_path,
+        class: "btn btn-success",
+        data: { turbo: false } %>
     <% else %>
       <%= link_to "Sign up to create a trip",
-                  sign_up_path,
-                  class: "btn btn-success",
-                  data: { turbo_frame: "_top" } %>
+        sign_up_path,
+        class: "btn btn-success",
+        data: { turbo_frame: "_top" } %>
     <% end %>
-  </div>
+  </header>
 
   <% if @trips.none? %>
     <%= render partial: "trips/empty_state", locals: {
@@ -25,10 +31,13 @@
   <%= turbo_stream_from @trips if @trips.any? %>
 
   <%= turbo_frame_tag "trips" do %>
-    <div id="trips" class="d-flex flex-column gap-4 pt-2">
-      <% @trips.order(created_at: :desc).each do |trip| %>
-        <%= render trip %>
+    <div id="trip-previews" class="trips-index__list">
+      <% @trips.each do |trip| %>
+        <%= render "trips/trip_preview_card",
+          trip: trip,
+          preview_posts: @trip_preview_posts.fetch(trip),
+          post_count: @trip_post_counts.fetch(trip.id, 0) %>
       <% end %>
     </div>
   <% end %>
-</div>
+</main>

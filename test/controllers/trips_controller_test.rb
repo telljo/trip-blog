@@ -9,6 +9,18 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
     get trips_url
     assert_response :success
+    assert_select ".trip-preview-card", count: 2
+    assert_select ".post-preview-card", minimum: 2
+  end
+
+  test "index does not preview hidden posts" do
+    hidden_post = posts(:one)
+    hidden_post.update!(hidden: true)
+
+    get trips_url
+
+    assert_response :success
+    assert_select ".post-preview-card", text: hidden_post.title, count: 0
   end
 
   test "should get new" do

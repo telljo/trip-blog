@@ -1,0 +1,158 @@
+<%
+  preview_posts = local_assigns.fetch(:preview_posts) do
+    trip.visible_posts
+      .includes(:rich_text_body, attachments_attachments: :blob)
+      .order(created_at: :desc)
+      .limit(3)
+  end
+  post_count = local_assigns.fetch(:post_count) { trip.visible_posts.count }
+%>
+
+<%= turbo_frame_tag dom_id(trip), class: "trip-preview-frame" do %>
+  <article class="trip-preview-card">
+    <div class="trip-preview-card__summary">
+      <div class="trip-preview-card__topline">
+        <h2 class="trip-preview-card__title">
+          <%= link_to trip.name, trip_path(trip), data: { turbo_frame: "_top" } %>
+        </h2>
+        <div class="trip-preview-card__actions">
+          <% if trip.companions.any? %>
+            <div class="dropdown">
+              <button
+                class="btn btn-sm btn-outline-secondary trip-preview-card__icon-button"
+                id="trip-<%= trip.id %>-companions"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-label="View companions for <%= trip.name %>"
+              >
+                <i class="bi bi-people" aria-hidden="true"></i>
+              </button>
+
+              <ul class="dropdown-menu" aria-labelledby="trip-<%= trip.id %>-companions">
+                <% trip.companions.each do |companion| %>
+                  <li>
+                    <%= link_to user_path(username: companion.user.username),
+                      class: "dropdown-item d-flex align-items-center gap-2",
+                      data: { turbo_frame: "_top" } do %>
+                      <% if companion.user.profile_picture.attached? %>
+                        <%= image_tag companion.user.image_as_thumbnail,
+                          class: "rounded-circle trip-preview-card__avatar",
+                          alt: "" %>
+                      <% else %>
+                        <i class="bi bi-person-circle text-body-secondary" aria-hidden="true"></i>
+                      <% end %>
+                      <%= companion.user.username %>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <% if Current.user == trip.user %>
+            <div class="dropdown">
+              <button
+                class="btn btn-sm btn-outline-secondary trip-preview-card__icon-button"
+                id="trip-<%= trip.id %>-actions"
+                type="button"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                data-bs-display="static"
+                aria-label="Edit <%= trip.name %>"
+              >
+                <i class="bi bi-three-dots" aria-hidden="true"></i>
+              </button>
+
+              <ul class="dropdown-menu" aria-labelledby="trip-<%= trip.id %>-actions">
+                <li>
+                  <%= link_to "Edit trip",
+                    edit_trip_path(trip),
+                    data: { turbo: false },
+                    class: "dropdown-item" %>
+                </li>
+                <li>
+                  <%= button_to "Delete trip",
+                    trip,
+                    method: :delete,
+                    data: { turbo: "false" },
+                    form: { data: { "turbo-confirm": "Are you sure?" } },
+                    class: "dropdown-item dropdown-item--danger" %>
+                </li>
+              </ul>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <p class="trip-preview-card__byline text-body-secondary">
+        <% if trip.user.profile_picture.attached? %>
+          <%= image_tag trip.user.image_as_thumbnail,
+            class: "rounded-circle trip-preview-card__avatar",
+            alt: "" %>
+        <% else %>
+          <i class="bi bi-person-circle trip-preview-card__avatar-placeholder" aria-hidden="true"></i>
+        <% end %>
+
+        <span>By</span>
+        <%= link_to trip.user.username,
+          user_path(username: trip.user.username),
+          data: { turbo_frame: "_top" } %>
+        <span aria-hidden="true">·</span>
+        <time datetime="<%= trip.created_at&.to_date&.iso8601 %>">
+          <%= trip.created_at&.strftime("%b %Y") %>
+        </time>
+      </p>
+
+      <p class="trip-preview-card__description">
+        <%= trip.body.to_plain_text.truncate(220) %>
+      </p>
+
+      <div class="trip-preview-card__meta text-body-secondary">
+        <span>
+          <i class="bi bi-journal-text" aria-hidden="true"></i>
+          <%= pluralize(post_count, "post") %>
+        </span>
+        <% if trip.companions.any? %>
+          <span>
+            <i class="bi bi-people" aria-hidden="true"></i>
+            <%= pluralize(trip.companions.size, "companion") %>
+          </span>
+        <% end %>
+      </div>
+
+      <%= link_to trip_path(trip),
+        class: "trip-preview-card__cta",
+        data: { turbo_frame: "_top" } do %>
+        View trip
+        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      <% end %>
+    </div>
+
+    <div class="trip-preview-card__recent-posts">
+      <div class="trip-preview-card__section-heading">
+        <h3>Recent posts</h3>
+        <% if post_count > preview_posts.size %>
+          <span class="text-body-secondary">Latest <%= preview_posts.size %> of <%= post_count %></span>
+        <% end %>
+      </div>
+
+      <% if preview_posts.any? %>
+        <div class="trip-preview-card__post-grid trip-preview-card__post-grid--<%= [preview_posts.size, 3].min %>">
+          <% preview_posts.each do |post| %>
+            <%= render "trips/post_preview_card", post: post %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="trip-preview-card__empty-posts text-body-secondary">
+          <i class="bi bi-journal-plus" aria-hidden="true"></i>
+          <div>
+            <h4>No posts yet</h4>
+            <p>This trip is ready for its first story.</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </article>
+<% end %>
