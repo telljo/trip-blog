@@ -1,8 +1,9 @@
 <%= turbo_frame_tag dom_id(post), class: "post" do %>
+  <% heading_tag = local_assigns.fetch(:heading_tag, :h4) %>
   <div data-controller="map" class="d-flex flex-column w-100">
     <% if post.city %>
       <div class="d-flex flex-column flex-wrap my-2">
-        <h4 class="mb-0 mt-2">
+        <%= content_tag heading_tag, class: "mb-0 mt-2" do %>
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
           <%= link_to post_path(post),
             style:"width: max-content;",
@@ -13,7 +14,7 @@
             <span class="badge text-bg-warning ms-2">Hidden</span>
           <% end %>
           <%= "📝" if post.draft %>
-        </h4>
+        <% end %>
 
         <div class="d-flex flex-row justify-content-between" data-turbo-frame="_top">
           <span class="d-flex flex-row gap-1">
@@ -32,7 +33,7 @@
       </div>
     <% else %>
       <div class="d-flex flex-column flex-wrap my-2">
-        <h4 class="text__link mb-0 mt-2">
+        <%= content_tag heading_tag, class: "text__link mb-0 mt-2" do %>
           <span style="color: #fd7e14; font-weight: 600;"><%= "Draft:" if post.draft %></span>
           <%= link_to post_path(post),
             style:"width: max-content;",
@@ -40,7 +41,7 @@
             <%= post.title %>
           <% end %>
           <%= "📝" if post.draft %>
-        </h4>
+        <% end %>
       </div>
     <% end %>
   </div>
@@ -129,7 +130,7 @@
                       style="height: inherit;"
                     >
                       <% if attachment.image? %>
-                        <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image", loading: index.zero? ? "eager" : "lazy"), attachment, target: "_blank" %>
+                        <%= link_to image_tag(post.image_as_thumbnail(attachment), class: "post-image", loading: index.zero? ? "eager" : "lazy", alt: post.image_alt_text(attachment)), attachment, target: "_blank" %>
                       <% else %>
                         <%= video_tag url_for(attachment), controls: true, class: "post-video" %>
                       <% end %>
@@ -162,12 +163,12 @@
           </div>
         <% end %>
         <div data-toggle-content-target="contentPreview" class="post-preview">
-          <%= post.body.to_plain_text.truncate(300) %>
+          <%= post.summary(length: 300) %>
         </div>
         <div data-toggle-content-target="contentBody" class="post-body visually-hidden">
           <%= post.body %>
         </div>
-        <% if post.body.to_plain_text.length > 300 %>
+        <% if post.plain_text_body.length > 300 %>
           <button class="btn btn-link" data-toggle-content-target="contentButton" data-action="toggle-content#toggle">Read More</button>
         <% end %>
       </div>

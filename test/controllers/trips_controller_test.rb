@@ -4,6 +4,11 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @trip = trips(:one)
     @user = users(:lazaro_nixon)
+    @storage_keys = []
+  end
+
+  teardown do
+    @storage_keys.each { |key| ActiveStorage::Blob.service.delete(key) }
   end
 
   test "should get index" do
@@ -21,6 +26,19 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_select ".post-preview-card", text: hidden_post.title, count: 0
+  end
+
+  test "index uses summary and caption alt text for post previews" do
+    post = posts(:one)
+    post.update!(body: "Preview opener for the card.\n\nMore detail for the full post.")
+    attachment = attach_test_image(post, filename: "trip-preview.png")
+    PostAttachmentCaption.create!(post: post, attachment: attachment, text: "Temple gate at sunrise")
+
+    get trips_url
+
+    assert_response :success
+    assert_select ".post-preview-card__image[alt=?]", "Temple gate at sunrise"
+    assert_select ".post-preview-card__excerpt", text: "Preview opener for the card."
   end
 
   test "should get new" do
@@ -85,5 +103,17 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to trips_url
+  end
+
+  private
+
+  def attach_test_image(post, filename:)
+    File.open(Rails.root.join("app/assets/images/motorbike-left.png")) do |file|
+      post.attachments.attach(io: file, filename: filename, content_type: "image/png")
+    end
+
+    post.attachments_attachments.order(:id).last.tap do |attachment|
+      @storage_keys << attachment.blob.key
+    end
   end
 end

@@ -65,19 +65,38 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show includes post seo metadata" do
+    attachment = attach_test_image(@post, filename: "seo-image.png")
+    PostAttachmentCaption.create!(post: @post, attachment: attachment, text: "Lanterns glowing at dusk")
+
     get post_url(@post)
 
     assert_response :success
     assert_select "title", "#{@post.title} · Footprints"
-    assert_select "meta[name='description'][content=?]", @post.body.to_plain_text.squish
+    assert_select "meta[name='description'][content=?]", @post.summary(length: 160)
     assert_select "link[rel='canonical'][href=?]", post_url(@post)
     assert_select "meta[property='og:type'][content='article']"
+    assert_select "h1", text: @post.title
+    assert_select "img.post-image[alt=?]", "Lanterns glowing at dusk"
 
-    json_ld = JSON.parse(css_select("script[type='application/ld+json']").first.text)
-    assert_equal "BlogPosting", json_ld["@type"]
-    assert_equal @post.title, json_ld["headline"]
-    assert_equal post_url(@post), json_ld["url"]
-    assert_equal @post.trip.name, json_ld.dig("isPartOf", "name")
+    blog_post = json_ld_entity("BlogPosting")
+    assert_equal @post.title, blog_post["headline"]
+    assert_equal post_url(@post), blog_post["url"]
+    assert_equal @post.trip.name, blog_post.dig("isPartOf", "name")
+    assert_equal "Lanterns glowing at dusk", blog_post.dig("image", 0, "caption")
+
+    breadcrumb = json_ld_entity("BreadcrumbList")
+    assert_equal [ "Home", @post.trip.name, @post.title ], breadcrumb["itemListElement"].map { |item| item["name"] }
+    assert_equal post_url(@post), breadcrumb.dig("itemListElement", 2, "item")
+  end
+
+  test "show meta description uses first paragraph as summary" do
+    @post.update!(body: "A compact opening summary.\n\nA much longer second paragraph with more travel detail.")
+
+    get post_url(@post)
+
+    assert_response :success
+    assert_select "meta[name='description'][content=?]", "A compact opening summary."
+    assert_select ".post-preview", text: "A compact opening summary."
   end
 
   test "post url uses id backed slug" do
@@ -265,5 +284,10 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
 
   def remember_storage_key(key)
     @storage_keys << key
+  end
+
+  def json_ld_entity(type)
+    json_ld = JSON.parse(css_select("script[type='application/ld+json']").first.text)
+    json_ld.fetch("@graph").find { |entity| entity["@type"] == type }
   end
 end

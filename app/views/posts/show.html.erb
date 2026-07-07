@@ -1,5 +1,12 @@
-<% post_description = @post.body.to_plain_text.squish.truncate(160) %>
-<% post_image = @post.preview_image.present? ? url_for(@post.preview_image) : nil %>
+<% post_description = @post.summary(length: 160) %>
+<% post_images = @post.image_attachments.map do |attachment|
+  {
+    "@type": "ImageObject",
+    "url": url_for(@post.image_as_thumbnail(attachment)),
+    "caption": attachment.caption&.text.to_s.squish.presence
+  }.compact
+end %>
+<% post_image = post_images.first&.fetch("url", nil) %>
 <% content_for :title, "#{@post.title} · Footprints" %>
 <% content_for :meta_description, post_description %>
 <% content_for :canonical_url, post_url(@post) %>
@@ -7,24 +14,51 @@
 <% content_for :og_type, "article" %>
 <% content_for :json_ld, raw({
   "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": @post.title,
-  "description": post_description,
-  "author": {
-    "@type": "Person",
-    "name": @post.user.username,
-    "url": user_url(username: @post.user.username)
-  },
-  "datePublished": @post.created_at&.iso8601,
-  "dateModified": @post.updated_at&.iso8601,
-  "mainEntityOfPage": post_url(@post),
-  "url": post_url(@post),
-  "isPartOf": {
-    "@type": "Blog",
-    "name": @post.trip.name,
-    "url": trip_url(@post.trip)
-  },
-  "image": post_image.present? ? [ post_image ] : nil
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "headline": @post.title,
+      "description": post_description,
+      "author": {
+        "@type": "Person",
+        "name": @post.user.username,
+        "url": user_url(username: @post.user.username)
+      },
+      "datePublished": @post.created_at&.iso8601,
+      "dateModified": @post.updated_at&.iso8601,
+      "mainEntityOfPage": post_url(@post),
+      "url": post_url(@post),
+      "isPartOf": {
+        "@type": "Blog",
+        "name": @post.trip.name,
+        "url": trip_url(@post.trip)
+      },
+      "image": post_images.presence
+    }.compact,
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": root_url
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": @post.trip.name,
+          "item": trip_url(@post.trip)
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": @post.title,
+          "item": post_url(@post)
+        }
+      ]
+    }
+  ]
 }.compact.to_json) %>
 
 <div class="container align-items-center d-flex flex-column">
@@ -34,5 +68,5 @@
       Back to trip
     <% end %>
   </div>
-  <%= render @post %>
+  <%= render partial: "posts/post", locals: { post: @post, heading_tag: :h1 } %>
 </div>

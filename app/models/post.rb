@@ -52,10 +52,35 @@ class Post < ApplicationRecord
     "#{id}-#{title.to_s.parameterize}"
   end
 
+  def plain_text_body
+    body.to_plain_text.to_s.squish
+  end
+
+  def summary(length: 160)
+    first_paragraph = body.to_plain_text.to_s.split(/\R{2,}/).map(&:squish).find(&:present?)
+    (first_paragraph.presence || plain_text_body).truncate(length)
+  end
+
+  def image_attachments
+    attachments.select { |attachment| attachment.image? && image_as_thumbnail(attachment).present? }
+  end
+
+  def preview_image_attachment
+    image_attachments.first
+  end
+
   def preview_image
-    attachment = attachments.find(&:image?)
+    attachment = preview_image_attachment
 
     image_as_thumbnail(attachment) if attachment
+  end
+
+  def image_alt_text(attachment)
+    caption = attachment.caption&.text.to_s.squish
+    return caption if caption.present?
+
+    location = short_address.presence
+    [ "Photo from #{title}", location ].compact.join(" in ")
   end
 
   def image_as_thumbnail(image)

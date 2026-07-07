@@ -3,10 +3,10 @@
   data: { turbo_frame: "_top" },
   aria: { label: "Read #{post.title}" } do %>
   <div class="post-preview-card__media">
-    <% if post.preview_image.present? %>
-      <%= image_tag post.preview_image,
+    <% if (preview_attachment = post.preview_image_attachment).present? %>
+      <%= image_tag post.image_as_thumbnail(preview_attachment),
         class: "post-preview-card__image",
-        alt: "",
+        alt: post.image_alt_text(preview_attachment),
         loading: "lazy" %>
     <% else %>
       <div class="post-preview-card__placeholder" aria-hidden="true">
@@ -30,6 +30,6 @@
     </div>
 
     <h4 class="post-preview-card__title"><%= post.title %></h4>
-    <p class="post-preview-card__excerpt"><%= post.body.to_plain_text.truncate(100) %></p>
+    <p class="post-preview-card__excerpt"><%= post.summary(length: 100) %></p>
   </div>
 <% end %>
