@@ -12,7 +12,7 @@ class Trip < ApplicationRecord
   has_rich_text :body
 
   has_many :administrators, -> { joins(:trip_companions) }
-  has_many :visible_posts, -> { where(hidden: false) }, class_name: "Post"
+  has_many :visible_posts, -> { published }, class_name: "Post"
 
   broadcasts_refreshes
 
@@ -24,6 +24,12 @@ class Trip < ApplicationRecord
     return unless posts.any?
 
     posts.with_location.pluck(:country).uniq.compact.sort
+  end
+
+  def to_param
+    return unless id
+
+    "#{id}-#{name.to_s.parameterize}"
   end
 
   private

@@ -1,6 +1,7 @@
 class TripsController < ApplicationController
   skip_before_action :authenticate, only: %i[ index show ]
   before_action :set_trip, only: %i[ show edit update destroy ]
+  before_action :redirect_to_canonical_show_url, only: %i[ show ]
 
   # GET /trips
   def index
@@ -96,6 +97,12 @@ class TripsController < ApplicationController
 
   def set_trip
     @trip = Trip.find(params.expect(:id))
+  end
+
+  def redirect_to_canonical_show_url
+    return if request.path == trip_path(@trip)
+
+    redirect_to trip_url(@trip), status: :moved_permanently
   end
 
   def trip_params

@@ -45,6 +45,24 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "trip url uses id backed slug" do
+    assert_match %r{/trips/#{@trip.id}-trip-one\z}, trip_url(@trip)
+  end
+
+  test "old numeric trip url redirects to slugged url" do
+    get trip_url(id: @trip.id)
+
+    assert_redirected_to trip_url(@trip)
+    assert_response :moved_permanently
+  end
+
+  test "stale trip slug redirects to current slugged url" do
+    get trip_url(id: "#{@trip.id}-old-title")
+
+    assert_redirected_to trip_url(@trip)
+    assert_response :moved_permanently
+  end
+
   test "should get edit" do
     sign_in_as @user
 
@@ -56,7 +74,7 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as @user
 
     patch trip_url(@trip), params: { trip: { name: "Updated trip" } }
-    assert_redirected_to trip_url(@trip)
+    assert_redirected_to trip_url(@trip.reload)
   end
 
   test "should destroy trip" do

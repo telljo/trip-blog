@@ -10,5 +10,6 @@ class PostMailerTest < ActionMailer::TestCase
     assert_equal [ user.email ], mail.to
     assert_equal [ "jtell1997@gmail.com" ], mail.from
     assert_match "Hello #{user.username}", mail.body.encoded
+    assert_match Rails.application.routes.url_helpers.post_url(post, host: "example.com"), mail.text_part.body.decoded
   end
 end

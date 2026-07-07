@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     resources :post_comment_replies, only: [ :create, :edit, :update, :destroy ]
     resources :post_comment_likes, only: [ :create, :destroy ]
   end
+  get "sitemap.xml", to: "sitemaps#show", defaults: { format: :xml }
   resources :users, param: :username, constraints: { username: /[^\/]+/ }, defaults: { format: nil }
   resource :session
   resources :passwords, param: :token

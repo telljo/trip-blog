@@ -4,6 +4,8 @@ class PostsController < ApplicationController
   include PostNotifier
   skip_before_action :authenticate, only: %i[index show]
   before_action :set_post, only: %i[show edit update destroy remove_attachment]
+  before_action :ensure_publicly_visible_or_authorized, only: %i[show]
+  before_action :redirect_to_canonical_show_url, only: %i[show]
   before_action :set_trip, only: %i[edit update destroy remove_attachment]
   before_action :validate_user, only: %i[edit update destroy]
 
@@ -11,9 +13,11 @@ class PostsController < ApplicationController
   def index
     if params[:trip_id]
       @trip = Trip.find(params[:trip_id])
-      @pagy, @posts = pagy(:countless, @trip.visible_posts.order(:id), limit: 5)
+      posts = can_manage_trip?(@trip) ? @trip.posts : @trip.visible_posts
+      @pagy, @posts = pagy(:countless, posts.order(:id), limit: 5)
     else
-      @pagy, @posts = pagy(:countless, Post.all.order(:id), limit: 5)
+      posts = Post.visible_to(Current.user)
+      @pagy, @posts = pagy(:countless, posts.order(:id), limit: 5)
     end
   end
 
@@ -95,10 +99,28 @@ class PostsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_post
     @post = Post.find(params.expect(:id))
+    raise ActiveRecord::RecordNotFound if params[:trip_id].present? && @post.trip_id != params[:trip_id].to_i
   end
 
   def set_trip
     @trip = @post.trip
+  end
+
+  def ensure_publicly_visible_or_authorized
+    return if @post.draft? == false && @post.hidden? == false
+    return if can_manage_trip?(@post.trip)
+
+    raise ActiveRecord::RecordNotFound
+  end
+
+  def redirect_to_canonical_show_url
+    return if request.path == post_path(@post)
+
+    redirect_to post_url(@post), status: :moved_permanently
+  end
+
+  def can_manage_trip?(trip)
+    Current.user == trip.user || trip.users.include?(Current.user)
   end
 
   def validate_user

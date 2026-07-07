@@ -1,3 +1,32 @@
+<% post_description = @post.body.to_plain_text.squish.truncate(160) %>
+<% post_image = @post.preview_image.present? ? url_for(@post.preview_image) : nil %>
+<% content_for :title, "#{@post.title} · Footprints" %>
+<% content_for :meta_description, post_description %>
+<% content_for :canonical_url, post_url(@post) %>
+<% content_for :meta_image, post_image if post_image.present? %>
+<% content_for :og_type, "article" %>
+<% content_for :json_ld, raw({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": @post.title,
+  "description": post_description,
+  "author": {
+    "@type": "Person",
+    "name": @post.user.username,
+    "url": user_url(username: @post.user.username)
+  },
+  "datePublished": @post.created_at&.iso8601,
+  "dateModified": @post.updated_at&.iso8601,
+  "mainEntityOfPage": post_url(@post),
+  "url": post_url(@post),
+  "isPartOf": {
+    "@type": "Blog",
+    "name": @post.trip.name,
+    "url": trip_url(@post.trip)
+  },
+  "image": post_image.present? ? [ post_image ] : nil
+}.compact.to_json) %>
+
 <div class="container align-items-center d-flex flex-column">
   <div class="d-flex flex-row gap-1 w-100 justify-content-end">
     <%= link_to trip_path(@post.trip), class: "btn btn-secondary", style:"width:9em;" do %>

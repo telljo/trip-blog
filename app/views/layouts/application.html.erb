@@ -3,10 +3,26 @@
   <head>
     <%= favicon_link_tag asset_path('favicon.ico') %>
 
-    <title><%= content_for?(:title) ? yield(:title) : "Footprints · Track your travel" %></title>
+    <% page_title = content_for?(:title) ? yield(:title) : "Footprints · Track your travel" %>
+    <% page_description = content_for?(:meta_description) ? yield(:meta_description).to_s.strip : "Footprints helps travelers share trip updates, photos, and stories with the people following along." %>
+    <% canonical_url = content_for?(:canonical_url) ? yield(:canonical_url).to_s.strip : nil %>
+    <% page_image = content_for?(:meta_image) ? yield(:meta_image).to_s.strip : nil %>
+
+    <title><%= page_title %></title>
+    <%= tag.meta name: "description", content: page_description if page_description.present? %>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <%= tag.link rel: "canonical", href: canonical_url if canonical_url.present? %>
+    <%= tag.meta property: "og:title", content: page_title %>
+    <%= tag.meta property: "og:description", content: page_description if page_description.present? %>
+    <%= tag.meta property: "og:url", content: canonical_url if canonical_url.present? %>
+    <%= tag.meta property: "og:image", content: page_image if page_image.present? %>
+    <%= tag.meta property: "og:type", content: content_for?(:og_type) ? yield(:og_type) : "website" %>
+    <%= tag.meta name: "twitter:card", content: page_image.present? ? "summary_large_image" : "summary" %>
+    <%= tag.meta name: "twitter:title", content: page_title %>
+    <%= tag.meta name: "twitter:description", content: page_description if page_description.present? %>
+    <%= tag.meta name: "twitter:image", content: page_image if page_image.present? %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -25,6 +41,9 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
     <%= turbo_refreshes_with(method: :morph, scroll: :preserve) %>
+    <% if content_for?(:json_ld) %>
+      <script type="application/ld+json"><%= raw json_escape(yield(:json_ld)) %></script>
+    <% end %>
     <%= yield :head %>
     <% if Rails.env.production? %>
       <%= Sentry.get_trace_propagation_meta.html_safe %>

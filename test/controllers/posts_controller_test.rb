@@ -19,6 +19,27 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "public index excludes hidden and draft posts" do
+    @post.update!(hidden: true)
+    posts(:two).update!(draft: true)
+
+    get posts_url
+
+    assert_response :success
+    assert_select ".post", text: /#{Regexp.escape(@post.title)}/, count: 0
+    assert_select ".post", text: /#{Regexp.escape(posts(:two).title)}/, count: 0
+  end
+
+  test "logged in user index includes private posts they manage" do
+    @post.update!(hidden: true, draft: true)
+    sign_in_as @user
+
+    get posts_url
+
+    assert_response :success
+    assert_select ".post", text: /#{Regexp.escape(@post.title)}/
+  end
+
   test "should get new" do
     sign_in_as @user
 
@@ -41,6 +62,88 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   test "should show post" do
     get post_url(@post)
     assert_response :success
+  end
+
+  test "show includes post seo metadata" do
+    get post_url(@post)
+
+    assert_response :success
+    assert_select "title", "#{@post.title} · Footprints"
+    assert_select "meta[name='description'][content=?]", @post.body.to_plain_text.squish
+    assert_select "link[rel='canonical'][href=?]", post_url(@post)
+    assert_select "meta[property='og:type'][content='article']"
+
+    json_ld = JSON.parse(css_select("script[type='application/ld+json']").first.text)
+    assert_equal "BlogPosting", json_ld["@type"]
+    assert_equal @post.title, json_ld["headline"]
+    assert_equal post_url(@post), json_ld["url"]
+    assert_equal @post.trip.name, json_ld.dig("isPartOf", "name")
+  end
+
+  test "post url uses id backed slug" do
+    assert_match %r{/posts/#{@post.id}-post-one\z}, post_url(@post)
+  end
+
+  test "old numeric post url redirects to slugged url" do
+    get post_url(id: @post.id)
+
+    assert_redirected_to post_url(@post)
+    assert_response :moved_permanently
+  end
+
+  test "stale post slug redirects to current slugged url" do
+    get post_url(id: "#{@post.id}-old-title")
+
+    assert_redirected_to post_url(@post)
+    assert_response :moved_permanently
+  end
+
+  test "nested numeric post url redirects to standalone slugged url" do
+    get trip_post_url(trip_id: @trip.id, id: @post.id)
+
+    assert_redirected_to post_url(@post)
+    assert_response :moved_permanently
+  end
+
+  test "nested post url does not resolve under a different trip" do
+    get trip_post_url(trips(:two), @post)
+
+    assert_response :not_found
+  end
+
+  test "public cannot show hidden post" do
+    @post.update!(hidden: true)
+
+    get post_url(@post)
+
+    assert_response :not_found
+  end
+
+  test "public cannot show draft post" do
+    @post.update!(draft: true)
+
+    get post_url(@post)
+
+    assert_response :not_found
+  end
+
+  test "owner can show hidden draft post" do
+    @post.update!(hidden: true, draft: true)
+    sign_in_as @user
+
+    get post_url(@post)
+
+    assert_response :success
+  end
+
+  test "owner numeric hidden draft post redirects to slugged url" do
+    @post.update!(hidden: true, draft: true)
+    sign_in_as @user
+
+    get post_url(id: @post.id)
+
+    assert_redirected_to post_url(@post)
+    assert_response :moved_permanently
   end
 
   test "should get edit" do

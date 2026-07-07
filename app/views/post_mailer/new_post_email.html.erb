@@ -17,10 +17,10 @@
         <div style="border: 2px solid; border-radius: 10px; padding: 1em; max-width: 310px; background: white; margin: auto;">
           <%= image_tag(url_for(@post.preview_image), style: "max-width: 300px; max-height: 300px;") %>
 
-          <p><strong><%= link_to @post.title, url_for(controller: 'trips', action: 'show', id: @post.trip.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+          <p><strong><%= link_to @post.title, post_url(@post), target: "_blank", style: "color: #3454D1;" %></strong></p>
         </div>
       <% else %>
-        <p><strong><%= link_to @post.title, url_for(controller: 'trips', action: 'show', id: @post.trip.id), target: "_blank", style: "color: #3454D1;" %></strong></p>
+        <p><strong><%= link_to @post.title, post_url(@post), target: "_blank", style: "color: #3454D1;" %></strong></p>
       <% end %>
 
       <p style="margin: 0.5em 0; margin-top: 1em;">Check it out  and don’t forget to leave a comment and share your thoughts. They’d love to hear from you!</p>

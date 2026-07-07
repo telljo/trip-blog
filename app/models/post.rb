@@ -32,7 +32,25 @@ class Post < ApplicationRecord
   end
   after_validation :reverse_geocode
 
+  scope :published, -> { where(draft: false, hidden: false) }
   scope :with_location, -> { where.not(latitude: nil, longitude: nil) }
+
+  def self.visible_to(user)
+    return published unless user
+
+    posts = left_joins(trip: :companions)
+    posts
+      .where(draft: false, hidden: false)
+      .or(posts.where(trips: { user_id: user.id }))
+      .or(posts.where(trip_companions: { user_id: user.id }))
+      .distinct
+  end
+
+  def to_param
+    return unless id
+
+    "#{id}-#{title.to_s.parameterize}"
+  end
 
   def preview_image
     attachment = attachments.find(&:image?)

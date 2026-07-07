@@ -86,7 +86,7 @@
                 <li>
                   <button
                     data-action="clipboard#copy"
-                    data-clipboard-copy-value="<%= "#{request.base_url}/posts/#{post.id}" %>"
+                    data-clipboard-copy-value="<%= post_url(post) %>"
                     class="dropdown-item">
                     Share post
                   </button>
