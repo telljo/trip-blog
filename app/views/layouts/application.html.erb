@@ -2,7 +2,6 @@
 <html>
   <head>
     <%= favicon_link_tag asset_path('favicon.ico') %>
-
     <% page_title = content_for?(:title) ? yield(:title) : "Footprints · Track your travel" %>
     <% page_description = content_for?(:meta_description) ? yield(:meta_description).to_s.strip : "Footprints helps travelers share trip updates, photos, and stories with the people following along." %>
     <% canonical_url = content_for?(:canonical_url) ? yield(:canonical_url).to_s.strip : nil %>
@@ -10,6 +9,7 @@
 
     <title><%= page_title %></title>
     <%= tag.meta name: "description", content: page_description if page_description.present? %>
+    <meta name="google-site-verification" content="_IbclFrjEP-ty23qqUiW8wZGyolzRxucd756XuhxijY" />
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
