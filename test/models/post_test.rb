@@ -9,10 +9,17 @@ class PostTest < ActiveSupport::TestCase
     @storage_keys.each { |key| ActiveStorage::Blob.service.delete(key) }
   end
 
-  test "display attachment variant is configured" do
-    variant = Post.attachment_reflections.fetch("attachments").named_variants.fetch(:display)
+  test "feed attachment variants are configured" do
+    variants = Post.attachment_reflections.fetch("attachments").named_variants
 
-    assert_equal({ resize_to_limit: [ 1000, 1000 ] }, variant.transformations)
+    assert_equal(
+      { resize_to_limit: [ 800, 800 ], format: :webp, saver: { quality: 82 } },
+      variants.fetch(:feed).transformations
+    )
+    assert_equal(
+      { resize_to_limit: [ 400, 400 ], format: :webp, saver: { quality: 82 } },
+      variants.fetch(:feed_preview).transformations
+    )
   end
 
   test "active storage image jobs use the images queue" do

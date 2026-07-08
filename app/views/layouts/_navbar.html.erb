@@ -22,7 +22,7 @@
         <a data-bs-toggle="dropdown" class="btn dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownMenuLink"
           role="button" data-mdb-toggle="dropdown" aria-expanded="false" aria-label="Account menu">
           <% if Current.user&.profile_picture&.attached? %>
-            <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+            <%= tiny_avatar_image_tag Current.user, size: 22, class: "rounded-circle" %>
           <% else %>
             <i
               class="bi bi-person-circle"

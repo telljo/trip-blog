@@ -4,10 +4,12 @@
   aria: { label: "Read #{post.title}" } do %>
   <div class="post-preview-card__media">
     <% if (preview_attachment = post.preview_image_attachment).present? %>
-      <%= image_tag post.image_as_thumbnail(preview_attachment),
+      <%= image_tag post.image_as_feed_preview(preview_attachment),
         class: "post-preview-card__image",
+        height: 400,
         alt: post.image_alt_text(preview_attachment),
-        loading: "lazy" %>
+        loading: "lazy",
+        width: 400 %>
     <% else %>
       <div class="post-preview-card__placeholder" aria-hidden="true">
         <i class="bi bi-journal-richtext"></i>

@@ -2,7 +2,7 @@
   <div class="form d-flex flex-column gap-2 p-2">
     <div class="form__field d-flex flex-row gap-1 align-items-center">
       <% if Current.user&.profile_picture&.attached? %>
-        <%= image_tag Current.user.image_as_thumbnail, class:"rounded-circle", style:"height: 22px; width: 22px;" %>
+        <%= tiny_avatar_image_tag Current.user, size: 22, class: "rounded-circle" %>
       <% else %>
         <i
           class="bi bi-person-circle"

@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import maplibregl from 'maplibre-gl';
 
 // Connects to data-controller="location"
 export default class extends Controller {
@@ -145,11 +144,14 @@ export default class extends Controller {
     })
   }
 
-  initializeMap(longitude, latitude) {
+  async initializeMap(longitude, latitude) {
+    const { Map, Marker } = await this.loadMapLibre();
+    this.Marker = Marker;
+
     // Clear the map container
     this.mapTarget.innerHTML = '';
 
-    this.map = new maplibregl.Map({
+    this.map = new Map({
       container: this.mapTarget,
       attributionControl: {
         compact: true
@@ -163,7 +165,7 @@ export default class extends Controller {
       this.map.resize();
 
       // Add marker after map is fully loaded and resized
-      const marker = new maplibregl.Marker()
+      const marker = new Marker()
         .setLngLat([longitude, latitude])
         .addTo(this.map);
 
@@ -216,7 +218,7 @@ export default class extends Controller {
   }
 
   addMarker(coordinates) {
-    const marker = new maplibregl.Marker()
+    const marker = new this.Marker()
       .setLngLat(coordinates)
       .addTo(this.map);
 
@@ -243,5 +245,13 @@ export default class extends Controller {
     //     address: this.selectedAddressTarget.value
     //   }
     // });
+  }
+
+  async loadMapLibre() {
+    if (!this.mapLibre) {
+      this.mapLibre = await import("maplibre-gl");
+    }
+
+    return this.mapLibre;
   }
 }

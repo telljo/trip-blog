@@ -2,7 +2,7 @@
 <% post_images = @post.image_attachments.map do |attachment|
   {
     "@type": "ImageObject",
-    "url": url_for(@post.image_as_thumbnail(attachment)),
+    "url": url_for(@post.image_as_feed(attachment)),
     "caption": attachment.caption&.text.to_s.squish.presence
   }.compact
 end %>

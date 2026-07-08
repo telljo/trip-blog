@@ -3,7 +3,15 @@
 @use "bootstrap/scss/bootstrap";
 @use "bootstrap-icons/font/bootstrap-icons";
 
+@font-face {
+  font-display: swap;
+  font-family: "bootstrap-icons";
+  src: url("./fonts/bootstrap-icons.woff2?24e3eb84d0bcaf83d77f904c78ac1f47") format("woff2"),
+    url("./fonts/bootstrap-icons.woff?24e3eb84d0bcaf83d77f904c78ac1f47") format("woff");
+}
+
 @include meta.load-css("trix/dist/trix");
+@include meta.load-css("maplibre-gl/dist/maplibre-gl");
 
 // Custom styles
 @include meta.load-css("layouts/content");

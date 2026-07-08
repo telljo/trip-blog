@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { Tooltip } from "bootstrap"
 
 // Connects to data-controller="clipboard"
 export default class extends Controller {
@@ -10,7 +11,7 @@ export default class extends Controller {
   }
 
   copy(event) {
-    const toolTip = new bootstrap.Tooltip(this.tooltipTarget);
+    const toolTip = new Tooltip(this.tooltipTarget);
     const textToCopy = event.currentTarget.dataset.clipboardCopyValue
     const text = textToCopy || this.contentTarget?.innerText;
     if(text) {

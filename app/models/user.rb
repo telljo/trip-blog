@@ -19,7 +19,10 @@ class User < ApplicationRecord
 
   normalizes :email, with: -> { _1.strip.downcase }
 
-  has_one_attached :profile_picture, dependent: :destroy
+  has_one_attached :profile_picture, dependent: :destroy do |attachable|
+    attachable.variant :avatar_tiny, resize_to_fill: [ 48, 48 ], format: :webp, saver: { quality: 82 }
+    attachable.variant :thumbnail, resize_to_limit: [ 200, 200 ]
+  end
 
   before_validation if: :email_changed?, on: :update do
     self.verified = false
@@ -39,8 +42,14 @@ class User < ApplicationRecord
   has_many :companion_posts, through: :companion_trips, source: :posts
 
   def image_as_thumbnail
-    return unless profile_picture.content_type.in?(%w[image/jpeg image/png])
+    return unless profile_picture.content_type.in?(%w[image/jpeg image/png image/webp])
 
-    profile_picture.variant(resize_to_limit: [ 200, 200 ]).processed
+    profile_picture.variant(:thumbnail).processed
+  end
+
+  def image_as_tiny_avatar
+    return unless profile_picture.content_type.in?(%w[image/jpeg image/png image/webp])
+
+    profile_picture.variant(:avatar_tiny).processed
   end
 end

@@ -10,13 +10,16 @@
   >
     <div class="profile-picture-picker__preview">
       <% if @user.profile_picture.attached? %>
-        <%= image_tag @user.image_as_thumbnail, id: "imagePreview", class: "profile-picture-picker__image rounded-circle", data: { crop_target: "imagePreview" } %>
+        <%= image_tag @user.image_as_thumbnail, id: "imagePreview", alt: "", class: "profile-picture-picker__image rounded-circle", height: 200, width: 200, data: { crop_target: "imagePreview" } %>
       <% else %>
         <img
           id="imagePreview"
           class="profile-picture-picker__image image-preview"
           data-crop-target="imagePreview"
+          alt=""
+          height="200"
           src="<%= asset_path('person-circle.svg') %>"
+          width="200"
         />
       <% end %>
     </div>

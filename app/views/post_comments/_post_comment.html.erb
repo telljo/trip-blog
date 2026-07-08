@@ -4,7 +4,7 @@
   >
     <div class="form__field d-flex flex-row gap-2 w-100">
       <% if post_comment.user.profile_picture.attached? %>
-        <%= image_tag post_comment.user.image_as_thumbnail, class:"rounded-circle mt-1", style:"height: 22px; width: 22px;" %>
+        <%= tiny_avatar_image_tag post_comment.user, size: 22, class: "rounded-circle mt-1" %>
       <% else %>
         <i
           class="bi bi-person-circle mt-1"

@@ -4,7 +4,7 @@ module ActiveStorageAttachmentExtensions
   included do
     has_one :caption, class_name: "PostAttachmentCaption", foreign_key: :attachment_id, dependent: :destroy
     accepts_nested_attributes_for :caption, allow_destroy: true
-    after_create_commit :preprocess_post_display_variant
+    after_create_commit :preprocess_post_feed_variants
   end
 
   def caption?
@@ -13,7 +13,7 @@ module ActiveStorageAttachmentExtensions
 
   private
 
-  def preprocess_post_display_variant
+  def preprocess_post_feed_variants
     return unless record_type == "Post" && name == "attachments" && blob.image?
 
     ProcessPostImageVariantJob.perform_later(id)

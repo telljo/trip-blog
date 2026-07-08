@@ -40,9 +40,11 @@ export default class extends Controller {
   }
 
   changeTheme(event) {
-    this.setTheme(event.target.dataset.themeValue);
-    this.setStoredTheme(event.target.dataset.themeValue);
-    this.showActiveTheme(event.target.dataset.themeValue);
+    const theme = event.currentTarget.dataset.themeValue;
+
+    this.setTheme(theme);
+    this.setStoredTheme(theme);
+    this.showActiveTheme(theme);
   }
 
   setTheme(theme) {

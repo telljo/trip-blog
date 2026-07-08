@@ -5,7 +5,7 @@ class ProcessPostImageVariantJobTest < ActiveJob::TestCase
     @post = posts(:one)
   end
 
-  test "new post images enqueue display variant preprocessing" do
+  test "new post images enqueue feed variant preprocessing" do
     assert_enqueued_with(job: ProcessPostImageVariantJob, queue: "images") do
       @post.attachments.attach(
         io: StringIO.new("image"),
@@ -16,7 +16,7 @@ class ProcessPostImageVariantJobTest < ActiveJob::TestCase
     end
   end
 
-  test "new post videos do not enqueue display variant preprocessing" do
+  test "new post videos do not enqueue feed variant preprocessing" do
     assert_no_enqueued_jobs only: ProcessPostImageVariantJob do
       @post.attachments.attach(
         io: StringIO.new("video"),

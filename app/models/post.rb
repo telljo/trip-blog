@@ -13,7 +13,8 @@ class Post < ApplicationRecord
 
   has_rich_text :body
   has_many_attached :attachments, dependent: :purge_later do |attachable|
-    attachable.variant :display, resize_to_limit: [ 1000, 1000 ]
+    attachable.variant :feed, resize_to_limit: [ 800, 800 ], format: :webp, saver: { quality: 82 }
+    attachable.variant :feed_preview, resize_to_limit: [ 400, 400 ], format: :webp, saver: { quality: 82 }
   end
   has_many :post_attachment_captions, dependent: :destroy
   accepts_nested_attributes_for :post_attachment_captions, reject_if: proc { |attributes| attributes["text"].blank? }, allow_destroy: true
@@ -72,7 +73,7 @@ class Post < ApplicationRecord
   def preview_image
     attachment = preview_image_attachment
 
-    image_as_thumbnail(attachment) if attachment
+    image_as_feed(attachment) if attachment
   end
 
   def image_alt_text(attachment)
@@ -84,9 +85,36 @@ class Post < ApplicationRecord
   end
 
   def image_as_thumbnail(image)
+    image_as_feed_preview(image)
+  end
+
+  def image_as_feed(image)
+    return unless image.content_type.in?(%w[image/jpeg image/png image/webp])
+
+    image.variant(:feed)
+  end
+
+  def image_as_feed_preview(image)
+    return unless image.content_type.in?(%w[image/jpeg image/png image/webp])
+
+    image.variant(:feed_preview)
+  end
+
+  def image_display_dimensions(image, max_dimension: 400)
+    metadata = image.blob.metadata
+    width = metadata["width"].to_f
+    height = metadata["height"].to_f
+
+    return [ max_dimension, max_dimension ] unless width.positive? && height.positive?
+
+    scale = [ max_dimension / width, max_dimension / height, 1 ].min
+    [ (width * scale).round, (height * scale).round ]
+  end
+
+  def image_as_display(image)
     return unless image.content_type.in?(%w[image/jpeg image/png])
 
-    image.variant(:display)
+    image_as_feed_preview(image)
   end
 
   def address

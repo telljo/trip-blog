@@ -7,6 +7,7 @@ class ProcessPostImageVariantJob < ApplicationJob
     attachment = ActiveStorage::Attachment.find(attachment_id)
     return unless attachment.record_type == "Post" && attachment.name == "attachments" && attachment.blob.image?
 
-    attachment.variant(:display).processed
+    attachment.variant(:feed).processed
+    attachment.variant(:feed_preview).processed
   end
 end

@@ -1,4 +1,41 @@
 module ApplicationHelper
+  def tiny_avatar_image_tag(user, size: 24, **options)
+    return unless user&.profile_picture&.attached?
+
+    avatar = user.image_as_tiny_avatar
+    return unless avatar
+
+    image_tag(
+      avatar,
+      {
+        alt: "",
+        class: "rounded-circle",
+        width: size,
+        height: size
+      }.merge(options)
+    )
+  end
+
+  def post_feed_image_tag(post, attachment, **options)
+    width, height = post.image_display_dimensions(attachment)
+    preview = post.image_as_feed_preview(attachment)
+    full = post.image_as_feed(attachment)
+    return unless preview && full
+
+    image_tag(
+      preview,
+      {
+        alt: post.image_alt_text(attachment),
+        class: "post-image",
+        height: height,
+        loading: "lazy",
+        sizes: "(max-width: 999px) 300px, 400px",
+        srcset: "#{url_for(preview)} 400w, #{url_for(full)} 800w",
+        width: width
+      }.merge(options)
+    )
+  end
+
   def time_ago_in_words_with_units(from_time)
     distance_in_seconds = ((Time.current - from_time) / 1.second).round
     case distance_in_seconds

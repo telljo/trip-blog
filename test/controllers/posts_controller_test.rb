@@ -193,8 +193,8 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as @user
     attachment = attach_test_image(@post, filename: "post-delete.png")
     caption = PostAttachmentCaption.create!(post: @post, attachment: attachment, text: "Caption")
-    variant = attachment.variant(:display).processed
-    remember_storage_key(variant.key)
+    variants = [ attachment.variant(:feed).processed, attachment.variant(:feed_preview).processed ]
+    variants.each { |variant| remember_storage_key(variant.key) }
     blob_id = attachment.blob_id
 
     perform_enqueued_jobs(only: ActiveStorage::PurgeJob) do
@@ -205,18 +205,18 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not PostAttachmentCaption.exists?(caption.id)
     assert_not ActiveStorage::Blob.exists?(blob_id)
     assert_not ActiveStorage::Blob.service.exist?(attachment.blob.key)
-    assert_not ActiveStorage::Blob.service.exist?(variant.key)
+    variants.each { |variant| assert_not ActiveStorage::Blob.service.exist?(variant.key) }
   end
 
   test "removing an image purges image, variant, and caption" do
     sign_in_as @user
     attachment = attach_test_image(@post, filename: "attachment-delete.png")
     caption = PostAttachmentCaption.create!(post: @post, attachment: attachment, text: "Caption")
-    variant = attachment.variant(:display).processed
-    remember_storage_key(variant.key)
+    variants = [ attachment.variant(:feed).processed, attachment.variant(:feed_preview).processed ]
+    variants.each { |variant| remember_storage_key(variant.key) }
     blob_id = attachment.blob_id
     original_key = attachment.blob.key
-    variant_key = variant.key
+    variant_keys = variants.map(&:key)
 
     perform_enqueued_jobs(only: ActiveStorage::PurgeJob) do
       delete remove_attachment_trip_post_url(
@@ -230,7 +230,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_not PostAttachmentCaption.exists?(caption.id)
     assert_not ActiveStorage::Blob.exists?(blob_id)
     assert_not ActiveStorage::Blob.service.exist?(original_key)
-    assert_not ActiveStorage::Blob.service.exist?(variant_key)
+    variant_keys.each { |variant_key| assert_not ActiveStorage::Blob.service.exist?(variant_key) }
   end
 
   test "user cannot remove another user's attachment" do
