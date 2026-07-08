@@ -69,7 +69,7 @@
                     style="width: 400px;"
                   >
                     <% if attachment.image? %>
-                      <%= link_to post_feed_image_tag(post, attachment, loading: index.zero? ? "eager" : "lazy"), attachment, target: "_blank", class: "h-4 w-4" %>
+                      <%= post_feed_image_link(post, attachment, loading: index.zero? ? "eager" : "lazy") %>
                     <% else %>
                       <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
                     <% end %>

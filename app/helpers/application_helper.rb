@@ -36,6 +36,14 @@ module ApplicationHelper
     )
   end
 
+  def post_feed_image_link(post, attachment, **options)
+    image = post_feed_image_tag(post, attachment, **options)
+    full = post.image_as_feed(attachment)
+    return unless image && full
+
+    link_to image, full, target: "_blank"
+  end
+
   def time_ago_in_words_with_units(from_time)
     distance_in_seconds = ((Time.current - from_time) / 1.second).round
     case distance_in_seconds

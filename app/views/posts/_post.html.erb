@@ -131,7 +131,7 @@
                       style="height: inherit;"
                     >
                       <% if attachment.image? %>
-                        <%= link_to post_feed_image_tag(post, attachment, loading: index.zero? ? "eager" : "lazy"), attachment, target: "_blank" %>
+                        <%= post_feed_image_link(post, attachment, loading: index.zero? ? "eager" : "lazy") %>
                       <% else %>
                         <%= video_tag url_for(attachment), controls: true, class: "post-video" %>
                       <% end %>

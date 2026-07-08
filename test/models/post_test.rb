@@ -22,6 +22,19 @@ class PostTest < ActiveSupport::TestCase
     )
   end
 
+  test "feed attachment variants process as webp files" do
+    attachment = attach_test_image(posts(:one))
+    variant = attachment.variant(:feed_preview).processed
+    @storage_keys << variant.key
+
+    data = variant.download
+
+    assert_equal "image/webp", variant.content_type
+    assert_equal "RIFF", data.byteslice(0, 4)
+    assert_equal "WEBP", data.byteslice(8, 4)
+    assert_equal "post-test.webp", variant.filename.to_s
+  end
+
   test "active storage image jobs use the images queue" do
     queues = Rails.application.config.active_storage.queues
 
