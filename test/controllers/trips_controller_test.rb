@@ -63,6 +63,25 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show keeps pagination nav and posts list in the advancing turbo frame" do
+    5.times do |index|
+      @trip.posts.create!(
+        title: "Pagination post #{index + 1}",
+        body: "Pagination post body #{index + 1}",
+        user: @user,
+        created_at: (index + 1).minutes.ago
+      )
+    end
+
+    get trip_url(@trip, page: 2)
+
+    assert_response :success
+    assert_select "turbo-frame#trip-posts-page[data-turbo-action='advance']"
+    assert_select "turbo-frame#trip-posts-page #posts"
+    assert_select "turbo-frame#trip-posts-page a.page-link[data-turbo-frame='trip-posts-page'][data-turbo-action='advance']", minimum: 2
+    assert_select "turbo-frame#trip-posts-page a.page-link[aria-current='page']", text: "2"
+  end
+
   test "trip url uses id backed slug" do
     assert_match %r{/trips/#{@trip.id}-trip-one\z}, trip_url(@trip)
   end

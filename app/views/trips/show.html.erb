@@ -127,45 +127,45 @@
     </header>
 
     <section class="trip-content" aria-labelledby="trip-posts-heading">
-      <div class="trip-toolbar">
-        <div class="trip-toolbar__top">
-          <div class="d-flex align-items-center gap-2">
-            <h2 class="mb-0" id="trip-posts-heading">Posts</h2>
-            <span class="badge rounded-pill bg-primary" aria-label="<%= pluralize(@trip.visible_posts.count, "post") %>">
-              <%= @trip.visible_posts.count %>
-            </span>
+      <%= turbo_frame_tag posts_pagination_frame_id, data: { turbo_action: "advance" } do %>
+        <div class="trip-toolbar">
+          <div class="trip-toolbar__top">
+            <div class="d-flex align-items-center gap-2">
+              <h2 class="mb-0" id="trip-posts-heading">Posts</h2>
+              <span class="badge rounded-pill bg-primary" aria-label="<%= pluralize(@trip.visible_posts.count, "post") %>">
+                <%= @trip.visible_posts.count %>
+              </span>
+            </div>
+
+            <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
+              <%= link_to "Create new post",
+                new_post_path(trip_id: @trip.id),
+                class: "btn btn-success",
+                data: { turbo: false } %>
+            <% end %>
           </div>
 
-          <% if Current.user == @trip.user || Current.user&.companion_trips&.include?(@trip) %>
-            <%= link_to "Create new post",
-              new_post_path(trip_id: @trip.id),
-              class: "btn btn-success",
-              data: { turbo: false } %>
+          <div class="trip-toolbar__filters" data-controller="filter">
+            <%= render partial: "trips/search_and_filter" %>
+            <div
+              class="d-flex flex-wrap align-items-center gap-2"
+              data-filter-target="filterContainerDesktop filterContainerMobile"
+            ></div>
+          </div>
+
+          <% if @pagy.pages > 1 %>
+            <div class="d-flex w-100 justify-content-center">
+              <%== posts_pagination_nav(@pagy) %>
+            </div>
           <% end %>
         </div>
 
-        <div class="trip-toolbar__filters" data-controller="filter">
-          <%= render partial: "trips/search_and_filter" %>
-          <div
-            class="d-flex flex-wrap align-items-center gap-2"
-            data-filter-target="filterContainerDesktop filterContainerMobile"
-          ></div>
-        </div>
+        <div class="trip-feed-layout" data-controller="map">
+          <div class="trip-posts">
+            <%= turbo_frame_tag Post.new %>
+            <%= turbo_stream_from @trip %>
 
-        <% if @pagy.pages > 1 %>
-          <div class="d-flex w-100 justify-content-center">
-            <%== posts_pagination_nav(@pagy) %>
-          </div>
-        <% end %>
-      </div>
-
-      <div class="trip-feed-layout" data-controller="map">
-        <div class="trip-posts">
-          <%= turbo_frame_tag Post.new %>
-          <%= turbo_stream_from @trip %>
-
-          <div class="d-flex flex-column gap-4">
-            <%= turbo_frame_tag "posts" do %>
+            <div class="d-flex flex-column gap-4" id="posts">
               <% @posts.each do |post| %>
                 <%= render "posts/post", post: post, heading_tag: :h3 %>
               <% end %>
@@ -175,35 +175,35 @@
                   <%= render "posts/empty_state", locals: { trip: @trip } %>
                 </div>
               <% end %>
-            <% end %>
+            </div>
           </div>
+
+          <% if @trip.visible_posts.with_location.any? %>
+            <div
+              class="rounded-3 bg-white shadow-sm trip-map"
+              data-map-target="map"
+              id="posts-map"
+              data-points="<%= generated_points(@trip, @pagy) %>"
+              data-images='<%= raw({
+                bus: { left: asset_path("bus-left.webp"), right: asset_path("bus-right.webp") },
+                boat: { left: asset_path("boat-left.webp"), right: asset_path("boat-right.webp") },
+                plane: { left: asset_path("plane-left.webp"), right: asset_path("plane-right.webp") },
+                walking: { left: asset_path("walking-left.webp"), right: asset_path("walking-right.webp") },
+                rickshaw: { left: asset_path("rickshaw-left.webp"), right: asset_path("rickshaw-right.webp") },
+                car: { left: asset_path("car-left.webp"), right: asset_path("car-right.webp") },
+                nina: { left: asset_path("nina-left.webp"), right: asset_path("nina-right.webp") },
+                motorbike: { left: asset_path("motorbike-left.webp"), right: asset_path("motorbike-right.webp") },
+                train: { left: asset_path("train-left.webp"), right: asset_path("train-right.webp") }
+              }.to_json) %>'
+            ></div>
+          <% end %>
         </div>
 
-        <% if @trip.visible_posts.with_location.any? %>
-          <div
-            class="rounded-3 bg-white shadow-sm trip-map"
-            data-map-target="map"
-            id="posts-map"
-            data-points="<%= generated_points(@trip, @pagy) %>"
-            data-images='<%= raw({
-              bus: { left: asset_path("bus-left.webp"), right: asset_path("bus-right.webp") },
-              boat: { left: asset_path("boat-left.webp"), right: asset_path("boat-right.webp") },
-              plane: { left: asset_path("plane-left.webp"), right: asset_path("plane-right.webp") },
-              walking: { left: asset_path("walking-left.webp"), right: asset_path("walking-right.webp") },
-              rickshaw: { left: asset_path("rickshaw-left.webp"), right: asset_path("rickshaw-right.webp") },
-              car: { left: asset_path("car-left.webp"), right: asset_path("car-right.webp") },
-              nina: { left: asset_path("nina-left.webp"), right: asset_path("nina-right.webp") },
-              motorbike: { left: asset_path("motorbike-left.webp"), right: asset_path("motorbike-right.webp") },
-              train: { left: asset_path("train-left.webp"), right: asset_path("train-right.webp") }
-            }.to_json) %>'
-          ></div>
+        <% if @pagy.pages > 1 %>
+          <div class="d-flex w-100 justify-content-center my-5">
+            <%== posts_pagination_nav(@pagy) %>
+          </div>
         <% end %>
-      </div>
-
-      <% if @pagy.pages > 1 %>
-        <div class="d-flex w-100 justify-content-center my-5">
-          <%== posts_pagination_nav(@pagy) %>
-        </div>
       <% end %>
     </section>
   </main>

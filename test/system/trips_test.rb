@@ -12,6 +12,31 @@ class TripsTest < ApplicationSystemTestCase
     assert_selector ".trip-preview-card", minimum: 2
   end
 
+  test "trip post pagination advances the url and updates the current page" do
+    5.times do |index|
+      @trip.posts.create!(
+        title: "Pagination post #{index + 1}",
+        body: "Pagination post body #{index + 1}",
+        user: @user,
+        created_at: (index + 1).minutes.ago
+      )
+    end
+
+    visit trip_url(@trip)
+
+    within "turbo-frame#trip-posts-page" do
+      first("a.page-link", text: "2").click
+    end
+
+    assert_current_path trip_path(@trip, page: 2)
+    assert_selector "turbo-frame#trip-posts-page a.page-link[aria-current='page']", text: "2"
+
+    page.refresh
+
+    assert_current_path trip_path(@trip, page: 2)
+    assert_selector "turbo-frame#trip-posts-page a.page-link[aria-current='page']", text: "2"
+  end
+
   test "should create trip" do
     sign_in_as @user
     visit trips_url

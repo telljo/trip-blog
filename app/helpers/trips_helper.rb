@@ -1,10 +1,16 @@
 require "nokogiri"
 
 module TripsHelper
+  POSTS_PAGINATION_FRAME_ID = "trip-posts-page"
+
+  def posts_pagination_frame_id
+    POSTS_PAGINATION_FRAME_ID
+  end
+
   def posts_pagination_nav(pagy)
     html = pagy.series_nav(
       :bootstrap,
-      anchor_string: 'data-turbo-frame="posts"',
+      anchor_string: %(data-turbo-frame="#{POSTS_PAGINATION_FRAME_ID}" data-turbo-action="advance"),
       aria_label: "Posts pages"
     )
     fragment = Nokogiri::HTML.fragment(html)

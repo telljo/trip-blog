@@ -24,7 +24,7 @@ class TripsHelperTest < ActionView::TestCase
     fragment = Nokogiri::HTML.fragment(html)
 
     assert_equal :bootstrap, pagy.captured_options[:style]
-    assert_equal 'data-turbo-frame="posts"', pagy.captured_options[:options][:anchor_string]
+    assert_equal 'data-turbo-frame="trip-posts-page" data-turbo-action="advance"', pagy.captured_options[:options][:anchor_string]
     assert_equal "Posts pages", pagy.captured_options[:options][:aria_label]
 
     labels = fragment.css("a.page-link").map { |link| link["aria-label"] }
