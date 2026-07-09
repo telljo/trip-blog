@@ -131,7 +131,7 @@
                       style="height: inherit;"
                     >
                       <% if attachment.image? %>
-                        <%= post_feed_image_link(post, attachment, loading: index.zero? ? "eager" : "lazy") %>
+                        <%= post_feed_image_link(post, attachment, **carousel_image_loading_options(index)) %>
                       <% else %>
                         <%= video_tag url_for(attachment), controls: true, class: "post-video" %>
                       <% end %>

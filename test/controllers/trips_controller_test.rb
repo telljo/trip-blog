@@ -41,6 +41,19 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".post-preview-card__excerpt", text: "Preview opener for the card."
   end
 
+  test "show eagerly loads all post carousel images" do
+    post = posts(:one)
+    attach_test_image(post, filename: "carousel-one.png")
+    attach_test_image(post, filename: "carousel-two.png")
+
+    get trip_url(@trip)
+
+    assert_response :success
+    assert_select ".carousel img.post-image[loading='eager']", count: 2
+    assert_select ".carousel img.post-image[loading='lazy']", count: 0
+    assert_select ".carousel img.post-image[fetchpriority='low']", count: 1
+  end
+
   test "should get new" do
     sign_in_as @user
 

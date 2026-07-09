@@ -44,6 +44,15 @@ module ApplicationHelper
     link_to image, full, target: "_blank"
   end
 
+  def carousel_image_loading_options(index)
+    {
+      decoding: "async",
+      loading: "eager"
+    }.tap do |options|
+      options[:fetchpriority] = "low" unless index.zero?
+    end
+  end
+
   def time_ago_in_words_with_units(from_time)
     distance_in_seconds = ((Time.current - from_time) / 1.second).round
     case distance_in_seconds
