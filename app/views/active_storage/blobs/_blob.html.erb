@@ -1,10 +1,12 @@
 <figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
+  <% caption = blob.try(:caption) %>
+  <% alt_text = caption.respond_to?(:to_plain_text) ? caption.to_plain_text : caption.to_s %>
   <% if blob.representable? %>
-    <%= image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
+    <%= image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]), alt: alt_text.strip.presence || "" %>
   <% end %>
 
   <figcaption class="attachment__caption">
-    <% if caption = blob.try(:caption) %>
+    <% if caption.present? %>
       <%= caption %>
     <% else %>
       <span class="attachment__name"><%= blob.filename %></span>

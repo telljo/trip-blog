@@ -4,13 +4,13 @@
 >
   <div class="d-flex flex-row gap-1">
     <div class="desktop-only">
-      <%= link_to root_path, class: "d-flex btn" do %>
-        <%= image_tag("desktop-logo.svg", width: "200", height: "50") %>
+      <%= link_to root_path, class: "d-flex btn", aria: { label: "Footprints home" } do %>
+        <%= image_tag("desktop-logo.svg", width: "200", height: "50", alt: "") %>
       <% end %>
     </div>
     <div class="mobile-only">
-      <%= link_to root_path, class: "d-flex btn" do %>
-        <%= image_tag("mobile-logo.svg", width: "50", height: "50") %>
+      <%= link_to root_path, class: "d-flex btn", aria: { label: "Footprints home" } do %>
+        <%= image_tag("mobile-logo.svg", width: "50", height: "50", alt: "") %>
       <% end %>
     </div>
   </div>

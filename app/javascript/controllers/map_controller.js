@@ -18,6 +18,7 @@ export default class extends Controller {
     this.coordinatesMap = {}
     this.currentPostId = null
     this.map = null
+    this.fullscreenButton = null
     this.handleScroll = this.handleScroll.bind(this)
     this.mapTarget.innerHTML = ""
     this.scheduleMapInitialisation()
@@ -25,6 +26,15 @@ export default class extends Controller {
 
   disconnect() {
     window.removeEventListener("scroll", this.handleScroll)
+    document.removeEventListener("keydown", this.handleFullscreenKeydown, true)
+    document.body.classList.remove("trip-map-fullscreen-active")
+
+    if (this.hasMapTarget) {
+      this.mapTarget.classList.remove("trip-map--fullscreen")
+    }
+
+    this.fullscreenButton?.remove()
+    this.fullscreenButton = null
 
     if (this.idleCallback) {
       if ("cancelIdleCallback" in window) {
@@ -55,7 +65,7 @@ export default class extends Controller {
       return
     }
 
-    const { Map, Marker, Popup, FullscreenControl } = await import("maplibre-gl")
+    const { Map, Marker, Popup } = await import("maplibre-gl")
     const mapElement = this.mapTarget
     const points = JSON.parse(mapElement.dataset.points)
     const firstPoint = points[0]
@@ -72,7 +82,7 @@ export default class extends Controller {
       zoom: 10
     })
 
-    this.map.addControl(new FullscreenControl({ container: document.querySelector("body") }))
+    this.addFullscreenButton()
 
     points.forEach((point) => {
       new Marker()
@@ -153,6 +163,72 @@ export default class extends Controller {
     } else {
       console.error(`Coordinates not found for postId: ${postId}`)
     }
+  }
+
+  addFullscreenButton() {
+    this.fullscreenButton = document.createElement("button")
+    this.fullscreenButton.type = "button"
+    this.fullscreenButton.className = "btn btn-light shadow-sm trip-map__fullscreen-button"
+    this.fullscreenButton.addEventListener("click", () => this.toggleMapFullscreen())
+
+    this.updateFullscreenButton()
+    this.mapTarget.appendChild(this.fullscreenButton)
+  }
+
+  toggleMapFullscreen() {
+    if (this.mapTarget.classList.contains("trip-map--fullscreen")) {
+      this.exitMapFullscreen()
+    } else {
+      this.enterMapFullscreen()
+    }
+  }
+
+  enterMapFullscreen() {
+    this.mapTarget.classList.add("trip-map--fullscreen")
+    document.body.classList.add("trip-map-fullscreen-active")
+    document.addEventListener("keydown", this.handleFullscreenKeydown, true)
+    this.updateFullscreenButton()
+    this.resizeMap()
+  }
+
+  exitMapFullscreen({ focusButton = false } = {}) {
+    this.mapTarget.classList.remove("trip-map--fullscreen")
+    document.body.classList.remove("trip-map-fullscreen-active")
+    document.removeEventListener("keydown", this.handleFullscreenKeydown, true)
+    this.updateFullscreenButton()
+    this.resizeMap()
+
+    if (focusButton) {
+      this.fullscreenButton?.focus({ preventScroll: true })
+    }
+  }
+
+  handleFullscreenKeydown = (event) => {
+    if (event.key === "Escape" && this.mapTarget.classList.contains("trip-map--fullscreen")) {
+      event.preventDefault()
+      this.exitMapFullscreen({ focusButton: true })
+    }
+  }
+
+  updateFullscreenButton() {
+    if (!this.fullscreenButton) {
+      return
+    }
+
+    const isFullscreen = this.mapTarget.classList.contains("trip-map--fullscreen")
+    const label = isFullscreen ? "Exit fullscreen map" : "Enter fullscreen map"
+    const iconClass = isFullscreen ? "bi-fullscreen-exit" : "bi-arrows-fullscreen"
+
+    this.fullscreenButton.setAttribute("aria-label", label)
+    this.fullscreenButton.setAttribute("aria-pressed", isFullscreen.toString())
+    this.fullscreenButton.title = label
+    this.fullscreenButton.innerHTML = `<i class="bi ${iconClass}" aria-hidden="true"></i>`
+  }
+
+  resizeMap() {
+    window.requestAnimationFrame(() => {
+      this.map?.resize()
+    })
   }
 
   addMapLayers(points) {

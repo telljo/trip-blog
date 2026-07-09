@@ -66,7 +66,7 @@
           <% if Current.user %>
             <% if @trip.followed_by?(Current.user) %>
               <%= button_to trip_trip_follower_path(@trip.id, @trip.followers.find_by(user: Current.user).id),
-                class: "btn btn-outline-danger d-flex align-items-center gap-2",
+                class: "btn btn-danger d-flex align-items-center gap-2",
                 data: { turbo_confirm: "By unfollowing this trip you will no longer receive emails when new posts are added." },
                 method: :delete do %>
                 <i class="bi bi-envelope-x-fill" aria-hidden="true"></i>
@@ -153,10 +153,9 @@
         </div>
 
         <% if @pagy.pages > 1 %>
-          <nav class="d-flex w-100 justify-content-center" aria-label="Posts pagination">
-            <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
-            <%== @pagy.series_nav(:bootstrap, **vars) %>
-          </nav>
+          <div class="d-flex w-100 justify-content-center">
+            <%== posts_pagination_nav(@pagy) %>
+          </div>
         <% end %>
       </div>
 
@@ -168,7 +167,7 @@
           <div class="d-flex flex-column gap-4">
             <%= turbo_frame_tag "posts" do %>
               <% @posts.each do |post| %>
-                <%= render "posts/post", post: post %>
+                <%= render "posts/post", post: post, heading_tag: :h3 %>
               <% end %>
 
               <% if @posts.none? %>
@@ -202,10 +201,9 @@
       </div>
 
       <% if @pagy.pages > 1 %>
-        <nav class="d-flex w-100 justify-content-center my-5" aria-label="Posts pagination">
-          <% vars = { anchor_string: 'data-turbo-frame="posts"' } %>
-          <%== @pagy.series_nav(:bootstrap, **vars) %>
-        </nav>
+        <div class="d-flex w-100 justify-content-center my-5">
+          <%== posts_pagination_nav(@pagy) %>
+        </div>
       <% end %>
     </section>
   </main>
