@@ -4,7 +4,9 @@ const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/hybrid/style.json?key=
 const ROUTE_ICON_SIZE = 0.55
 const MAP_INITIALISATION_MARGIN = "400px 0px"
 const CAMERA_UPDATE_DELAY = 200
-const CAMERA_ANIMATION_DURATION = 400
+const SCROLL_CAMERA_SPEED = 1.2
+const SCROLL_CAMERA_CURVE = 1.42
+const DIRECT_CAMERA_ANIMATION_DURATION = 650
 
 export default class extends Controller {
   static targets = ["map"]
@@ -77,30 +79,86 @@ export default class extends Controller {
 
     const mapElement = this.mapTarget
     const points = JSON.parse(mapElement.dataset.points)
-    const firstPoint = points[0]
+    const initialPostId = this.initialPostId(points)
+    const initialPoint = points.find((point) => point.postId.toString() === initialPostId) || points[0]
 
     this.coordinatesMap = points.reduce((acc, point) => {
       acc[point.postId] = [point.longitude, point.latitude]
       return acc
     }, {})
+    this.currentPostId = initialPoint.postId.toString()
 
     this.map = new Map({
       container: mapElement,
       style: MAPTILER_STYLE_URL,
-      center: [firstPoint.longitude, firstPoint.latitude],
+      center: [initialPoint.longitude, initialPoint.latitude],
       zoom: 10
     })
 
     this.addFullscreenButton()
 
     points.forEach((point) => {
-      new Marker()
+      const marker = new Marker()
+      const markerElement = marker.getElement()
+      const markerLabel = point.label ? `View details for ${point.label}` : "View location details"
+      const popup = new Popup({
+        closeButton: false,
+        closeOnClick: true,
+        closeOnMove: true
+      }).setHTML(point.tooltip)
+      let closePopupTimer = null
+      let popupPinned = false
+
+      const closeHoverPopup = () => {
+        clearTimeout(closePopupTimer)
+        closePopupTimer = setTimeout(() => {
+          const popupHovered = popup.getElement()?.matches(":hover")
+
+          if (!popupPinned && !markerElement.matches(":hover") && !popupHovered) {
+            popup.remove()
+          }
+        }, 150)
+      }
+
+      const openHoverPopup = () => {
+        clearTimeout(closePopupTimer)
+
+        if (!popup.isOpen()) {
+          marker.togglePopup()
+        }
+
+        const popupElement = popup.getElement()
+        if (popupElement && !popupElement.dataset.hoverEventsBound) {
+          popupElement.dataset.hoverEventsBound = "true"
+          popupElement.addEventListener("mouseenter", () => clearTimeout(closePopupTimer))
+          popupElement.addEventListener("mouseleave", closeHoverPopup)
+        }
+      }
+
+      markerElement.classList.add("trip-map__marker")
+      markerElement.setAttribute("aria-label", markerLabel)
+      markerElement.title = markerLabel
+      markerElement.addEventListener("mouseenter", openHoverPopup)
+      markerElement.addEventListener("mouseleave", closeHoverPopup)
+      markerElement.addEventListener("click", (event) => {
+        event.stopPropagation()
+        popupPinned = !popupPinned
+
+        if (popupPinned) {
+          openHoverPopup()
+        } else {
+          popup.remove()
+        }
+      })
+      popup.on("open", () => markerElement.classList.add("trip-map__marker--active"))
+      popup.on("close", () => {
+        markerElement.classList.remove("trip-map__marker--active")
+        popupPinned = false
+      })
+
+      marker
         .setLngLat([point.longitude, point.latitude])
-        .setPopup(new Popup({
-          closeButton: false,
-          closeOnClick: true,
-          closeOnMove: true
-        }).setHTML(point.tooltip))
+        .setPopup(popup)
         .addTo(this.map)
     })
 
@@ -124,6 +182,29 @@ export default class extends Controller {
         this.map.addImage(imageName, image.data)
       })
     }))
+  }
+
+  initialPostId(points) {
+    const pointPostIds = new Set(points.map((point) => point.postId.toString()))
+    const fragmentPostId = window.location.hash.match(/^#post_(\d+)$/)?.[1]
+
+    if (fragmentPostId && pointPostIds.has(fragmentPostId) && document.getElementById(`post_${fragmentPostId}`)) {
+      return fragmentPostId
+    }
+
+    const viewportCenter = window.innerHeight / 2
+    const closestPost = [...this.element.querySelectorAll(".post")]
+      .filter((post) => pointPostIds.has(post.id.replace(/^post_/, "")))
+      .sort((first, second) => {
+        const firstBounds = first.getBoundingClientRect()
+        const secondBounds = second.getBoundingClientRect()
+        const firstCenter = firstBounds.top + firstBounds.height / 2
+        const secondCenter = secondBounds.top + secondBounds.height / 2
+
+        return Math.abs(firstCenter - viewportCenter) - Math.abs(secondCenter - viewportCenter)
+      })[0]
+
+    return closestPost?.id.replace(/^post_/, "")
   }
 
   observePosts() {
@@ -175,10 +256,11 @@ export default class extends Controller {
       }
 
       this.map.stop()
-      this.map.easeTo({
+      this.map.flyTo({
         center: coordinates,
         zoom: 10,
-        duration: CAMERA_ANIMATION_DURATION
+        speed: SCROLL_CAMERA_SPEED,
+        curve: SCROLL_CAMERA_CURVE
       })
       this.currentPostId = this.pendingPostId
       this.pendingPostId = null
@@ -196,7 +278,7 @@ export default class extends Controller {
       this.map.easeTo({
         center: coordinates,
         zoom: 10,
-        duration: CAMERA_ANIMATION_DURATION
+        duration: DIRECT_CAMERA_ANIMATION_DURATION
       })
       this.currentPostId = postId
     } else {

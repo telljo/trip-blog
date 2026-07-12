@@ -356,6 +356,60 @@ $trip-map-mobile-height: 300px;
   display: none;
 }
 
+.trip-map__marker {
+  cursor: pointer;
+
+  &::before {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--bs-primary);
+    border-radius: 50%;
+    background: rgba(var(--bs-primary-rgb), 0.3);
+    content: "";
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: opacity 150ms ease, transform 150ms ease;
+  }
+
+  svg {
+    position: relative;
+    z-index: 1;
+    transform-origin: center bottom;
+    transition: transform 150ms ease, filter 150ms ease;
+  }
+
+  &:hover svg,
+  &:focus-visible svg,
+  &--active svg {
+    transform: translateY(-4px) scale(1.3);
+    filter: drop-shadow(0 6px 5px rgb(0 0 0 / 50%));
+  }
+
+  &:hover::before,
+  &:focus-visible::before,
+  &--active::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &:focus-visible {
+    border-radius: 50%;
+    outline: 3px solid var(--bs-focus-ring-color);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trip-map__marker::before,
+  .trip-map__marker svg {
+    transition: none;
+  }
+}
+
 .modal-dialog {
   height: 100vh;
   align-content: center;
