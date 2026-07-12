@@ -1,33 +1,37 @@
 import { Controller } from "@hotwired/stimulus"
-import { Tooltip } from "bootstrap"
 
 const MAPTILER_STYLE_URL = "https://api.maptiler.com/maps/hybrid/style.json?key=YceGCelRYIEShW1l58mK"
 const ROUTE_ICON_SIZE = 0.55
+const MAP_INITIALISATION_MARGIN = "400px 0px"
+const CAMERA_UPDATE_DELAY = 200
+const CAMERA_ANIMATION_DURATION = 400
 
 export default class extends Controller {
   static targets = ["map"]
 
   connect() {
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    ;[...tooltipTriggerList].forEach((tooltipTriggerEl) => new Tooltip(tooltipTriggerEl))
-
     if (!this.hasMapTarget) {
       return
     }
 
+    this.connected = true
     this.coordinatesMap = {}
     this.currentPostId = null
+    this.pendingPostId = null
     this.map = null
     this.fullscreenButton = null
-    this.handleScroll = this.handleScroll.bind(this)
     this.mapTarget.innerHTML = ""
     this.scheduleMapInitialisation()
   }
 
   disconnect() {
-    window.removeEventListener("scroll", this.handleScroll)
+    this.connected = false
     document.removeEventListener("keydown", this.handleFullscreenKeydown, true)
     document.body.classList.remove("trip-map-fullscreen-active")
+    this.mapInitialisationObserver?.disconnect()
+    this.postObserver?.disconnect()
+    this.postMutationObserver?.disconnect()
+    clearTimeout(this.cameraUpdateTimer)
 
     if (this.hasMapTarget) {
       this.mapTarget.classList.remove("trip-map--fullscreen")
@@ -36,14 +40,6 @@ export default class extends Controller {
     this.fullscreenButton?.remove()
     this.fullscreenButton = null
 
-    if (this.idleCallback) {
-      if ("cancelIdleCallback" in window) {
-        window.cancelIdleCallback(this.idleCallback)
-      } else {
-        clearTimeout(this.idleCallback)
-      }
-    }
-
     if (this.map) {
       this.map.remove()
       this.map = null
@@ -51,21 +47,34 @@ export default class extends Controller {
   }
 
   scheduleMapInitialisation() {
-    const initialise = () => this.initialiseMap()
-
-    if ("requestIdleCallback" in window) {
-      this.idleCallback = window.requestIdleCallback(initialise, { timeout: 1000 })
-    } else {
-      this.idleCallback = setTimeout(initialise, 100)
+    if (!("IntersectionObserver" in window)) {
+      this.initialiseMap()
+      return
     }
+
+    this.mapInitialisationObserver = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) {
+        return
+      }
+
+      this.mapInitialisationObserver.disconnect()
+      this.initialiseMap()
+    }, { rootMargin: MAP_INITIALISATION_MARGIN })
+
+    this.mapInitialisationObserver.observe(this.mapTarget)
   }
 
   async initialiseMap() {
-    if (!this.hasMapTarget) {
+    if (!this.connected || !this.hasMapTarget || this.map) {
       return
     }
 
     const { Map, Marker, Popup } = await import("maplibre-gl")
+
+    if (!this.connected || !this.element.isConnected) {
+      return
+    }
+
     const mapElement = this.mapTarget
     const points = JSON.parse(mapElement.dataset.points)
     const firstPoint = points[0]
@@ -96,7 +105,7 @@ export default class extends Controller {
     })
 
     this.addMapLayers(points)
-    window.addEventListener("scroll", this.handleScroll)
+    this.observePosts()
   }
 
   async initialiseMapImages(points) {
@@ -117,37 +126,63 @@ export default class extends Controller {
     }))
   }
 
-  handleScroll() {
-    const scrollPosition = window.scrollY + window.innerHeight / 2
-    let currentPost = null
-    this.posts = document.querySelectorAll(".post")
-
-    if (this.posts.length > 0 && this.currentPostId === null) {
-      this.currentPostId = this.posts[0].firstElementChild.id.split("_")[1]
+  observePosts() {
+    if (!("IntersectionObserver" in window)) {
+      return
     }
 
-    for (const post of this.posts) {
-      const postTop = post.offsetTop
-      const postBottom = postTop + post.offsetHeight
+    const activePostMargin = Math.floor(window.innerHeight * 0.45)
+    this.postObserver = new IntersectionObserver((entries) => {
+      const activeEntry = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((first, second) => {
+          const viewportCenter = window.innerHeight / 2
+          const firstCenter = first.boundingClientRect.top + first.boundingClientRect.height / 2
+          const secondCenter = second.boundingClientRect.top + second.boundingClientRect.height / 2
 
-      if (scrollPosition >= postTop && scrollPosition <= postBottom) {
-        const postId = post.id.split("_")[1]
-        if (this.currentPostId !== postId) {
-          this.currentPostId = postId
-          currentPost = post
-          break
-        }
+          return Math.abs(firstCenter - viewportCenter) - Math.abs(secondCenter - viewportCenter)
+        })[0]
+
+      if (activeEntry) {
+        this.scheduleCameraUpdate(activeEntry.target.id.split("_")[1])
       }
+    }, { rootMargin: `-${activePostMargin}px 0px` })
+
+    this.element.querySelectorAll(".post").forEach((post) => this.postObserver.observe(post))
+
+    const postsContainer = this.element.querySelector("#posts")
+    if (postsContainer) {
+      this.postMutationObserver = new MutationObserver(() => {
+        this.element.querySelectorAll(".post").forEach((post) => this.postObserver.observe(post))
+      })
+      this.postMutationObserver.observe(postsContainer, { childList: true, subtree: true })
+    }
+  }
+
+  scheduleCameraUpdate(postId) {
+    if (postId === this.currentPostId || postId === this.pendingPostId || !this.coordinatesMap[postId]) {
+      return
     }
 
-    if (currentPost && this.coordinatesMap[this.currentPostId]) {
-      const [longitude, latitude] = this.coordinatesMap[this.currentPostId]
-      this.map.flyTo({
-        center: [longitude, latitude],
+    this.pendingPostId = postId
+    clearTimeout(this.cameraUpdateTimer)
+    this.cameraUpdateTimer = setTimeout(() => {
+      const coordinates = this.coordinatesMap[this.pendingPostId]
+
+      if (!this.map || !coordinates) {
+        this.pendingPostId = null
+        return
+      }
+
+      this.map.stop()
+      this.map.easeTo({
+        center: coordinates,
         zoom: 10,
-        essential: true
+        duration: CAMERA_ANIMATION_DURATION
       })
-    }
+      this.currentPostId = this.pendingPostId
+      this.pendingPostId = null
+    }, CAMERA_UPDATE_DELAY)
   }
 
   moveToMarker(event) {
@@ -155,11 +190,15 @@ export default class extends Controller {
     const coordinates = this.coordinatesMap[postId]
 
     if (coordinates) {
-      this.map.flyTo({
+      clearTimeout(this.cameraUpdateTimer)
+      this.pendingPostId = null
+      this.map.stop()
+      this.map.easeTo({
         center: coordinates,
         zoom: 10,
-        essential: true
+        duration: CAMERA_ANIMATION_DURATION
       })
+      this.currentPostId = postId
     } else {
       console.error(`Coordinates not found for postId: ${postId}`)
     }

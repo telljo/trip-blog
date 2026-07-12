@@ -42,3 +42,6 @@ application.register("toggle-content", ToggleContentController)
 
 import ToggleThemeController from "./toggle_theme_controller"
 application.register("toggle-theme", ToggleThemeController)
+
+import TooltipController from "./tooltip_controller"
+application.register("tooltip", TooltipController)

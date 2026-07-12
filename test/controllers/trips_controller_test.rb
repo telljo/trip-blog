@@ -77,6 +77,16 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show uses one map controller for the post feed" do
+    posts(:one).update_columns(latitude: -8.894, longitude: 116.278)
+
+    get trip_url(@trip)
+
+    assert_response :success
+    assert_select ".trip-feed-layout[data-controller~='map']", count: 1
+    assert_select ".post [data-controller~='map']", count: 0
+  end
+
   test "show keeps pagination nav and posts list in the advancing turbo frame" do
     5.times do |index|
       @trip.posts.create!(

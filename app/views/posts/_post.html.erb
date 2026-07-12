@@ -1,6 +1,6 @@
 <%= turbo_frame_tag dom_id(post), class: "post" do %>
   <% heading_tag = local_assigns.fetch(:heading_tag, :h4) %>
-  <div data-controller="map" class="d-flex flex-column w-100">
+  <div class="d-flex flex-column w-100">
     <% if post.city %>
       <div class="d-flex flex-column flex-wrap my-2">
         <%= content_tag heading_tag, class: "mb-0 mt-2" do %>
@@ -22,7 +22,7 @@
             <p class="text-body-secondary m-0 align-content-center text-decoration-underline" style="cursor: pointer;" data-post-id=<%= post.id %>><%= post.short_address %></p>
           </span>
           <% if post.travel_type %>
-            <div class="bg-light bg-gradient rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Travelled by <%= post.travel_type %>">
+            <div class="bg-light bg-gradient rounded-circle align-content-center border border-3 border-primary p-1" style="height: 40px; width: 40px;" data-controller="tooltip" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Travelled by <%= post.travel_type %>">
               <%= image_tag "#{post.travel_type}-left.webp",
                 alt: "",
                 class: "img-fluid",
