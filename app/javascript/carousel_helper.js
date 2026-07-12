@@ -3,8 +3,10 @@ import { Carousel } from "bootstrap"
 const initializedCarousels = new WeakSet()
 const enqueuedImages = new WeakSet()
 const carouselLoadingImages = new WeakMap()
+const carouselLoaderDelayTimers = new WeakMap()
 const preloadQueue = []
 const maxConcurrentPreloads = 2
+const loaderAppearanceDelay = 100
 let activePreloads = 0
 let preloadTimer = null
 
@@ -23,8 +25,16 @@ const hideCarouselLoader = (carousel, image) => {
 
 const removeImageSkeleton = image => {
   const finish = () => {
+    const carousel = image.closest(".carousel")
+    const delayTimer = carouselLoaderDelayTimers.get(carousel)
+
+    if (delayTimer && carouselLoadingImages.get(carousel) === image) {
+      window.clearTimeout(delayTimer)
+      carouselLoaderDelayTimers.delete(carousel)
+    }
+
     image.classList.add("post-image--decoded")
-    hideCarouselLoader(image.closest(".carousel"), image)
+    hideCarouselLoader(carousel, image)
   }
 
   if (typeof image.decode === "function") {
@@ -32,6 +42,27 @@ const removeImageSkeleton = image => {
   } else {
     finish()
   }
+}
+
+const scheduleCarouselLoader = (carousel, image) => {
+  const existingTimer = carouselLoaderDelayTimers.get(carousel)
+  if (existingTimer) window.clearTimeout(existingTimer)
+
+  carouselLoadingImages.set(carousel, image)
+  loaderFor(carousel)?.classList.add("visually-hidden")
+
+  const timer = window.setTimeout(() => {
+    carouselLoaderDelayTimers.delete(carousel)
+
+    if (
+      carouselLoadingImages.get(carousel) === image &&
+      !image.classList.contains("post-image--decoded")
+    ) {
+      showCarouselLoader(carousel, image)
+    }
+  }, loaderAppearanceDelay)
+
+  carouselLoaderDelayTimers.set(carousel, timer)
 }
 
 const prepareSlide = (carousel, slide) => {
@@ -49,7 +80,7 @@ const prepareSlide = (carousel, slide) => {
     carouselLoadingImages.set(carousel, image)
     loaderFor(carousel)?.classList.add("visually-hidden")
   } else {
-    showCarouselLoader(carousel, image)
+    scheduleCarouselLoader(carousel, image)
   }
 }
 
