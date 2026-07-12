@@ -52,6 +52,7 @@ class TripsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".carousel img.post-image[loading='eager']", count: 1
     assert_select ".carousel img.post-image[loading='lazy'][data-carousel-preload='true']", count: 1
     assert_select ".carousel img.post-image[fetchpriority='low']", count: 1
+    assert_select ".carousel > .carousel-image-loader[aria-hidden='true']", count: 1
   end
 
   test "should get new" do

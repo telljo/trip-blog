@@ -166,10 +166,12 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit" do
+    attach_test_image(@post, filename: "edit-carousel.png")
     sign_in_as @user
 
     get edit_post_url(@post)
     assert_response :success
+    assert_select ".carousel > .carousel-image-loader[aria-hidden='true']", count: 1
   end
 
   test "should update post" do

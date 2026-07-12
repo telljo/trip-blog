@@ -97,6 +97,7 @@
               </div>
             <% end %>
           </div>
+          <div class="carousel-image-loader" aria-hidden="true"></div>
           <div class="carousel-indicators">
             <% post.attachments.each_with_index do |attachment, index| %>
               <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="<%= index %>" class="<%= 'active' if index == 0 %>" aria-current="<%= 'true' if index == 0 %>" aria-label="Slide <%= index + 1 %>"></button>

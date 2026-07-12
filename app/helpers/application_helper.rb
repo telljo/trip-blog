@@ -26,7 +26,7 @@ module ApplicationHelper
       preview,
       {
         alt: post.image_alt_text(attachment),
-        class: "post-image",
+        class: "post-image d-block",
         height: height,
         loading: "lazy",
         sizes: "(max-width: 999px) 300px, 400px",

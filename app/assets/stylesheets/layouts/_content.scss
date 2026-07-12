@@ -89,6 +89,46 @@ $trip-map-mobile-height: 300px;
   min-height: 400px;
 }
 
+.carousel-image-loader {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 199;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: rgb(205 217 229 / 18%);
+  pointer-events: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 35%), transparent);
+    animation: carousel-image-shimmer 1.2s ease-in-out infinite;
+  }
+
+  @media screen and (max-width: $breakpoint) {
+    height: 300px;
+  }
+}
+
+@keyframes carousel-image-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-image-loader::after {
+    animation: none;
+  }
+}
+
 .post-video {
   height: 400px;
   max-height: 400px;

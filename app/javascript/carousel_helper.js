@@ -1,45 +1,56 @@
+import { Carousel } from "bootstrap"
+
 const initializedCarousels = new WeakSet()
 const enqueuedImages = new WeakSet()
+const carouselLoadingImages = new WeakMap()
 const preloadQueue = []
 const maxConcurrentPreloads = 2
 let activePreloads = 0
 let preloadTimer = null
 
-const mediaContainerFor = image => image.closest(".post-media")
-const loaderFor = image => mediaContainerFor(image)?.querySelector(".post-media__loader")
+const loaderFor = carousel => carousel.querySelector(":scope > .carousel-image-loader")
 
-const markImageLoading = image => {
-  if (image.complete) return
-
-  mediaContainerFor(image)?.classList.add("post-media--image-loading")
-  loaderFor(image)?.classList.remove("visually-hidden")
+const showCarouselLoader = (carousel, image) => {
+  carouselLoadingImages.set(carousel, image)
+  loaderFor(carousel)?.classList.remove("visually-hidden")
 }
 
-const markImageLoaded = image => {
-  mediaContainerFor(image)?.classList.remove("post-media--image-loading")
-  loaderFor(image)?.classList.add("visually-hidden")
+const hideCarouselLoader = (carousel, image) => {
+  if (carouselLoadingImages.get(carousel) !== image) return
+
+  loaderFor(carousel)?.classList.add("visually-hidden")
 }
 
-const initializeImageLoadingState = image => {
-  if (image.complete) {
-    markImageLoaded(image)
+const removeImageSkeleton = image => {
+  const finish = () => {
+    image.classList.add("post-image--decoded")
+    hideCarouselLoader(image.closest(".carousel"), image)
+  }
+
+  if (typeof image.decode === "function") {
+    image.decode().then(finish, finish)
+  } else {
+    finish()
+  }
+}
+
+const prepareSlide = (carousel, slide) => {
+  const image = slide?.querySelector("img.post-image")
+
+  if (!image) {
+    carouselLoadingImages.delete(carousel)
+    loaderFor(carousel)?.classList.add("visually-hidden")
     return
   }
 
-  markImageLoading(image)
-  image.addEventListener("load", () => markImageLoaded(image), { once: true })
-  image.addEventListener("error", () => markImageLoaded(image), { once: true })
-}
+  image.loading = "eager"
 
-const showSlideImageLoadingState = slide => {
-  slide?.querySelectorAll("img").forEach(image => {
-    if (image.complete) {
-      markImageLoaded(image)
-    } else {
-      image.loading = "eager"
-      markImageLoading(image)
-    }
-  })
+  if (image.classList.contains("post-image--decoded")) {
+    carouselLoadingImages.set(carousel, image)
+    loaderFor(carousel)?.classList.add("visually-hidden")
+  } else {
+    showCarouselLoader(carousel, image)
+  }
 }
 
 const schedulePreloadQueue = () => {
@@ -101,6 +112,7 @@ const initializeCarousel = carousel => {
   if (!inner) return
 
   initializedCarousels.add(carousel)
+  Carousel.getOrCreateInstance(carousel)
 
   const updateHeight = () => {
     requestAnimationFrame(() => {
@@ -112,13 +124,25 @@ const initializeCarousel = carousel => {
     })
   }
 
+  const activeImage = inner.querySelector(".carousel-item.active img.post-image")
+  if (activeImage) {
+    showCarouselLoader(carousel, activeImage)
+  } else {
+    loaderFor(carousel)?.classList.add("visually-hidden")
+  }
+
   carousel.addEventListener("slid.bs.carousel", updateHeight)
-  carousel.addEventListener("slide.bs.carousel", event => showSlideImageLoadingState(event.relatedTarget))
+  carousel.addEventListener("slide.bs.carousel", event => prepareSlide(carousel, event.relatedTarget))
 
   carousel.querySelectorAll("img").forEach(image => {
-    initializeImageLoadingState(image)
     image.addEventListener("load", updateHeight)
-    if (image.complete) updateHeight()
+    image.addEventListener("load", () => removeImageSkeleton(image), { once: true })
+    image.addEventListener("error", () => removeImageSkeleton(image), { once: true })
+
+    if (image.complete) {
+      removeImageSkeleton(image)
+      updateHeight()
+    }
   })
 
   carousel.querySelectorAll("video").forEach(video => {
