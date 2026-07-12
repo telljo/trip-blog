@@ -45,11 +45,15 @@ module ApplicationHelper
   end
 
   def carousel_image_loading_options(index)
-    {
-      decoding: "async",
-      loading: "eager"
-    }.tap do |options|
-      options[:fetchpriority] = "low" unless index.zero?
+    if index.zero?
+      { decoding: "async", loading: "eager" }
+    else
+      {
+        data: { carousel_preload: true },
+        decoding: "async",
+        fetchpriority: "low",
+        loading: "lazy"
+      }
     end
   end
 
