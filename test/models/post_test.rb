@@ -35,6 +35,25 @@ class PostTest < ActiveSupport::TestCase
     assert_equal "post-test.webp", variant.filename.to_s
   end
 
+  test "feed image methods use the original until background variants are processed" do
+    post = posts(:one)
+    attachment = attach_test_image(post)
+
+    assert_equal attachment, post.image_as_feed(attachment)
+    assert_equal attachment, post.image_as_feed_preview(attachment)
+  end
+
+  test "feed image methods use processed background variants when available" do
+    post = posts(:one)
+    attachment = attach_test_image(post)
+    feed = attachment.variant(:feed).processed
+    preview = attachment.variant(:feed_preview).processed
+    @storage_keys.concat([ feed.key, preview.key ])
+
+    assert_equal feed.key, post.image_as_feed(attachment).key
+    assert_equal preview.key, post.image_as_feed_preview(attachment).key
+  end
+
   test "active storage image jobs use the images queue" do
     queues = Rails.application.config.active_storage.queues
 

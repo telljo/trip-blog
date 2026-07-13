@@ -91,13 +91,13 @@ class Post < ApplicationRecord
   def image_as_feed(image)
     return unless image.content_type.in?(%w[image/jpeg image/png image/webp])
 
-    image.variant(:feed)
+    processed_variant_or_original(image, :feed)
   end
 
   def image_as_feed_preview(image)
     return unless image.content_type.in?(%w[image/jpeg image/png image/webp])
 
-    image.variant(:feed_preview)
+    processed_variant_or_original(image, :feed_preview)
   end
 
   def image_display_dimensions(image, max_dimension: 400)
@@ -127,5 +127,23 @@ class Post < ApplicationRecord
 
   def liked_by?(user)
     likes.exists?(user: user)
+  end
+
+  private
+
+  # Active Storage's representation controller processes missing variants in
+  # the request. Serve the original until the background image job has created
+  # the tracked variant so several first-page image requests cannot occupy all
+  # Puma threads with transformations.
+  def processed_variant_or_original(image, variant_name)
+    variant = image.variant(variant_name)
+
+    if ActiveStorage.track_variants
+      variant.image&.attached? ? variant : image
+    elsif variant.service.exist?(variant.key)
+      variant
+    else
+      image
+    end
   end
 end
