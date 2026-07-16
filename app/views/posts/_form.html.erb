@@ -37,61 +37,48 @@
     </div>
     <% if @post.attachments.attached? %>
       <%= form.label :attachments, class: "form-label" %>
-      <div
-        class="d-flex flex-column border rounded gap-1 p-2"
-      >
-        <div id="carouselExampleIndicators" class="carousel slide d-flex flex-column">
-          <div
-            class="carousel-inner"
-            style="height: 500px;"
-          >
+      <div class="post-attachment-editor border rounded p-3">
+        <div id="carouselExampleIndicators" class="carousel carousel--themed-controls slide post-attachment-carousel d-flex flex-column">
+          <div class="carousel-inner post-attachment-carousel__slides">
             <% post.attachments.each_with_index do |attachment, index| %>
-              <div
-                class="carousel-item <%= 'active' if index == 0 %>"
-                style="height: 100%;"
-              >
-                <div
-                  class="position-absolute d-flex top-0 m-2 bg-light-subtle border rounded-circle align-items-center justify-content-center"
-                  style="z-index: 1; height: 30px; width: 30px;"
-                >
+              <div class="carousel-item post-attachment-carousel__item <%= 'active' if index == 0 %>">
+                <div class="post-attachment-carousel__number bg-light-subtle border rounded-circle">
                   <p class="mb-0"><%= index + 1 %></p>
                 </div>
                 <%= link_to remove_attachment_trip_post_path(trip_id: @trip, id: @post.id, attachment_id: attachment.id),
-                  class:"btn btn-danger d-flex justify-content-center align-items-center position-absolute top-0 end-0 mt-1 me-1",
-                  style:"height: 40px; width: 40px; z-index: 200;",
+                  class: "btn btn-danger post-attachment-carousel__remove-attachment d-flex justify-content-center align-items-center",
+                  aria: { label: "Remove attachment #{index + 1}" },
                   data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
                   <i class="bi bi-trash-fill"></i>
                 <% end %>
                 <%= form.hidden_field :attachments, multiple: true, value: attachment.signed_id %>
-                <div class="d-flex justify-content-center" style="height: inherit;">
-                  <div
-                    class="d-flex flex-column align-items-center"
-                    style="width: 400px;"
-                  >
+                <div class="post-attachment-carousel__content">
+                  <div class="post-attachment-carousel__media">
                     <% if attachment.image? %>
                       <%= post_feed_image_link(post, attachment, **carousel_image_loading_options(index)) %>
                     <% else %>
-                      <%= video_tag url_for(attachment), controls: true, style: "height: 400px; width: 400px; background: lightgrey;" %>
+                      <%= video_tag url_for(attachment), controls: true, class: "post-video" %>
                     <% end %>
+                  </div>
 
-                    <div class="d-flex flex-row gap-1">
-                      <%= form.fields_for :post_attachment_captions, attachment.caption || form.object.post_attachment_captions.build do |caption_form| %>
-                        <div class="form__field d-flex flex-row gap-1 align-items-center p-2">
-                          <%= caption_form.hidden_field :attachment_id, value: attachment.id %>
-                          <%= caption_form.hidden_field :post_id, value: post.id %>
-                          <%= caption_form.text_field :text,
-                            maxlength: 100,
-                            class: "form-control",
-                            placeholder: "Add a caption" %>
-                        </div>
-                      <% end %>
-                      <%= link_to remove_attachment_caption_post_post_attachment_caption_path(post_id: @post.id, attachment_id: attachment.id),
-                        class:"btn btn-danger d-flex justify-content-center align-items-center mt-1 me-1",
-                        style:"height: 40px; width: 40px; z-index: 200;",
-                        data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
-                        <i class="bi bi-trash-fill"></i>
-                      <% end %>
-                    </div>
+                  <div class="post-attachment-carousel__caption-row">
+                    <%= form.fields_for :post_attachment_captions, attachment.caption || form.object.post_attachment_captions.build do |caption_form| %>
+                      <div class="form__field">
+                        <%= caption_form.hidden_field :attachment_id, value: attachment.id %>
+                        <%= caption_form.hidden_field :post_id, value: post.id %>
+                        <%= caption_form.text_field :text,
+                          maxlength: 100,
+                          class: "form-control",
+                          placeholder: "Add a caption",
+                          aria: { label: "Caption for attachment #{index + 1}" } %>
+                      </div>
+                    <% end %>
+                    <%= link_to remove_attachment_caption_post_post_attachment_caption_path(post_id: @post.id, attachment_id: attachment.id),
+                      class: "btn btn-danger post-attachment-carousel__remove-caption d-flex justify-content-center align-items-center",
+                      aria: { label: "Remove caption for attachment #{index + 1}" },
+                      data: { turbo: true, turbo_confirm: 'Are you sure?', turbo_method: :delete } do %>
+                      <i class="bi bi-trash-fill"></i>
+                    <% end %>
                   </div>
                 </div>
               </div>
@@ -104,13 +91,13 @@
             <% end %>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <svg class="carousel-control-icon" viewBox="0 0 16 16" fill="#fff" aria-hidden="true" focusable="false">
+            <svg class="carousel-control-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
               <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
             </svg>
             <span class="visually-hidden">Previous</span>
           </button>
           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <svg class="carousel-control-icon" viewBox="0 0 16 16" fill="#fff" aria-hidden="true" focusable="false">
+            <svg class="carousel-control-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" focusable="false">
               <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
             </svg>
             <span class="visually-hidden">Next</span>

@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+if [ -f public/assets/.manifest.json ]; then
+  bin/rails assets:clobber
+fi
+
 if gem list --no-installed --exact --silent foreman; then
   echo "Installing foreman..."
   gem install foreman

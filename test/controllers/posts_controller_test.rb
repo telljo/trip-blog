@@ -171,7 +171,10 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
 
     get edit_post_url(@post)
     assert_response :success
+    assert_select ".post-attachment-editor .post-attachment-carousel.carousel--themed-controls", count: 1
+    assert_select ".post-attachment-carousel__slides[style]", count: 0
     assert_select ".carousel > .carousel-image-loader[aria-hidden='true']", count: 1
+    assert_select ".carousel-control-icon[fill='currentColor']", count: 2
   end
 
   test "should update post" do
